@@ -1,21 +1,35 @@
 import { stripe } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 
-export async function POST(req: Request) {
-  const body = await req.json();
+interface CartItem {
+  name: string;
+  image: string;
+  price: number;
+  quantity: number;
+}
 
+export async function POST(req: Request) {
   try {
+    const { cartItems } = await req.json() as { cartItems: CartItem[] };
+
+    if (!cartItems || !Array.isArray(cartItems)) {
+      return NextResponse.json(
+        { error: 'Invalid cart items' },
+        { status: 400 }
+      );
+    }
+
     const origin = req.headers.get('origin') || 'https://yourdomain.com';
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
-      line_items: body.cartItems.map((item: any) => ({
+      line_items: cartItems.map((item) => ({
         price_data: {
           currency: 'usd',
           product_data: {
             name: item.name,
-            images: [`${origin}/products/${item.image}`], // 👈 full URL
+            images: [`${origin}/products/${item.image}`], // full URL
           },
           unit_amount: Math.round(item.price * 100),
         },

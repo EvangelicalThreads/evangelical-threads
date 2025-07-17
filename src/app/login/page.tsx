@@ -7,6 +7,7 @@ import { FaInstagram, FaTiktok } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import Newsletter from '@/components/Newsletter';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
@@ -56,7 +57,6 @@ export default function LoginPage() {
         return;
       }
 
-      // Send them to homepage with scroll verse name
       signIn('credentials', {
         redirect: true,
         email,
@@ -105,26 +105,39 @@ export default function LoginPage() {
 
           <div className="w-full text-center px-4">
             <h2 className="text-2xl font-serif font-semibold mb-6 tracking-wide text-gray-900">
-              Join the community below if you haven’t yet
+              Join the community below if you haven&apos;t yet
             </h2>
             <Newsletter />
 
             <div className="mt-10">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Follow us</h3>
               <div className="flex justify-center gap-10 text-gray-900 text-3xl">
-                <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition">
+                <a
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[#D4AF37] transition"
+                >
                   <FaInstagram />
                 </a>
-                <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition">
+                <a
+                  href="https://tiktok.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[#D4AF37] transition"
+                >
                   <FaTiktok />
                 </a>
               </div>
             </div>
 
             <div className="mt-14">
-              <a href="/" className="text-[#D4AF37] font-semibold underline hover:text-[#b8932f] transition-colors">
+              <Link
+                href="/"
+                className="text-[#D4AF37] font-semibold underline hover:text-[#b8932f] transition-colors"
+              >
                 Go back to homepage
-              </a>
+              </Link>
             </div>
           </div>
         </motion.div>
@@ -206,7 +219,7 @@ export default function LoginPage() {
       <div className="mt-6 text-center">
         {mode === 'signin' ? (
           <>
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <button
               onClick={() => {
                 setError('');
@@ -234,12 +247,12 @@ export default function LoginPage() {
       </div>
 
       <div className="mt-14 text-center">
-        <a
+        <Link
           href="/"
           className="text-[#D4AF37] font-semibold underline hover:text-[#b8932f] transition-colors"
         >
           Go back to homepage
-        </a>
+        </Link>
       </div>
     </div>
   );

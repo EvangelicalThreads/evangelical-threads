@@ -1,17 +1,29 @@
 'use client';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 
 export default function ScrollPopup({
   isVisible,
   onClose,
   verseText,
+  className = '',
 }: {
   isVisible: boolean;
   onClose: () => void;
   verseText: string;
+  className?: string;
 }) {
   const { data: session } = useSession();
+  const [shouldShow, setShouldShow] = useState(false);
+
+  useEffect(() => {
+    const alreadyShown = sessionStorage.getItem('scrollPopupShown');
+    if (isVisible && !alreadyShown) {
+      setShouldShow(true);
+      sessionStorage.setItem('scrollPopupShown', 'true');
+    }
+  }, [isVisible]);
 
   const scrollVariants = {
     hidden: {
@@ -55,10 +67,10 @@ export default function ScrollPopup({
 
   return (
     <AnimatePresence>
-      {isVisible && (
+      {shouldShow && (
         <motion.div
           key="scroll-popup-overlay"
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/10"
+          className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black/10 ${className}`}
           onClick={onClose}
         >
           <motion.div
@@ -123,7 +135,10 @@ export default function ScrollPopup({
                 style={{ maxHeight: '460px', overflowY: 'auto' }}
               >
                 <button
-                  onClick={onClose}
+                  onClick={() => {
+                    onClose();
+                    setShouldShow(false);
+                  }}
                   className="absolute top-4 right-5 text-yellow-900 hover:text-yellow-700 text-4xl font-bold"
                   aria-label="Close scroll"
                 >

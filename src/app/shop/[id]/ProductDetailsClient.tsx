@@ -1,64 +1,29 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useCart } from '../../../context/CartContext';
 import Image from 'next/image';
+import { useCart } from '../../../context/CartContext';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 
-const products = [
-  {
-    id: '70x7-tee',
-    name: 'Seventy Times Seven Tee',
-    price: 59.99,
-    description:
-      'Inspired by Matthew 18:22, this tee reminds us that forgiveness is a daily decision. Soft cotton with a minimalist white design on the front and a graphic design on the back.',
-    imageFront: '/products/70x7-front.png',
-    imageBack: '/products/70x7-back.png',
-  },
-  {
-    id: 'eva-tha-shirt',
-    name: 'Eva-Tha Shirt',
-    price: 44.99,
-    description:
-      'Featuring the EVA crown honoring the first woman and the THA symbol, from ancient Hebrew, meaning store. This design celebrates divine identity and sacred purpose.',
-    imageFront: '/products/eva-tha-front.png',
-    imageBack: '/products/eva-tha-back.png',
-  },
-  {
-    id: 'gold-jacket',
-    name: 'Gold Jacket',
-    price: 109.99,
-    description:
-      'Premium black jacket with gold-stitched Evangelical Threads logo. Warm, stylish, and deeply symbolic.',
-    imageFront: '/products/gold-jacket-front.png',
-    imageBack: '/products/gold-jacket-back.png',
-  },
-  {
-    id: 'eva-tha-white',
-    name: 'Eva-Tha White Shirt',
-    price: 44.99,
-    description:
-      'The white version of our signature design — clean, minimal, and powerful. Featuring The EVA crown honoring the first woman and the THA symbol, from ancient Hebrew, meaning store.',
-    imageFront: '/products/eva-tha-white-front.png',
-    imageBack: '/products/eva-tha-white-back.png',
-  },
-];
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  imageFront: string;
+  imageBack: string;
+}
 
-export default function ProductPage() {
-  const params = useParams();
-  const id = typeof params?.id === 'string' ? params.id : Array.isArray(params?.id) ? params.id[0] : '';
+interface Props {
+  product: Product;
+}
 
-  const product = products.find((p) => p.id === id);
+const sizes = ['S', 'M', 'L', 'XL'];
+
+export default function ProductDetailsClient({ product }: Props) {
   const { addToCart } = useCart();
   const [selectedImage, setSelectedImage] = useState<'front' | 'back'>('front');
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-
-  if (!product) {
-    return <div className="p-10 text-center text-red-500">Product not found</div>;
-  }
-
-  const sizes = ['S', 'M', 'L', 'XL'];
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -70,7 +35,7 @@ export default function ProductPage() {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product[selectedImage === 'front' ? 'imageFront' : 'imageBack'],
+      image: selectedImage === 'front' ? product.imageFront : product.imageBack,
       quantity: 1,
       size: selectedSize,
     });

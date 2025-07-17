@@ -21,7 +21,6 @@ export async function POST(request: Request) {
 
     console.log(`🔐 Reset password requested for: ${email}`);
 
-    // Check if user exists (maybeSingle avoids error if multiple or none)
     const { data: user, error: userError } = await supabase
       .from('users')
       .select('id')
@@ -29,8 +28,8 @@ export async function POST(request: Request) {
       .maybeSingle();
 
     if (userError) {
-      console.log('ℹ️ User query error (safe ignore):', userError.message);
-      // Don't leak errors, respond with generic message
+      console.log('ℹ️ User query error (safe to ignore):', userError.message);
+      // Intentionally not revealing existence of user for security
       return NextResponse.json({
         message: 'If the email exists, a reset link has been sent.',
       });
@@ -38,16 +37,15 @@ export async function POST(request: Request) {
 
     if (!user) {
       console.log('ℹ️ User not found for email:', email);
+      // Same message regardless of user existence
       return NextResponse.json({
         message: 'If the email exists, a reset link has been sent.',
       });
     }
 
-    // Generate reset token and expiry (1 hour)
     const token = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour expiration
 
-    // Save token to database
     const { error: insertError } = await supabase.from('password_reset_tokens').insert({
       email,
       token,
@@ -60,10 +58,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 
-    // Construct reset URL
     const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password/confirm?token=${token}&email=${encodeURIComponent(email)}`;
 
-    // Send reset email via Resend
     try {
       await resend.emails.send({
         from: 'no-reply@evangelicalthreads.com',
@@ -86,8 +82,12 @@ export async function POST(request: Request) {
     return NextResponse.json({
       message: 'If the email exists, a reset link has been sent.',
     });
-  } catch (error: any) {
-    console.error('Reset password error:', error.message);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Reset password error:', error.message);
+    } else {
+      console.error('Reset password unknown error:', error);
+    }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

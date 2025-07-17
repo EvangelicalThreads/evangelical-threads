@@ -7,16 +7,31 @@ const supabase = createClient(
 );
 
 export async function POST(req: NextRequest) {
-  const { id } = await req.json();
+  try {
+    const { id } = await req.json();
 
-  const { error } = await supabase
-    .from('reflections')
-    .update({ is_approved: true })
-    .eq('id', id);
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Missing reflection id' },
+        { status: 400 }
+      );
+    }
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const { error } = await supabase
+      .from('reflections')
+      .update({ is_approved: true })
+      .eq('id', id);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Approve reflection error:', error);
+    return NextResponse.json(
+      { error: 'Server error' },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({ success: true });
 }

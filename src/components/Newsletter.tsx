@@ -1,11 +1,11 @@
 'use client';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus('loading');
 
@@ -27,7 +27,10 @@ export default function Newsletter() {
     <div className="mt-20 mb-6 px-6 text-center">
       <h2 className="text-xl font-bold mb-2 text-black">Stay Updated</h2>
       <p className="text-gray-600 mb-4 text-sm">Get notified about future drops, restocks, and more.</p>
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto"
+      >
         <input
           type="email"
           name="email"
@@ -46,9 +49,12 @@ export default function Newsletter() {
         </button>
       </form>
 
-      {status === 'success' && <p className="mt-2 text-green-600 font-semibold">You’re subscribed!</p>}
-      {status === 'error' && <p className="mt-2 text-red-600 font-semibold">Something went wrong.</p>}
+      {status === 'success' && (
+        <p className="mt-2 text-green-600 font-semibold">You’re subscribed!</p>
+      )}
+      {status === 'error' && (
+        <p className="mt-2 text-red-600 font-semibold">Something went wrong.</p>
+      )}
     </div>
   );
 }
-

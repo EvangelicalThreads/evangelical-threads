@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 interface Reflection {
   id: string;
@@ -16,25 +16,25 @@ export default function ReflectionFeed({ shirtCode }: ReflectionFeedProps) {
   const [reflections, setReflections] = useState<Reflection[]>([]);
   const [loading, setLoading] = useState(false);
 
-  async function fetchReflections() {
+  const fetchReflections = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch(`/api/reflections/${shirtCode}`);
       const data = await res.json();
       setReflections(data.reflections || []);
     } catch {
-      // Handle errors silently or show message if you want
+      // Optionally handle errors here
     } finally {
       setLoading(false);
     }
-  }
+  }, [shirtCode]);
 
   useEffect(() => {
     fetchReflections();
 
-    const interval = setInterval(fetchReflections, 10000); // refresh every 10 seconds
+    const interval = setInterval(fetchReflections, 10000); // Refresh every 10 seconds
     return () => clearInterval(interval);
-  }, [shirtCode]);
+  }, [fetchReflections]);
 
   return (
     <div>

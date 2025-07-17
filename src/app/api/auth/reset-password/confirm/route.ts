@@ -9,8 +9,7 @@ const supabase = createClient(
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { token, email, newPassword } = body;
+    const { token, email, newPassword } = await req.json();
 
     if (!token || !email || !newPassword) {
       console.log('Missing values:', { token, email, newPassword });
@@ -20,7 +19,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verify the token exists and is valid
+    // Verify token exists and is unused and valid
     const { data: tokenRow, error: tokenError } = await supabase
       .from('password_reset_tokens')
       .select('*')
@@ -43,7 +42,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Hash the password
+    // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     const { error: updateError } = await supabase
@@ -66,10 +65,17 @@ export async function POST(req: NextRequest) {
       .eq('token', token);
 
     return NextResponse.json({ message: 'Password updated successfully!' });
-  } catch (error: any) {
-    console.error('Reset password error:', error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Reset password error:', error);
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+    console.error('Reset password unknown error:', error);
     return NextResponse.json(
-      { error: error.message || 'Server error' },
+      { error: 'Server error' },
       { status: 500 }
     );
   }

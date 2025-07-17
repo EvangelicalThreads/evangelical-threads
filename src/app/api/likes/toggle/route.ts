@@ -1,44 +1,48 @@
-// /app/api/likes/toggle/route.ts (or your Next.js API file)
 import { NextResponse } from "next/server";
+import { supabaseAdmin } from "@/lib/supabaseServer";
 import { getAuthSession } from "@/lib/getAuthSession";
-import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   const session = await getAuthSession();
 
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const { reflectionId } = await req.json();
+  const { reflectionId } = await request.json();
+  const userId = session.user.id;
 
-  if (!reflectionId) {
-    return NextResponse.json({ error: "Missing reflectionId" }, { status: 400 });
-  }
-
-  // Check if user already liked this reflection
-  const { data: existingLike } = await supabase
+  const { data: existingLike, error: fetchError } = await supabaseAdmin
     .from("reflection_likes")
     .select("id")
-    .eq("user_id", session.user.id)
+    .eq("user_id", userId)
     .eq("reflection_id", reflectionId)
     .maybeSingle();
 
-  if (existingLike) {
-    // Unlike
-    await supabase.from("reflection_likes").delete().eq("id", existingLike.id);
-  } else {
-    // Like
-    await supabase.from("reflection_likes").insert({
-      user_id: session.user.id,
-      reflection_id: reflectionId,
-    });
+  if (fetchError) {
+    return NextResponse.json({ error: "Could not fetch like" }, { status: 500 });
   }
 
-  return NextResponse.json({ liked: !existingLike });
+  if (existingLike) {
+    const { error: deleteError } = await supabaseAdmin
+      .from("reflection_likes")
+      .delete()
+      .eq("id", existingLike.id);
+
+    if (deleteError) {
+      return NextResponse.json({ error: "Could not remove like" }, { status: 500 });
+    }
+
+    return NextResponse.json({ liked: false });
+  } else {
+    const { error: insertError } = await supabaseAdmin
+      .from("reflection_likes")
+      .insert({ user_id: userId, reflection_id: reflectionId });
+
+    if (insertError) {
+      return NextResponse.json({ error: "Could not add like" }, { status: 500 });
+    }
+
+    return NextResponse.json({ liked: true });
+  }
 }

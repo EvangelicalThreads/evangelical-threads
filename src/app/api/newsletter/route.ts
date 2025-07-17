@@ -16,7 +16,7 @@ export async function POST(req: Request) {
       update: { emailOptIn: true },
       create: {
         email,
-        password: 'placeholder', // Required field workaround — won’t be used
+        password: 'placeholder', // Required field workaround — not used for auth
         name: '',
         emailOptIn: true,
       },

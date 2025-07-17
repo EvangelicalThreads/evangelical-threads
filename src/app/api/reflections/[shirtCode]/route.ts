@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { Filter } from 'bad-words';
+import {Filter} from 'bad-words';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -8,6 +8,24 @@ const supabase = createClient(
 );
 
 const filter = new Filter();
+
+interface ContextWithParams {
+  params: {
+    shirtCode: string;
+  };
+}
+
+// Type guard to validate context shape without using 'any'
+function isContextWithParams(obj: unknown): obj is ContextWithParams {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'params' in obj &&
+    typeof (obj as ContextWithParams).params === 'object' &&
+    (obj as ContextWithParams).params !== null &&
+    typeof (obj as ContextWithParams).params.shirtCode === 'string'
+  );
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,12 +70,16 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(
-  req: NextRequest,
-  context: { params: Promise<{ shirtCode: string }> }
-) {
+export async function GET(req: NextRequest, context: unknown) {
   try {
-    const { shirtCode } = await context.params;
+    if (!isContextWithParams(context)) {
+      return NextResponse.json(
+        { error: 'Missing or invalid shirtCode parameter' },
+        { status: 400 }
+      );
+    }
+
+    const { shirtCode } = context.params;
 
     const { data, error } = await supabase
       .from('reflections')

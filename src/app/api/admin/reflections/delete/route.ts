@@ -10,8 +10,6 @@ export async function POST(req: NextRequest) {
   try {
     const { id } = await req.json();
 
-    console.log('🗑️ Received delete request for ID:', id); // ✅ Log request
-
     if (!id) {
       return NextResponse.json({ error: 'Missing id' }, { status: 400 });
     }
@@ -19,14 +17,18 @@ export async function POST(req: NextRequest) {
     const { error } = await supabase.from('reflections').delete().eq('id', id);
 
     if (error) {
-      console.error('❌ Supabase delete error:', error.message); // ✅ Log any DB error
+      console.error('Supabase delete error:', error.message);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    console.log('✅ Successfully deleted reflection with ID:', id); // ✅ Confirm deletion
     return NextResponse.json({ success: true });
-  } catch (err: any) {
-    console.error('❌ Server error in delete:', err.message); // ✅ Log unknown server error
-    return NextResponse.json({ error: err.message || 'Server error' }, { status: 500 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error('Server error in delete:', err.message);
+      return NextResponse.json({ error: err.message }, { status: 500 });
+    } else {
+      console.error('Unknown server error in delete:', err);
+      return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    }
   }
 }

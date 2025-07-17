@@ -19,10 +19,10 @@ export async function GET() {
     }
 
     return NextResponse.json({ reflections: data });
-  } catch (err: any) {
-    return NextResponse.json(
-      { error: err.message || 'Server error' },
-      { status: 500 }
-    );
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return NextResponse.json({ error: err.message }, { status: 500 });
+    }
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

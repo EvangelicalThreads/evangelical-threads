@@ -1,16 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { FaInstagram, FaTiktok } from "react-icons/fa";
 import Newsletter from '../../components/Newsletter';
 
 export default function ReviewsPage() {
-  const [email, setEmail] = useState("");
-
-  function handleSubscribe() {
-    alert(`Thanks for subscribing with ${email}!`);
-    setEmail("");
-  }
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-12">
@@ -25,7 +18,7 @@ export default function ReviewsPage() {
         </p>
       </div>
      
-     <Newsletter />
+      <Newsletter />
 
       {/* Social Links */}
       <div className="text-center mb-12">

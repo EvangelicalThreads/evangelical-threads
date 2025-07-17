@@ -5,6 +5,10 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { HeartIcon as OutlineHeartIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as SolidHeartIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
+import Image from "next/image";
+
+import AnimatedStitchGreeting from "@/components/AnimatedStitchGreeting";
 
 interface Reflection {
   id: string;
@@ -20,8 +24,11 @@ export default function QRPage() {
   const [likedMap, setLikedMap] = useState<{ [id: string]: boolean }>({});
   const [newReflection, setNewReflection] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [showReflections, setShowReflections] = useState(false);
 
   useEffect(() => {
+    if (!showReflections) return;
+
     async function fetchReflections() {
       try {
         const res = await fetch(`/api/reflections/${shirtCode}`);
@@ -57,7 +64,7 @@ export default function QRPage() {
       }
     }
     fetchReflections();
-  }, [shirtCode, session?.user?.id]);
+  }, [shirtCode, session?.user?.id, showReflections]);
 
   async function toggleLike(reflectionId: string) {
     const wasLiked = likedMap[reflectionId];
@@ -101,108 +108,171 @@ export default function QRPage() {
     }
   }
 
+  if (!session?.user) {
+    return (
+      <div className="max-w-xl mx-auto p-8 text-center font-sans text-gray-900">
+        <h2 className="text-2xl font-semibold mb-6" style={{ color: "#D4AF37" }}>
+          Let’s Unlock Your Message
+        </h2>
+
+        <div className="space-y-8 text-left max-w-md mx-auto text-base leading-relaxed text-gray-700">
+          <div className="flex items-start gap-3">
+            <span className="text-lg font-bold text-[#D4AF37]">1.</span>
+            <div>
+              <p className="text-lg font-medium">
+                <Link
+                  href="/login"
+                  className="underline font-semibold text-[#D4AF37] hover:text-[#b8932f] transition-colors"
+                >
+                  Log in
+                </Link>{" "}
+                to your account
+              </p>
+              <p className="mt-1">
+                Don’t have one?{" "}
+                <Link
+                  href="/login"
+                  className="font-semibold underline text-[#D4AF37] hover:text-yellow-700 transition"
+                >
+                  Sign up here
+                </Link>{" "}
+                — it only takes a moment.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <span className="text-lg font-bold text-[#D4AF37]">2.</span>
+            <div>
+              <p className="text-lg font-medium">Scan your shirt’s QR code again</p>
+              <p className="mt-1">
+                After logging in, simply re-scan your shirt’s QR code and your personalized verse will appear.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <p className="mt-8 text-[#D4AF37] font-semibold">
+          Your reflection is one scan away.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto p-8 font-sans text-gray-900">
-      {/* Top section: split left/right */}
-      <div className="flex flex-col md:flex-row gap-12 md:gap-24 mb-12 items-start">
-        {/* Left side */}
-        <div className="md:w-1/2">
-         <h2
-  className="text-4xl font-extrabold mb-8"
-  style={{
-    color: "#D4AF37",
-    textShadow:
-      "0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.6)",
-    lineHeight: 1.1,
-  }}
->
-  Thank you for your purchase!
-</h2>
-          <img
-            src="/products/70x7-back.png"
-            alt="Seventy Times Seven Shirt Back"
-            className="rounded-xl shadow-xl w-full max-w-sm object-contain"
-          />
-        </div>
+      <AnimatedStitchGreeting
+        name={session.user.name || "Friend"}
+        onComplete={() => setShowReflections(true)}
+      />
 
-        {/* Right side */}
-        <div className="md:w-1/2 flex flex-col">
-          <p className="mb-6 italic text-lg text-gray-700 leading-relaxed border-l-4 border-[#D4AF37] pl-4">
-            <strong>The Parable of the Unmerciful Servant</strong>
-            <br />
-            Peter asked Jesus, “Lord, how many times shall I forgive my brother or
-            sister? Up to seven times?”
-            <br />
-            Jesus answered, “Not seven times, but seventy-seven times.”
-            <br />
-            <br />
-            Inspired by this, write a reflection on grace, mercy, or forgiveness.
-          </p>
-
-          <form onSubmit={handleSubmit} className="flex flex-col">
-            <textarea
-              className="w-full border border-[#D4AF37] rounded-lg p-4 mb-4 resize-none shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] placeholder:text-gray-400"
-              placeholder="Write your reflection here..."
-              maxLength={150}
-              value={newReflection}
-              onChange={(e) => setNewReflection(e.target.value)}
-              rows={5}
-              required
-            />
-            <button
-              type="submit"
-              className="inline-block self-start px-8 py-3 border border-[#D4AF37] text-[#D4AF37] rounded-lg hover:bg-[#D4AF37] hover:text-white transition font-semibold shadow-md"
-            >
-              Submit Reflection
-            </button>
-            {successMessage && (
-              <p className="mt-4 text-black font-semibold text-lg">
-                {successMessage}
-              </p>
-            )}
-          </form>
-        </div>
-      </div>
-
-      {/* Reflections list */}
-      <section>
-        <h3 className="text-3xl font-bold mb-8 border-b border-gray-300 pb-2">
-          Reflections
-        </h3>
-        <ul className="space-y-6">
-          {reflections.length === 0 ? (
-            <p className="text-gray-500 italic">No reflections yet. Be the first!</p>
-          ) : (
-            reflections.map((r) => (
-              <li
-                key={r.id}
-                className="bg-gray-100 p-6 rounded-xl shadow-md flex justify-between items-start"
+      {showReflections && (
+        <>
+          {/* Top section: split left/right */}
+          <div className="flex flex-col md:flex-row gap-12 md:gap-24 mb-12 items-start">
+            {/* Left side */}
+            <div className="md:w-1/2">
+              <h2
+                className="text-4xl font-extrabold mb-8"
+                style={{
+                  color: "#D4AF37",
+                  textShadow:
+                    "0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.6)",
+                  lineHeight: 1.1,
+                }}
               >
-                <div className="max-w-[85%]">
-                  <p className="text-gray-900">{r.text}</p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {new Date(r.created_at).toLocaleString()}
-                  </p>
-                </div>
+                Thank you for your purchase!
+              </h2>
+              <Image
+                src="/products/70x7-back.png"
+                alt="Seventy Times Seven Shirt Back"
+                className="rounded-xl shadow-xl w-full max-w-sm object-contain"
+                width={500}
+                height={500}
+                priority={true}
+              />
+            </div>
+
+            {/* Right side */}
+            <div className="md:w-1/2 flex flex-col">
+              <p className="mb-6 italic text-lg text-gray-700 leading-relaxed border-l-4 border-[#D4AF37] pl-4">
+                <strong>The Parable of the Unmerciful Servant</strong>
+                <br />
+                Peter asked Jesus, “Lord, how many times shall I forgive my brother or
+                sister? Up to seven times?”
+                <br />
+                Jesus answered, “Not seven times, but seventy-seven times.”
+                <br />
+                <br />
+                Inspired by this, write a reflection on grace, mercy, or forgiveness.
+              </p>
+
+              <form onSubmit={handleSubmit} className="flex flex-col">
+                <textarea
+                  className="w-full border border-[#D4AF37] rounded-lg p-4 mb-4 resize-none shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] placeholder:text-gray-400"
+                  placeholder="Write your reflection here..."
+                  maxLength={150}
+                  value={newReflection}
+                  onChange={(e) => setNewReflection(e.target.value)}
+                  rows={5}
+                  required
+                />
                 <button
-                  onClick={() => toggleLike(r.id)}
-                  aria-pressed={likedMap[r.id]}
-                  aria-label={
-                    likedMap[r.id] ? "Unlike reflection" : "Like reflection"
-                  }
-                  className="flex items-center gap-1 ml-6 focus:outline-none"
+                  type="submit"
+                  className="inline-block self-start px-8 py-3 border border-[#D4AF37] text-[#D4AF37] rounded-lg hover:bg-[#D4AF37] hover:text-white transition font-semibold shadow-md"
                 >
-                  {likedMap[r.id] ? (
-                    <SolidHeartIcon className="h-7 w-7 text-pink-500" />
-                  ) : (
-                    <OutlineHeartIcon className="h-7 w-7 text-gray-400" />
-                  )}
+                  Submit Reflection
                 </button>
-              </li>
-            ))
-          )}
-        </ul>
-      </section>
+                {successMessage && (
+                  <p className="mt-4 text-black font-semibold text-lg">
+                    {successMessage}
+                  </p>
+                )}
+              </form>
+            </div>
+          </div>
+
+          {/* Reflections list */}
+          <section>
+            <h3 className="text-3xl font-bold mb-8 border-b border-gray-300 pb-2">
+              Reflections
+            </h3>
+            <ul className="space-y-6">
+              {reflections.length === 0 ? (
+                <p className="text-gray-500 italic">No reflections yet. Be the first!</p>
+              ) : (
+                reflections.map((r) => (
+                  <li
+                    key={r.id}
+                    className="bg-gray-100 p-6 rounded-xl shadow-md flex justify-between items-start"
+                  >
+                    <div className="max-w-[85%]">
+                      <p className="text-gray-900">{r.text}</p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {new Date(r.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => toggleLike(r.id)}
+                      aria-pressed={likedMap[r.id]}
+                      aria-label={
+                        likedMap[r.id] ? "Unlike reflection" : "Like reflection"
+                      }
+                      className="flex items-center gap-1 ml-6 focus:outline-none"
+                    >
+                      {likedMap[r.id] ? (
+                        <SolidHeartIcon className="h-7 w-7 text-pink-500" />
+                      ) : (
+                        <OutlineHeartIcon className="h-7 w-7 text-gray-400" />
+                      )}
+                    </button>
+                  </li>
+                ))
+              )}
+            </ul>
+          </section>
+        </>
+      )}
     </div>
   );
 }

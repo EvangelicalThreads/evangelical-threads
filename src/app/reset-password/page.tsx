@@ -31,8 +31,12 @@ export default function ResetPasswordPage() {
       }
 
       setMessage(data.message || 'If your email is registered, a reset link has been sent.');
-    } catch (err: any) {
-      setError(err.message || 'Unexpected error');
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message || 'Unexpected error');
+      } else {
+        setError('Unexpected error');
+      }
     } finally {
       setLoading(false);
     }

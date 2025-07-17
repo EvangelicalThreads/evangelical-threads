@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import Image from "next/image";
 import { FaInstagram, FaTiktok } from "react-icons/fa";
 import Newsletter from '../../components/Newsletter';
-
 
 type Product = {
   id: string;
@@ -46,13 +45,6 @@ const products: Product[] = [
 ];
 
 export default function ShopPage() {
-  const [email, setEmail] = useState("");
-
-  const handleSubscribe = () => {
-    console.log("Subscribed with:", email);
-    setEmail("");
-  };
-
   return (
     <main className="max-w-6xl mx-auto p-8">
       <h1 className="text-4xl font-bold mb-12 text-center tracking-tight">Shop</h1>
@@ -65,15 +57,19 @@ export default function ShopPage() {
           >
             <Link href={`/shop/${product.id}`} className="block">
               <div className="relative w-full h-80 overflow-hidden rounded-lg mb-4">
-                <img
+                <Image
                   src={product.imageFront}
                   alt={`${product.name} Front`}
-                  className="absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  layout="fill"
+                  objectFit="cover"
+                  className="transition-opacity duration-300 group-hover:opacity-0 rounded-lg"
                 />
-                <img
+                <Image
                   src={product.imageBack}
                   alt={`${product.name} Back`}
-                  className="absolute top-0 left-0 w-full h-full object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  layout="fill"
+                  objectFit="cover"
+                  className="opacity-0 transition-opacity duration-300 group-hover:opacity-100 rounded-lg"
                 />
               </div>
             </Link>
@@ -91,10 +87,9 @@ export default function ShopPage() {
           </div>
         ))}
       </div>
-    
+
       <Newsletter />
 
-      {/* Social Links */}
       <div className="text-center mb-12">
         <h3 className="text-lg font-semibold text-black mb-2">Join the community!!</h3>
         <div className="flex justify-center gap-6 text-black text-2xl">
