@@ -70,10 +70,10 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto flex items-center justify-between h-14 px-4">
         <Link href="/" className="flex items-center gap-2 min-w-0">
           <Image
-            src="/logo-nav.svg"
+            src="/logo-nav.png"
             alt="Evangelical Threads Logo"
-            width={50}
-            height={45}
+            width={27}
+            height={27}
             className="object-contain"
             draggable={false}
           />

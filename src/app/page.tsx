@@ -123,7 +123,7 @@ export default function HomePage() {
       <div className="bg-white min-h-screen flex flex-col relative overflow-hidden">
         {!hideSmallLogo && (
           <div className="absolute top-[12%] md:top-[18%] left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2">
-            <Image src="/small-logo.svg" alt="Small Logo" width={120} height={60} priority />
+            <Image src="/small-logo.png" alt="Small Logo" width={95} height={60} priority />
           </div>
         )}
 
