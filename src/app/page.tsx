@@ -136,17 +136,20 @@ export default function HomePage() {
             style={{ transform: 'translateY(-50%)' }}
           />
         )}
+<div className="w-full overflow-hidden relative z-40">
+  <motion.div
+    initial={{ x: '100%' }}
+    animate={{ x: '-100%' }}
+    transition={{ repeat: Infinity, ease: 'linear', duration: 10 }}
+    className="whitespace-nowrap text-white py-2 text-sm font-semibold flex w-max bg-black"
+  >
+    <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
+    <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
+    <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
+    <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
+  </motion.div>
+</div>
 
-        <motion.div
-          initial={{ x: '100%' }}
-          animate={{ x: '-100%' }}
-          transition={{ repeat: Infinity, ease: 'linear', duration: 10 }}
-          className="w-full whitespace-nowrap bg-black text-white py-2 text-sm font-semibold overflow-hidden z-40"
-        >
-          <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
-          <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
-          <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
-        </motion.div>
 
         <main className="flex flex-1 max-w-[1200px] mx-auto p-8 gap-20 relative items-start w-full">
           <motion.div
