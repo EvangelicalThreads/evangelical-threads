@@ -148,8 +148,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-white px-6 text-gray-900 relative">
-      <h1 className="text-4xl font-serif font-extrabold pt-20 mb-2">
+    <div className="min-h-screen flex flex-col items-center justify-start sm:justify-center bg-white px-6 text-gray-900 pt-10 sm:pt-0 relative">
+  <h1 className="text-4xl font-serif font-extrabold mb-2 mt-10 sm:mt-0">
         {mode === 'signin' ? 'Sign In' : 'Sign Up'}
       </h1>
 
