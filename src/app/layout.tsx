@@ -23,7 +23,7 @@ export default function RootLayout({ children, session }: RootLayoutProps) {
 
   return (
     <html lang="en">
-      <body>
+      <body className="min-h-screen overflow-x-hidden">
         <SessionProvider session={session}>
           <CartProvider>
             <Navbar />
