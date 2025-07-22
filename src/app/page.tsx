@@ -223,7 +223,7 @@ export default function HomePage() {
             <Link
               key={idx}
               href={model.link}
-              className="relative w-64 h-96 group overflow-hidden rounded-2xl shadow-md block"
+              className="relative w-64 sm:w-72 md:w-80 lg:w-[22rem] xl:w-[24rem] h-[24rem] md:h-[26rem] lg:h-[28rem] group overflow-hidden rounded-2xl shadow-md block"
             >
               <Image
                 src={model.src}
