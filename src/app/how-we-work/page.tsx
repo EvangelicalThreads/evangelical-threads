@@ -14,7 +14,7 @@ export default function HowWeWorkPage() {
   };
 
   return (
-    <main className="min-h-screen max-w-4xl mx-auto px-6 py-12 relative bg-white text-black overflow-x-hidden">
+    <main className="min-h-screen max-w-4xl mx-auto px-6 pt-12 pb-32 relative bg-white text-black overflow-x-hidden">
       {/* Gold glow blur circle */}
       <div className="pointer-events-none absolute bottom-[-100px] right-[-100px] w-72 h-72 bg-gradient-to-bl from-[#D4AF37]/15 via-transparent to-transparent rounded-full filter blur-2xl animate-pulse animation-delay-2000" />
 
