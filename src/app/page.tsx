@@ -279,7 +279,9 @@ export default function HomePage() {
             className="scroll-popup-container"
           />
         )}
-      </div>
+      {/* Spacer to prevent overlap on mobile */}
+<div className="block sm:hidden h-24" />
+</div>
     </>
   );
 }
