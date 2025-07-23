@@ -8,14 +8,14 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email         String   @unique
+  email         String    @unique
   name          String?
   password      String
+  emailOptIn    Boolean   @default(false)
+  createdAt     DateTime  @default(now())
   emailVerified DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
-  emailOptIn    Boolean  @default(false)
+  updatedAt     DateTime  @default(now()) @updatedAt
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
   @@map("users")
 }
