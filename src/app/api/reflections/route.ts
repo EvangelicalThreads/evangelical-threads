@@ -1,13 +1,62 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { Filter } from "bad-words";  // <--- FIXED import here
+import { Filter } from "bad-words";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const filter = new Filter();  // <--- instantiate the Filter class
+const filter = new Filter();
+
+// Whitelist important faith-related words to prevent them from being censored
+const whitelist = [
+  "god",
+  "God",
+  "GOD",
+  "jesus",
+  "Jesus",
+  "JESUS",
+  "christ",
+  "Christ",
+  "CHRIST",
+  "holy",
+  "Holy",
+  "HOLY",
+  "spirit",
+  "Spirit",
+  "SPIRIT",
+  "faith",
+  "Faith",
+  "FAITH",
+  "lord",
+  "Lord",
+  "LORD",
+  "bible",
+  "Bible",
+  "BIBLE",
+  "pray",
+  "Pray",
+  "PRAY",
+  "amen",
+  "Amen",
+  "AMEN",
+  "angel",
+  "Angel",
+  "ANGEL",
+  "church",
+  "Church",
+  "CHURCH",
+  "peace",
+  "Peace",
+  "PEACE",
+  "love",
+  "Love",
+  "LOVE",
+];
+
+// Remove each from the filter's blacklist
+whitelist.forEach(word => filter.removeWords(word));
 
 export async function POST(req: NextRequest) {
   try {
