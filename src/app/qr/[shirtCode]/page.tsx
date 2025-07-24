@@ -16,9 +16,50 @@ interface Reflection {
   created_at: string;
 }
 
+const shirtData: Record<string, {
+  verse: { reference: string; text: string };
+  imageSrc: string;
+  prompt: string;
+}> = {
+  seventytimesseven: {
+    verse: {
+      reference: 'Matthew 18:22',
+      text: 'Jesus answered, “I tell you, not seven times, but seventy-seven times.”',
+    },
+    imageSrc: '/products/70x7-back.png',
+    prompt: 'Inspired by this, write a reflection on grace, mercy, or forgiveness.',
+  },
+  goldjacket: {
+    verse: {
+      reference: 'Song of Songs 4:7',
+      text: 'You are altogether beautiful, my darling; there is no flaw in you.',
+    },
+    imageSrc: '/products/gold-jacket-front.png',
+    prompt: 'You’re wrapped in worth the world can’t measure. What’s one truth about your identity that you’re holding onto today?',
+  },
+  evathawhite: {
+    verse: {
+      reference: 'Psalm 51:10',
+      text: 'Create in me a clean heart, O God, and renew a right spirit within me.',
+    },
+    imageSrc: '/products/eva-tha-white-front.png',
+    prompt: 'Purity isn’t about perfection — it’s about intention. Where is God calling you to show up with a clean heart?',
+  },
+  evathashirt: {
+    verse: {
+      reference: 'Matthew 5:14',
+      text: 'You are the light of the world. A city set on a hill cannot be hidden.',
+    },
+    imageSrc: '/products/eva-tha-front.png',
+    prompt: 'Even when you feel unseen, your light is doing more than you think. Where have you been called to shine lately?',
+  },
+};
+
 export default function QRPage() {
   const { shirtCode } = useParams();
   const { data: session } = useSession();
+
+  const shirt = shirtData[shirtCode as string];
 
   const [reflections, setReflections] = useState<Reflection[]>([]);
   const [likedMap, setLikedMap] = useState<{ [id: string]: boolean }>({});
@@ -159,6 +200,10 @@ export default function QRPage() {
     );
   }
 
+  if (!shirt) {
+    return <p className="text-center mt-20 text-lg text-red-500">Invalid shirt code.</p>;
+  }
+
   return (
     <div className="max-w-6xl mx-auto p-8 font-sans text-gray-900">
       <AnimatedStitchGreeting
@@ -184,8 +229,8 @@ export default function QRPage() {
                 Thank you for your purchase!
               </h2>
               <Image
-                src="/products/70x7-back.png"
-                alt="Seventy Times Seven Shirt Back"
+                src={shirt.imageSrc}
+                alt="Shirt"
                 className="rounded-xl shadow-xl w-full max-w-sm object-contain"
                 width={500}
                 height={500}
@@ -196,15 +241,12 @@ export default function QRPage() {
             {/* Right side */}
             <div className="md:w-1/2 flex flex-col">
               <p className="mb-6 italic text-lg text-gray-700 leading-relaxed border-l-4 border-[#D4AF37] pl-4">
-                <strong>The Parable of the Unmerciful Servant</strong>
+                <strong>{shirt.verse.reference}</strong>
                 <br />
-                Peter asked Jesus, “Lord, how many times shall I forgive my brother or
-                sister? Up to seven times?”
-                <br />
-                Jesus answered, “Not seven times, but seventy-seven times.”
+                {shirt.verse.text}
                 <br />
                 <br />
-                Inspired by this, write a reflection on grace, mercy, or forgiveness.
+                {shirt.prompt}
               </p>
 
               <form onSubmit={handleSubmit} className="flex flex-col">
