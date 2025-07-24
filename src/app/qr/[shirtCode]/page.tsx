@@ -52,6 +52,7 @@ const shirtData: Record<string, {
     },
     imageSrc: '/products/eva-tha-front.png',
     prompt: 'Even when you feel unseen, your light is doing more than you think. Where have you been called to shine lately?',
+
   },
 };
 
@@ -212,7 +213,7 @@ export default function QRPage() {
       />
 
       {showReflections && (
-        <>
+        <div className="animate-fadeIn">
           {/* Top section: split left/right */}
           <div className="flex flex-col md:flex-row gap-12 md:gap-24 mb-12 items-start">
             {/* Left side */}
@@ -313,8 +314,22 @@ export default function QRPage() {
               )}
             </ul>
           </section>
-        </>
+        </div>
       )}
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fadeIn {
+          opacity: 0;
+          animation-name: fadeIn;
+          animation-duration: 0.8s;
+          animation-fill-mode: forwards;
+          animation-timing-function: ease-in;
+        }
+      `}</style>
     </div>
   );
 }

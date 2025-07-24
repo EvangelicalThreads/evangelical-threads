@@ -23,7 +23,7 @@ export default function AnimatedStitchGreeting({ name, onComplete }: AnimatedSti
   }, [onComplete]);
 
   return (
-    <div className="max-w-xl mx-auto mb-12 text-center select-none relative" style={{height: 100}}>
+    <div className="max-w-xl mx-auto mb-12 text-center select-none relative" style={{ height: 100 }}>
       <svg
         width="100%"
         height="100"
@@ -47,6 +47,7 @@ export default function AnimatedStitchGreeting({ name, onComplete }: AnimatedSti
             strokeDasharray: 600,
             strokeDashoffset: animationDone ? 0 : 600,
             animation: "dash 4s linear forwards",
+            textShadow: "0 0 6px rgba(212, 175, 55, 0.8)",
           }}
         >
           {`Welcome, ${name}`}
@@ -58,7 +59,7 @@ export default function AnimatedStitchGreeting({ name, onComplete }: AnimatedSti
           fill="#D4AF37"
           style={{
             transformOrigin: "center",
-            animation: animationDone ? "none" : "needleMove 4s linear forwards",
+            animation: animationDone ? "none" : "needleMove 4s cubic-bezier(0.4, 0, 0.2, 1) forwards",
           }}
         >
           <animateMotion dur="4s" fill="freeze" path={`M0,50 H600`} />
