@@ -8,26 +8,32 @@ export default function PrivacyPage() {
         help you shop, stay logged in, and receive updates — nothing more.
       </p>
 
-      <h2 className="text-lg font-semibold mt-8 mb-2">What We Use</h2>
-      <ul className="list-disc ml-5 space-y-2">
+      <h2 className="text-lg font-semibold mt-8 mb-3">What We Use</h2>
+      <ul className="list-disc ml-6 space-y-2">
         <li><strong>Essential cookies</strong> to keep items in your cart and manage login sessions.</li>
         <li><strong>Optional analytics</strong> (like page views) to help us improve — but only if you opt in.</li>
       </ul>
 
-      <h2 className="text-lg font-semibold mt-8 mb-2">We Don’t</h2>
-      <ul className="list-disc ml-5 space-y-2">
+      <h2 className="text-lg font-semibold mt-8 mb-3">We Don’t</h2>
+      <ul className="list-disc ml-6 space-y-2">
         <li>Track you across other websites.</li>
         <li>Sell or share your data with advertisers.</li>
         <li>Store sensitive information like payment details ourselves.</li>
       </ul>
 
-      <h2 className="text-lg font-semibold mt-8 mb-2">Your Choices</h2>
+      <h2 className="text-lg font-semibold mt-8 mb-3">Your Choices</h2>
       <p className="mb-4">
         You can clear cookies at any time from your browser. If we ever use optional cookies, we’ll always ask first.
       </p>
 
-      <p className="mt-8">
-        Questions? Reach us at <a href="evangelicalthreads@gmail.com" className="underline text-emerald-600">support@evangelicalthreads.com</a>.
+      <p className="mt-10">
+        Questions? Reach us at{' '}
+        <a
+          href="mailto:evangelicalthreads@gmail.com"
+          className="underline text-emerald-600 hover:text-emerald-800 transition-colors duration-200"
+        >
+          evangelicalthreads@gmail.com
+        </a>.
       </p>
     </div>
   );

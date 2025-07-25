@@ -50,17 +50,17 @@ export default function RootLayout({ children, session }: RootLayoutProps) {
         <Toaster position="top-center" />
 
         {showCookieBanner && (
-          <div className="fixed bottom-0 w-full bg-neutral-900 text-white text-sm px-4 py-3 flex justify-between items-center z-50 shadow-md">
+          <div className="fixed bottom-0 w-full bg-[#D4AF37] text-black text-sm px-4 py-3 flex justify-between items-center z-50 shadow-md">
             <span>
               We use essential cookies to keep your cart and login sessions active and
               improve your experience.{' '}
-              <a href="/privacy" className="underline text-emerald-400 hover:text-emerald-300">
+              <a href="/privacy" className="underline text-black hover:text-gray-800">
                 Privacy Policy
               </a>
             </span>
             <button
               onClick={acceptCookies}
-              className="ml-4 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded"
+              className="ml-4 bg-black hover:bg-gray-800 text-[#D4AF37] px-3 py-1 rounded font-semibold"
             >
               Accept
             </button>

@@ -124,6 +124,7 @@ export default function Navbar() {
           </div>
 
           <Link href="/reviews" className="hover:underline">Reviews</Link>
+          <Link href="/privacy" className="hover:underline">Privacy</Link>
           <Link href="/checkout" className="hover:underline font-semibold">Checkout</Link>
           <Link href="/login" className="hover:underline flex items-center">
             <User className="w-5 h-5" />
@@ -362,11 +363,12 @@ export default function Navbar() {
           <button onClick={() => setMenuOpen(false)} className="absolute top-4 right-4 text-2xl font-bold text-gray-600 hover:text-black">×</button>
           <Link href="/" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">Home</Link>
           <Link href="/shop" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">Shop</Link>
+          <Link href="/checkout" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">Checkout</Link>
+          <Link href="/about" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">About Us</Link>
           <Link href="/how-we-work" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">How We Work</Link>
           <Link href="/faq" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">FAQ</Link>
-          <Link href="/about" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">About Us</Link>
           <Link href="/reviews" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">Reviews</Link>
-          <Link href="/checkout" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">Checkout</Link>
+          <Link href="/privacy" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">Privacy</Link>
         </div>
       </div>
     </nav>
