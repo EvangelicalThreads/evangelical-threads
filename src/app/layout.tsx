@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import Navbar from '../components/Navbar';
 import ScrollPopup from '../components/ScrollPopup';
 import { CartProvider } from '../context/CartContext';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -16,9 +16,20 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children, session }: RootLayoutProps) {
   const [scrollVisible, setScrollVisible] = useState(false);
+  const [showCookieBanner, setShowCookieBanner] = useState(false);
+
+  useEffect(() => {
+    const accepted = localStorage.getItem('cookieAccepted');
+    if (!accepted) setShowCookieBanner(true);
+  }, []);
 
   const handleScrollClose = () => {
     setScrollVisible(false);
+  };
+
+  const acceptCookies = () => {
+    localStorage.setItem('cookieAccepted', 'true');
+    setShowCookieBanner(false);
   };
 
   return (
@@ -35,7 +46,26 @@ export default function RootLayout({ children, session }: RootLayoutProps) {
             {children}
           </CartProvider>
         </SessionProvider>
+
         <Toaster position="top-center" />
+
+        {showCookieBanner && (
+          <div className="fixed bottom-0 w-full bg-neutral-900 text-white text-sm px-4 py-3 flex justify-between items-center z-50 shadow-md">
+            <span>
+              We use essential cookies to keep your cart and login sessions active and
+              improve your experience.{' '}
+              <a href="/privacy" className="underline text-emerald-400 hover:text-emerald-300">
+                Privacy Policy
+              </a>
+            </span>
+            <button
+              onClick={acceptCookies}
+              className="ml-4 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded"
+            >
+              Accept
+            </button>
+          </div>
+        )}
       </body>
     </html>
   );
