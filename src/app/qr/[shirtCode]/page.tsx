@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { HeartIcon as OutlineHeartIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as SolidHeartIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
@@ -16,48 +16,51 @@ interface Reflection {
   created_at: string;
 }
 
-const shirtData: Record<string, {
-  verse: { reference: string; text: string };
-  imageSrc: string;
-  prompt: string;
-}> = {
-  seventytimesseven: {
-    verse: {
-      reference: 'Matthew 18:22',
-      text: 'Jesus answered, “I tell you, not seven times, but seventy-seven times.”',
-    },
-    imageSrc: '/products/70x7-back.png',
-    prompt: 'Inspired by this, write a reflection on grace, mercy, or forgiveness.',
-  },
-  goldjacket: {
-    verse: {
-      reference: 'Song of Songs 4:7',
-      text: 'You are altogether beautiful, my darling; there is no flaw in you.',
-    },
-    imageSrc: '/products/gold-jacket-front.png',
-    prompt: 'You’re wrapped in worth the world can’t measure. What’s one truth about your identity that you’re holding onto today?',
-  },
-  evathawhite: {
-    verse: {
-      reference: 'Psalm 51:10',
-      text: 'Create in me a clean heart, O God, and renew a right spirit within me.',
-    },
-    imageSrc: '/products/eva-tha-white-front.png',
-    prompt: 'Purity isn’t about perfection — it’s about intention. Where is God calling you to show up with a clean heart?',
-  },
-  evathashirt: {
-    verse: {
-      reference: 'Matthew 5:14',
-      text: 'You are the light of the world. A city set on a hill cannot be hidden.',
-    },
-    imageSrc: '/products/eva-tha-front.png',
-    prompt: 'Even when you feel unseen, your light is doing more than you think. Where have you been called to shine lately?',
+interface Comment {
+  id: string;
+  comment: string;
+  created_at: string;
+}
 
-  },
-};
+// Generate shirt data for 36 shirts, only 7-30-25-001 has real data, rest placeholders
+const shirtData: Record<
+  string,
+  {
+    verse: { reference: string; text: string };
+    imageSrc: string;
+    prompt: string;
+  }
+> = {};
+
+for (let i = 1; i <= 36; i++) {
+  const code = `7-30-25-${String(i).padStart(3, "0")}`;
+
+  if (i === 1) {
+    // The original seventytimesseven shirt data renamed to 7-30-25-001
+    shirtData[code] = {
+      verse: {
+        reference: "Matthew 18:22",
+        text: 'Jesus answered, “I tell you, not seven times, but seventy-seven times.”',
+      },
+      imageSrc: "/products/70x7-back.png",
+      prompt: "Inspired by this, write a reflection on grace, mercy, or forgiveness.",
+    };
+  } else {
+    // Placeholder for other shirts - you can update these later
+    shirtData[code] = {
+      verse: {
+        reference: "Coming Soon",
+        text: "Stay tuned for new shirt reflections!",
+      },
+      imageSrc: "/products/placeholder.png", // You can replace with actual images later
+      prompt: "Write your reflection inspired by this upcoming shirt.",
+    };
+  }
+}
 
 export default function QRPage() {
   const { shirtCode } = useParams();
+  const router = useRouter();
   const { data: session } = useSession();
 
   const shirt = shirtData[shirtCode as string];
@@ -68,6 +71,23 @@ export default function QRPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [showReflections, setShowReflections] = useState(false);
 
+  // COMMENTS STATE
+  const [commentsMap, setCommentsMap] = useState<{ [reflectionId: string]: Comment[] }>({});
+  const [newComments, setNewComments] = useState<{ [reflectionId: string]: string }>({});
+  const [loadingComments, setLoadingComments] = useState<{ [reflectionId: string]: boolean }>({});
+  const [showComments, setShowComments] = useState<{ [reflectionId: string]: boolean }>({});
+
+  // Redirect unauthenticated users to login with shirtCode param
+  useEffect(() => {
+    if (session === undefined) return; // still loading session
+    if (!session?.user) {
+      router.push(`/login?shirtCode=${encodeURIComponent(shirtCode as string)}`);
+    } else {
+      setShowReflections(true);
+    }
+  }, [session, router, shirtCode]);
+
+  // Fetch reflections and liked status when reflections shown
   useEffect(() => {
     if (!showReflections) return;
 
@@ -150,59 +170,54 @@ export default function QRPage() {
     }
   }
 
+  // --- COMMENTS FUNCTIONS ---
+
+  async function fetchComments(reflectionId: string) {
+    setLoadingComments((prev) => ({ ...prev, [reflectionId]: true }));
+    try {
+      const res = await fetch(`/api/comments/${reflectionId}`);
+      if (!res.ok) throw new Error("Failed to fetch comments");
+      const json = await res.json();
+      setCommentsMap((prev) => ({ ...prev, [reflectionId]: json.comments || [] }));
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      setCommentsMap((prev) => ({ ...prev, [reflectionId]: [] }));
+    } finally {
+      setLoadingComments((prev) => ({ ...prev, [reflectionId]: false }));
+    }
+  }
+
+  async function handleAddComment(reflectionId: string, commentText: string) {
+    if (!commentText.trim()) return;
+    try {
+      const res = await fetch("/api/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reflectionId, comment: commentText }),
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        alert(errorData.error || "Failed to submit comment");
+        return;
+      }
+      // Refresh comments
+      await fetchComments(reflectionId);
+      // Clear input
+      setNewComments((prev) => ({ ...prev, [reflectionId]: "" }));
+    } catch {
+      alert("Failed to submit comment");
+    }
+  }
+
   if (!session?.user) {
-    return (
-      <div className="max-w-xl mx-auto p-8 text-center font-sans text-gray-900">
-        <h2 className="text-2xl font-semibold mb-6" style={{ color: "#D4AF37" }}>
-          Let’s Unlock Your Message
-        </h2>
-
-        <div className="space-y-8 text-left max-w-md mx-auto text-base leading-relaxed text-gray-700">
-          <div className="flex items-start gap-3">
-            <span className="text-lg font-bold text-[#D4AF37]">1.</span>
-            <div>
-              <p className="text-lg font-medium">
-                <Link
-                  href="/login"
-                  className="underline font-semibold text-[#D4AF37] hover:text-[#b8932f] transition-colors"
-                >
-                  Log in
-                </Link>{" "}
-                to your account
-              </p>
-              <p className="mt-1">
-                Don’t have one?{" "}
-                <Link
-                  href="/login"
-                  className="font-semibold underline text-[#D4AF37] hover:text-yellow-700 transition"
-                >
-                  Sign up here
-                </Link>{" "}
-                — it only takes a moment.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <span className="text-lg font-bold text-[#D4AF37]">2.</span>
-            <div>
-              <p className="text-lg font-medium">Scan your shirt’s QR code again</p>
-              <p className="mt-1">
-                After logging in, simply re-scan your shirt’s QR code and your personalized verse will appear.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <p className="mt-8 text-[#D4AF37] font-semibold">
-          Your reflection is one scan away.
-        </p>
-      </div>
-    );
+    // Since we redirect, this will rarely render, but just in case:
+    return <p className="text-center mt-20 text-lg text-gray-700">Redirecting to login...</p>;
   }
 
   if (!shirt) {
-    return <p className="text-center mt-20 text-lg text-red-500">Invalid shirt code.</p>;
+    return (
+      <p className="text-center mt-20 text-lg text-red-500">Invalid shirt code.</p>
+    );
   }
 
   return (
@@ -287,28 +302,92 @@ export default function QRPage() {
                 reflections.map((r) => (
                   <li
                     key={r.id}
-                    className="bg-gray-100 p-6 rounded-xl shadow-md flex justify-between items-start"
+                    className="bg-gray-100 p-6 rounded-xl shadow-md flex flex-col gap-4"
                   >
-                    <div className="max-w-[85%]">
-                      <p className="text-gray-900">{r.text}</p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {new Date(r.created_at).toLocaleString()}
-                      </p>
+                    <div className="flex justify-between items-start">
+                      <div className="max-w-[85%]">
+                        <p className="text-gray-900">{r.text}</p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {new Date(r.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => toggleLike(r.id)}
+                        aria-pressed={likedMap[r.id]}
+                        aria-label={
+                          likedMap[r.id] ? "Unlike reflection" : "Like reflection"
+                        }
+                        className="flex items-center gap-1 ml-6 focus:outline-none"
+                      >
+                        {likedMap[r.id] ? (
+                          <SolidHeartIcon className="h-7 w-7 text-pink-500" />
+                        ) : (
+                          <OutlineHeartIcon className="h-7 w-7 text-gray-400" />
+                        )}
+                      </button>
                     </div>
+
+                    {/* Comments toggle */}
                     <button
-                      onClick={() => toggleLike(r.id)}
-                      aria-pressed={likedMap[r.id]}
-                      aria-label={
-                        likedMap[r.id] ? "Unlike reflection" : "Like reflection"
-                      }
-                      className="flex items-center gap-1 ml-6 focus:outline-none"
+                      onClick={() => {
+                        const isOpen = showComments[r.id];
+                        if (!isOpen) fetchComments(r.id);
+                        setShowComments((prev) => ({ ...prev, [r.id]: !isOpen }));
+                      }}
+                      className="text-sm text-[#D4AF37] underline self-start"
                     >
-                      {likedMap[r.id] ? (
-                        <SolidHeartIcon className="h-7 w-7 text-pink-500" />
-                      ) : (
-                        <OutlineHeartIcon className="h-7 w-7 text-gray-400" />
-                      )}
+                      {showComments[r.id] ? "Hide Comments" : "View Comments"}
                     </button>
+
+                    {/* Comments list */}
+                    {showComments[r.id] && (
+                      <div className="mt-2 pl-4 border-l border-gray-300 space-y-4 max-h-56 overflow-y-auto">
+                        {loadingComments[r.id] ? (
+                          <p className="text-gray-500 text-sm">Loading comments...</p>
+                        ) : commentsMap[r.id]?.length === 0 ? (
+                          <p className="italic text-gray-500 text-sm">No comments yet.</p>
+                        ) : (
+                          commentsMap[r.id]?.map((c) => (
+                            <div key={c.id} className="text-gray-700 text-sm">
+                              <p>{c.comment}</p>
+                              <p className="text-xs text-gray-400 mt-0.5">
+                                {new Date(c.created_at).toLocaleString()}
+                              </p>
+                            </div>
+                          ))
+                        )}
+
+                        {/* Add comment form */}
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            handleAddComment(r.id, newComments[r.id] || "");
+                          }}
+                          className="mt-3"
+                        >
+                          <textarea
+                            rows={2}
+                            maxLength={200}
+                            placeholder="Write a comment..."
+                            value={newComments[r.id] || ""}
+                            onChange={(e) =>
+                              setNewComments((prev) => ({
+                                ...prev,
+                                [r.id]: e.target.value,
+                              }))
+                            }
+                            className="w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none"
+                            required
+                          />
+                          <button
+                            type="submit"
+                            className="mt-1 px-4 py-2 bg-[#D4AF37] text-white rounded hover:bg-yellow-600 transition text-sm font-semibold"
+                          >
+                            Submit Comment
+                          </button>
+                        </form>
+                      </div>
+                    )}
                   </li>
                 ))
               )}

@@ -10,29 +10,35 @@ import UserStatus from '../components/UserStatus';
 import ScrollPopup from '../components/ScrollPopup';
 import { signIn } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 function ScrollVerseManager({
   onShowVerse,
   hasPopupShown,
   setHasPopupShown,
+  welcomeName,
+  shirtCode,
 }: {
   onShowVerse: () => void;
   hasPopupShown: boolean;
   setHasPopupShown: React.Dispatch<React.SetStateAction<boolean>>;
+  welcomeName: string | null;
+  shirtCode: string | null;
 }) {
-  const searchParams = useSearchParams();
-
   useEffect(() => {
-    const welcomeName = searchParams.get('welcomeName');
     const justLoggedIn = sessionStorage.getItem('justLoggedIn') === 'true';
 
     if ((welcomeName || justLoggedIn) && !hasPopupShown) {
-      onShowVerse();
-      setHasPopupShown(true);
-      sessionStorage.removeItem('justLoggedIn');
+      // Show the popup after a short delay for smoothness
+      const timer = setTimeout(() => {
+        onShowVerse();
+        setHasPopupShown(true);
+        sessionStorage.removeItem('justLoggedIn');
+      }, 700);
+
+      return () => clearTimeout(timer);
     }
-  }, [searchParams, hasPopupShown, onShowVerse, setHasPopupShown]);
+  }, [welcomeName, hasPopupShown, onShowVerse, setHasPopupShown]);
 
   return null;
 }
@@ -45,6 +51,12 @@ export default function HomePage() {
   const priceControls = useAnimation();
   const { data: session } = useSession();
 
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const welcomeName = searchParams.get('welcomeName');
+  const shirtCode = searchParams.get('shirtCode');
+
   const [showScrollVerse, setShowScrollVerse] = useState(false);
   const [showScrollLogin, setShowScrollLogin] = useState(false);
   const [hasPopupShown, setHasPopupShown] = useState(false);
@@ -54,6 +66,21 @@ export default function HomePage() {
   const handleLogin = async () => {
     sessionStorage.setItem('justLoggedIn', 'true');
     await signIn('credentials', { redirect: true, callbackUrl: '/' });
+  };
+
+  // After popup closes, redirect if shirtCode exists and clean URL
+  const onClosePopup = () => {
+    setShowScrollVerse(false);
+
+    if (shirtCode) {
+      router.push(`/qr/${encodeURIComponent(shirtCode)}`);
+    } else if (welcomeName) {
+      // Remove welcomeName from URL without reload
+      const url = new URL(window.location.href);
+      url.searchParams.delete('welcomeName');
+      url.searchParams.delete('shirtCode');
+      window.history.replaceState(null, '', url.toString());
+    }
   };
 
   useEffect(() => {
@@ -103,7 +130,7 @@ export default function HomePage() {
     if (!showScrollVerse) return;
     const handleOutsideClick = (e: MouseEvent) => {
       if (!(e.target as HTMLElement).closest('.scroll-popup-container')) {
-        setShowScrollVerse(false);
+        onClosePopup();
       }
     };
     document.addEventListener('click', handleOutsideClick);
@@ -117,6 +144,8 @@ export default function HomePage() {
           onShowVerse={() => setShowScrollVerse(true)}
           hasPopupShown={hasPopupShown}
           setHasPopupShown={setHasPopupShown}
+          welcomeName={welcomeName}
+          shirtCode={shirtCode}
         />
       </Suspense>
 
@@ -136,20 +165,19 @@ export default function HomePage() {
             style={{ transform: 'translateY(-50%)' }}
           />
         )}
-<div className="w-full overflow-hidden relative z-40">
-  <motion.div
-    initial={{ x: '100%' }}
-    animate={{ x: '-100%' }}
-    transition={{ repeat: Infinity, ease: 'linear', duration: 10 }}
-    className="whitespace-nowrap text-white py-2 text-sm font-semibold flex w-max bg-black"
-  >
-    <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
-    <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
-    <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
-    <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
-  </motion.div>
-</div>
-
+        <div className="w-full overflow-hidden relative z-40">
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: '-100%' }}
+            transition={{ repeat: Infinity, ease: 'linear', duration: 10 }}
+            className="whitespace-nowrap text-white py-2 text-sm font-semibold flex w-max bg-black"
+          >
+            <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
+            <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
+            <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
+            <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
+          </motion.div>
+        </div>
 
         <main className="flex flex-1 max-w-[1200px] mx-auto p-8 gap-20 relative items-start w-full">
           <motion.div
@@ -271,17 +299,17 @@ export default function HomePage() {
 
         <UserStatus />
 
-        {session && (
+        {session && showScrollVerse && welcomeName && (
           <ScrollPopup
             isVisible={showScrollVerse}
-            onClose={() => setShowScrollVerse(false)}
-            verseText={`“You are the light of the world.” — Matthew 5:14`}
+            onClose={onClosePopup}
+            verseText={`Welcome back, ${welcomeName}! “You are the light of the world.” — Matthew 5:14`}
             className="scroll-popup-container"
           />
         )}
-      {/* Spacer to prevent overlap on mobile */}
-<div className="block sm:hidden h-24" />
-</div>
+        {/* Spacer to prevent overlap on mobile */}
+        <div className="block sm:hidden h-24" />
+      </div>
     </>
   );
 }

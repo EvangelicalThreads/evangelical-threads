@@ -1,74 +1,102 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { signIn, signOut } from 'next-auth/react';
-import { useSession } from 'next-auth/react';
-import { FaInstagram, FaTiktok } from 'react-icons/fa';
-import { motion } from 'framer-motion';
-import Newsletter from '@/components/Newsletter';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useState } from "react";
+import { signIn, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { FaInstagram, FaTiktok } from "react-icons/fa";
+import { motion } from "framer-motion";
+import Newsletter from "@/components/Newsletter";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
-  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [emailOptIn, setEmailOptIn] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const { data: session, status } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Read shirtCode from query param if present
+  const shirtCode = searchParams.get("shirtCode");
+
+  // Central redirect function after login/signup
+  function redirectAfterAuth() {
+    // Get the user's name (fallback to empty string)
+    const userName = session?.user?.name?.trim() ?? "";
+
+    if (shirtCode) {
+      // Redirect to homepage with welcomeName and shirtCode as query params
+      router.push(
+        `/?welcomeName=${encodeURIComponent(userName)}&shirtCode=${encodeURIComponent(shirtCode)}`
+      );
+    } else {
+      // Redirect to homepage with just welcomeName
+      router.push(`/?welcomeName=${encodeURIComponent(userName)}`);
+    }
+  }
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    const result = await signIn('credentials', {
+    setError("");
+    const result = await signIn("credentials", {
       redirect: false,
       email,
       password,
     });
     if (result?.error) {
-      if (result.error === 'CredentialsSignin') {
-        setError('Invalid email or password');
+      if (result.error === "CredentialsSignin") {
+        setError("Invalid email or password");
       } else {
         setError(result.error);
       }
+    } else {
+      redirectAfterAuth();
     }
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!name.trim()) {
-      setError('Please enter your name');
+      setError("Please enter your name");
       return;
     }
 
     try {
-      const res = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, name, emailOptIn }),
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'Signup failed');
+        setError(data.error || "Signup failed");
         return;
       }
 
-      signIn('credentials', {
-        redirect: true,
+      // After signup, manually sign in and redirect on success
+      const signInResult = await signIn("credentials", {
+        redirect: false,
         email,
         password,
-        callbackUrl: `/?welcomeName=${encodeURIComponent(name)}`,
       });
+
+      if (signInResult?.error) {
+        setError(signInResult.error);
+      } else {
+        redirectAfterAuth();
+      }
     } catch {
-      setError('Something went wrong during signup');
+      setError("Something went wrong during signup");
     }
   };
 
-  if (status === 'loading') return null;
+  if (status === "loading") return null;
 
   if (session) {
     return (
@@ -79,7 +107,7 @@ export default function LoginPage() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           className="z-10 flex flex-col items-center max-w-xl px-4 pt-20"
         >
           <h1 className="text-5xl font-serif font-extrabold mb-4 text-center tracking-tight leading-tight text-gray-900">
@@ -89,7 +117,7 @@ export default function LoginPage() {
           <h2 className="text-4xl font-serif font-semibold mb-4 text-center text-[#D4AF37] tracking-tight">
             {session.user?.name?.trim()
               ? `${session.user.name} 👋`
-              : session.user?.email?.split('@')[0]}
+              : session.user?.email?.split("@")[0]}
           </h2>
 
           <p className="mb-8 max-w-lg text-center text-gray-700 text-lg font-light">
@@ -149,15 +177,15 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start sm:justify-center bg-white px-6 text-gray-900 pt-10 sm:pt-0 relative">
-  <h1 className="text-4xl font-serif font-extrabold mb-2 mt-10 sm:mt-0">
-        {mode === 'signin' ? 'Sign In' : 'Sign Up'}
+      <h1 className="text-4xl font-serif font-extrabold mb-2 mt-10 sm:mt-0">
+        {mode === "signin" ? "Sign In" : "Sign Up"}
       </h1>
 
       <form
-        onSubmit={mode === 'signin' ? handleSignIn : handleSignUp}
+        onSubmit={mode === "signin" ? handleSignIn : handleSignUp}
         className="flex flex-col gap-5 w-full max-w-sm"
       >
-        {mode === 'signup' && (
+        {mode === "signup" && (
           <input
             type="text"
             placeholder="What would you like to be called?"
@@ -184,10 +212,10 @@ export default function LoginPage() {
           className="border border-gray-300 rounded-md px-5 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition"
         />
 
-        {mode === 'signin' && (
+        {mode === "signin" && (
           <button
             type="button"
-            onClick={() => router.push('/reset-password')}
+            onClick={() => router.push("/reset-password")}
             className="text-sm text-[#D4AF37] font-semibold underline mb-2 hover:text-[#b8932f] transition-colors text-left"
           >
             Forgot password?
@@ -198,10 +226,10 @@ export default function LoginPage() {
           type="submit"
           className="inline-block mt-2 px-6 py-3 border border-[#D4AF37] text-[#D4AF37] rounded hover:bg-[#D4AF37] hover:text-white transition font-semibold shadow-md focus:outline-none focus:ring-4 focus:ring-yellow-400"
         >
-          {mode === 'signin' ? 'Log In' : 'Show my verse'}
+          {mode === "signin" ? "Log In" : "Show my verse"}
         </button>
 
-        {mode === 'signup' && (
+        {mode === "signup" && (
           <label className="mt-3 flex items-center gap-3 text-gray-700 text-sm select-none cursor-pointer">
             <input
               type="checkbox"
@@ -214,16 +242,18 @@ export default function LoginPage() {
         )}
       </form>
 
-      {error && <p className="mt-4 text-center text-red-600 font-semibold">{error}</p>}
+      {error && (
+        <p className="mt-4 text-center text-red-600 font-semibold">{error}</p>
+      )}
 
       <div className="mt-6 text-center">
-        {mode === 'signin' ? (
+        {mode === "signin" ? (
           <>
-            Don&apos;t have an account?{' '}
+            Don&apos;t have an account?{" "}
             <button
               onClick={() => {
-                setError('');
-                setMode('signup');
+                setError("");
+                setMode("signup");
               }}
               className="text-[#D4AF37] font-semibold underline hover:text-[#b8932f] transition-colors"
             >
@@ -232,11 +262,11 @@ export default function LoginPage() {
           </>
         ) : (
           <>
-            Already have an account?{' '}
+            Already have an account?{" "}
             <button
               onClick={() => {
-                setError('');
-                setMode('signin');
+                setError("");
+                setMode("signin");
               }}
               className="text-[#D4AF37] font-semibold underline hover:text-[#b8932f] transition-colors"
             >

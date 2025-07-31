@@ -18,10 +18,10 @@ export default function HowWeWorkPage() {
       {/* Gold glow blur circle */}
       <div className="pointer-events-none absolute bottom-[-100px] right-[-100px] w-72 h-72 bg-gradient-to-bl from-[#D4AF37]/15 via-transparent to-transparent rounded-full filter blur-2xl animate-pulse animation-delay-2000" />
 
-      <h1 className="text-4xl font-bold mb-6 text-center">How Our QR Codes Work</h1>
+      <h1 className="text-4xl font-bold mb-6 text-center">How Our NFC Chips Work</h1>
 
       <p className="mb-10 text-gray-800 leading-relaxed max-w-xl mx-auto text-center">
-        Our QR codes are how we combine fashion with technology. Each shirt has a unique code that connects you to a personalized faith message.
+        Our NFC chips are how we combine fashion with technology. Each shirt has a unique chip that connects you to a personalized faith message.
       </p>
 
       <section className="space-y-8 mb-12 max-w-xl mx-auto">
@@ -54,7 +54,7 @@ export default function HowWeWorkPage() {
                 className="text-gray-700 text-base leading-relaxed"
               >
                 <p>
-                  After scanning your shirt’s QR code, you’ll be asked to log in. If you don’t have an account, simply select{" "}
+                  After tapping your shirt’s NFC chip, you’ll be asked to log in. If you don’t have an account, simply select{" "}
                   <Link
                     href="/signup"
                     className="font-semibold underline text-[#D4AF37] hover:text-yellow-700 transition"
@@ -64,7 +64,7 @@ export default function HowWeWorkPage() {
                   to create one.
                 </p>
                 <p className="mt-3">
-                  Once signed up, you’ll see a welcome popup. Then, scan your QR code again anytime to see the personalized verse tied to your shirt.
+                  Once signed up, you’ll see a welcome popup. Then, tap your NFC chip again anytime to see the personalized verse tied to your shirt.
                 </p>
                 <p className="mt-3 text-[#D4AF37] font-semibold">
                   Creating an account makes it easier to access your messages anytime!
@@ -103,10 +103,10 @@ export default function HowWeWorkPage() {
                 className="text-gray-700 text-base leading-relaxed"
               >
                 <p>
-                  Just scan your shirt’s QR code anytime, and you’ll instantly see the personalized verse tied to your shirt — no extra steps needed.
+                  Just tap your shirt’s NFC chip anytime, and you’ll instantly see the personalized verse tied to your shirt — no extra steps needed.
                 </p>
                 <p className="mt-3 text-[#D4AF37] font-semibold">
-                  Your faith and fashion connection is always just a scan away.
+                  Your faith and fashion connection is always just a tap away.
                 </p>
               </motion.div>
             )}
