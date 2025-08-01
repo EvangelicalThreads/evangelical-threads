@@ -15,7 +15,7 @@ export default function HowWeWorkPage() {
 
   return (
     <main className="min-h-screen max-w-4xl mx-auto px-6 pt-12 pb-32 relative bg-white text-black">
-      {/* Gold glow blur circle */}
+      {/* Glow effect */}
       <div className="pointer-events-none absolute bottom-[-100px] right-[-100px] w-72 h-72 bg-gradient-to-bl from-[#D4AF37]/15 via-transparent to-transparent rounded-full filter blur-2xl animate-pulse animation-delay-2000" />
 
       <h1 className="text-4xl font-bold mb-6 text-center">How Our NFC Chips Work</h1>
@@ -25,7 +25,7 @@ export default function HowWeWorkPage() {
       </p>
 
       <section className="space-y-8 mb-12 max-w-xl mx-auto">
-        {/* Step 1 */}
+        {/* Step 1: New user */}
         <div
           role="button"
           tabIndex={0}
@@ -64,7 +64,7 @@ export default function HowWeWorkPage() {
                   to create one.
                 </p>
                 <p className="mt-3">
-                  Once signed up, you’ll see a welcome popup. Then, tap your NFC chip again anytime to see the personalized verse tied to your shirt.
+                  Once signed up, you’ll see a welcome popup. Then, tap your NFC chip again to access your shirt’s verse.
                 </p>
                 <p className="mt-3 text-[#D4AF37] font-semibold">
                   Creating an account makes it easier to access your messages anytime!
@@ -74,7 +74,7 @@ export default function HowWeWorkPage() {
           </AnimatePresence>
         </div>
 
-        {/* Step 2 */}
+        {/* Step 2: Returning user */}
         <div
           role="button"
           tabIndex={0}
@@ -114,9 +114,12 @@ export default function HowWeWorkPage() {
         </div>
       </section>
 
-      <Newsletter />
+      {/* Newsletter section */}
+      <div className="mt-16">
+        <Newsletter />
+      </div>
 
-      {/* Social Links */}
+      {/* Social links */}
       <div className="text-center mt-12 mb-6 max-w-xl mx-auto">
         <h3 className="text-lg font-semibold text-black mb-2">Join the community!!</h3>
         <div className="flex justify-center gap-6 text-black text-2xl">

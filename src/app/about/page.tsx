@@ -30,7 +30,7 @@ export default function AboutPage() {
       </p>
 
       <section className="mb-12 bg-[#f9f7f1] rounded-xl p-6 shadow-md text-center max-w-xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4 text-[#D4AF37]">Wondering how our QR codes work?</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-[#D4AF37]">Wondering how our NFC chips work?</h2>
         <p className="mb-4 text-lg leading-relaxed">
           Learn how we connect fashion and technology to take you on a personalized faith journey.
         </p>

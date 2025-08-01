@@ -15,7 +15,7 @@ export default function ThankYouPage() {
           You are the light of the world ✨
         </h2>
         <p className="text-gray-700">
-          Scan the QR code on your shirt to read reflections, add your own, and be part of something eternal.
+          Tap the NFC chip on your shirt to read reflections, add your own, and be part of something eternal.
         </p>
       </div>
 
