@@ -112,7 +112,7 @@ export default function HowWeWorkPage() {
             )}
           </AnimatePresence>
         </div>
-      </section>
+      </section> 
 
       {/* Newsletter section */}
       <div className="mt-16">
@@ -144,3 +144,4 @@ export default function HowWeWorkPage() {
     </main>
   );
 }
+
