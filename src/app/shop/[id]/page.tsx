@@ -72,8 +72,6 @@ export default function ProductPage() {
     return <div className="p-10 text-center text-red-500">Product not found</div>;
   }
 
-  const sizes = ['S', 'M', 'L', 'XL'];
-
   const handleAddToCart = () => {
     if (!selectedSize) {
       alert('Please select a size before adding to cart.');
