@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { Filter } from "bad-words";
+import {Filter} from "bad-words";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,25 +9,17 @@ const supabase = createClient(
 
 const filter = new Filter();
 
-interface ContextWithParams {
-  params: {
-    shirtCode: string;
-  };
-}
-
-// Async type guard to check if context has awaited params with shirtCode string
 async function isContextWithParams(obj: unknown): Promise<boolean> {
   if (
     typeof obj === "object" &&
     obj !== null &&
     "params" in obj
   ) {
-    // Await params because in Next.js 13+ params may be a Promise
-    const params = await (obj as any).params;
+    const params = await (obj as unknown as { params: unknown }).params;
     return (
       typeof params === "object" &&
       params !== null &&
-      typeof (params as any).shirtCode === "string"
+      typeof (params as { shirtCode?: unknown }).shirtCode === "string"
     );
   }
   return false;
@@ -85,8 +77,7 @@ export async function GET(req: NextRequest, context: unknown) {
       );
     }
 
-    // Await context.params here because it may be a Promise
-    const params = await (context as any).params;
+    const params = await (context as unknown as { params: { shirtCode: string } }).params;
     const shirtCode = params.shirtCode;
 
     const { data, error } = await supabase

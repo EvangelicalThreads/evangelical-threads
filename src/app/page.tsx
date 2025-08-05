@@ -216,7 +216,7 @@ export default function HomePage() {
           className="flex flex-wrap justify-center gap-6 mt-12 px-4"
         >
           {[
-            { src: '/model-jacket.png', alt: 'Model Jacket', link: '/shop' },
+            { src: '/model-blue.jpeg', alt: 'Model Jacket', link: '/shop' },
             { src: '/model-girl.png', alt: 'Model Girl', link: '/shop' },
             { src: '/model-guy.png', alt: 'Model Guy', link: '/shop' },
           ].map((model, idx) => (
@@ -226,13 +226,16 @@ export default function HomePage() {
               className="relative w-64 sm:w-72 md:w-80 lg:w-[22rem] xl:w-[24rem] h-[24rem] md:h-[26rem] lg:h-[28rem] group overflow-hidden rounded-2xl shadow-md block"
             >
               <Image
-                src={model.src}
-                alt={model.alt}
-                fill
-                style={{ objectFit: 'cover' }}
-                className="transition-transform duration-500 transform group-hover:scale-105"
-                priority
-              />
+  src={model.src}
+  alt={model.alt}
+  fill
+  className={`transition-transform duration-500 transform ${
+    idx === 0
+      ? 'object-contain scale-[1] group-hover:scale-[1.1]'
+      : 'object-cover group-hover:scale-105'
+  }`}
+  priority
+/>
               <div className="hidden md:block absolute bottom-0 left-0 w-full bg-black/60 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <span className="text-sm font-semibold">Shop Now</span>
               </div>

@@ -18,7 +18,7 @@ const products = [
   },
   {
     id: 'eva-tha-shirt',
-    name: 'Eva-Tha Shirt',
+    name: 'Eva Tha Shirt',
     price: 44.99,
     description:
       'Featuring the EVA crown honoring the first woman and the THA symbol, from ancient Hebrew, meaning store. This design celebrates divine identity and sacred purpose.',
@@ -36,20 +36,34 @@ const products = [
   },
   {
     id: 'eva-tha-white',
-    name: 'Eva-Tha White Shirt',
+    name: 'Eva Tha White Shirt',
     price: 44.99,
     description:
       'The white version of our signature design — clean, minimal, and powerful. Featuring The EVA crown honoring the first woman and the THA symbol, from ancient Hebrew, meaning store.',
     imageFront: '/products/eva-tha-white-front.png',
     imageBack: '/products/eva-tha-white-back.png',
   },
+  {
+    id: 'blue-shirt',
+    name: 'Blue Shirt',
+    price: 49.99,
+    description:
+      'Our classic blue shirt with a clean, bold design. High-quality fabric ensures comfort and style for everyday wear.',
+    imageFront: '/products/blue-shirt-front.png',
+    imageBack: '/products/blue-shirt-back.png',
+  },
 ];
+
+// Only these 3 products are available for purchase/view
+const availableProductIds = ['70x7-tee', 'eva-tha-shirt', 'blue-shirt'];
 
 export default function ProductPage() {
   const params = useParams();
-  const id = typeof params?.id === 'string' ? params.id : Array.isArray(params?.id) ? params.id[0] : '';
+  const id =
+    typeof params?.id === 'string' ? params.id : Array.isArray(params?.id) ? params.id[0] : '';
 
-  const product = products.find((p) => p.id === id);
+  // Only find products if available
+  const product = availableProductIds.includes(id) ? products.find((p) => p.id === id) : undefined;
   const { addToCart } = useCart();
   const [selectedImage, setSelectedImage] = useState<'front' | 'back'>('front');
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -116,7 +130,7 @@ export default function ProductPage() {
           <div className="mb-4">
             <p className="mb-2 font-semibold">Select Size:</p>
             <div className="flex gap-2 flex-wrap">
-              {sizes.map((size) => (
+              {['S', 'M', 'L', 'XL'].map((size) => (
                 <button
                   key={size}
                   className={`px-4 py-2 border rounded ${

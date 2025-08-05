@@ -1,10 +1,7 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json }
-  | Json[];
+// types/supabase.ts or lib/database.types.ts
+
+export type JsonPrimitive = string | number | boolean | null;
+export type Json = JsonPrimitive | Json[] | { [key: string]: Json };
 
 export interface Database {
   public: {
@@ -110,9 +107,9 @@ export interface Database {
       };
     };
 
-    Views: {};
-    Functions: {};
-    Enums: {};
-    CompositeTypes: {};
+    Views: Record<string, unknown>;
+    Functions: Record<string, unknown>;
+    Enums: Record<string, unknown>;
+    CompositeTypes: Record<string, unknown>;
   };
 }
