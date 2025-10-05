@@ -31,16 +31,6 @@ const fadeInUp: Variants = {
   },
 };
 
-const fadeInDown: Variants = {
-  hidden: { opacity: 0, y: -40 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
-};
-
-const staggerContainer: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.18, delayChildren: 0.05 } },
-};
-
 // --------------------------------------------------
 // Scroll Progress Bar
 // --------------------------------------------------
@@ -137,7 +127,10 @@ function FloatingParticles({ count = 120 }) {
   });
 
   return (
-    <instancedMesh ref={meshRef} args={[undefined as any, undefined as any, count]}>
+<instancedMesh
+  ref={meshRef}
+  args={[undefined as unknown as THREE.BufferGeometry, undefined as unknown as THREE.Material, count]}
+>
       <sphereGeometry args={[1, 6, 6]} />
       <meshStandardMaterial color="#ffffff" transparent opacity={0.05} />
     </instancedMesh>
@@ -209,21 +202,6 @@ function ScrollToTop() {
 // --------------------------------------------------
 // Components for text
 // --------------------------------------------------
-function JourneyText() {
-  return (
-    <div className="w-full max-w-3xl mx-auto px-4 text-center mb-8 relative z-20">
-      <motion.p
-        variants={fadeInUp}
-        initial="hidden"
-        animate="show"
-        className="text-lg md:text-xl text-neutral-800 leading-relaxed"
-        style={{ fontFamily: "'Cormorant Garamond', serif" }}
-      >
-        Every journey begins with a blank canvas. We started with a vision: craft shirts with care, intention, and quality.
-      </motion.p>
-    </div>
-  );
-}
 
 function ClickAndDrag() {
   return (
