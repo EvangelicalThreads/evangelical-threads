@@ -15,18 +15,11 @@ type Product = {
 
 const products: Product[] = [
   {
-    id: "70x7-tee",
-    name: "Seventy Times Seven Tee",
-    price: 59.99,
-    imageFront: "/products/70x7-back.png",
-    imageBack: "/products/70x7-front.png",
-  },
-  {
-    id: "eva-tha-shirt",
-    name: "Eva Tha Shirt",
-    price: 44.99,
-    imageFront: "/products/eva-tha-front.png",
-    imageBack: "/products/eva-tha-back.png",
+      id: 'pink-shirt',
+  name: 'Pink Shirt',
+  price: 49.99,
+  imageFront: '/products/pink-shirt-front.png',
+  imageBack: '/products/pink-shirt-back.png',
   },
   {
     id: "blue-shirt",
@@ -38,7 +31,7 @@ const products: Product[] = [
 ];
 
 export default function ShopPage() {
-  const availableProductIds = ["70x7-tee", "eva-tha-shirt", "blue-shirt"];
+  const availableProductIds = ["pink-shirt", "blue-shirt"];
   const availableProducts = products.filter(product =>
     availableProductIds.includes(product.id)
   );

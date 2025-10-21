@@ -52,10 +52,18 @@ const products = [
     imageFront: '/products/blue-shirt-front.png',
     imageBack: '/products/blue-shirt-back.png',
   },
+  {  
+  id: 'pink-shirt',
+  name: 'Pink Shirt',
+  price: 49.99,
+  description: 'Our classic pink cropped shirt with a clean, bold design. High-quality fabric ensures comfort and style for everyday wear.',
+  imageFront: '/products/pink-shirt-front.png',
+  imageBack: '/products/pink-shirt-back.png',
+  },
 ];
 
-// Only these 3 products are available for purchase/view
-const availableProductIds = ['70x7-tee', 'eva-tha-shirt', 'blue-shirt'];
+// Only these 2 products are available for purchase/view
+const availableProductIds = ['pink-shirt', 'blue-shirt'];
 
 export default function ProductPage() {
   const params = useParams();
