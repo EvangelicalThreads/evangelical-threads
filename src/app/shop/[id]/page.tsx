@@ -75,27 +75,6 @@ export default function ProductPage() {
   const { addToCart } = useCart();
   const [selectedImage, setSelectedImage] = useState<'front' | 'back'>('front');
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-
-  if (!product) {
-    return <div className="p-10 text-center text-red-500">Product not found</div>;
-  }
-
-  const handleAddToCart = () => {
-    if (!selectedSize) {
-      alert('Please select a size before adding to cart.');
-      return;
-    }
-
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product[selectedImage === 'front' ? 'imageFront' : 'imageBack'],
-      quantity: 1,
-      size: selectedSize,
-    });
-  };
-
   const sizeCharts: Record<string, { size: string; width: string; length: string }[]> = {
   'pink-shirt': [
     { size: 'XSM', width: '18-3/4', length: '17-3/4' },
@@ -116,6 +95,25 @@ export default function ProductPage() {
 };
 
 const [showSizeChart, setShowSizeChart] = useState(false);
+  if (!product) {
+    return <div className="p-10 text-center text-red-500">Product not found</div>;
+  }
+
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      alert('Please select a size before adding to cart.');
+      return;
+    }
+
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product[selectedImage === 'front' ? 'imageFront' : 'imageBack'],
+      quantity: 1,
+      size: selectedSize,
+    });
+  };
 
   return (
     <main className="max-w-4xl mx-auto p-6">
