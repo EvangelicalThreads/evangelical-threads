@@ -11,6 +11,8 @@ import ScrollPopup from '../components/ScrollPopup';
 import { signIn } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
+import EmailSignUpPopup from '../components/EmailSignupPopup';
+
 
 function ScrollVerseManager({
   onShowVerse,
@@ -50,6 +52,8 @@ export default function HomePage() {
   const [hasPopupShown, setHasPopupShown] = useState(false);
   const [showLine, setShowLine] = useState(false);
   const [hideSmallLogo, setHideSmallLogo] = useState(false);
+  const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
+
 
   const handleLogin = async () => {
     sessionStorage.setItem('justLoggedIn', 'true');
@@ -110,6 +114,14 @@ export default function HomePage() {
     return () => document.removeEventListener('click', handleOutsideClick);
   }, [showScrollVerse]);
 
+useEffect(() => {
+  // Show popup 5 seconds after visiting the page
+  const timer = setTimeout(() => setShowNewsletterPopup(true), 4000);
+  return () => clearTimeout(timer);
+}, []);
+
+
+
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
@@ -143,10 +155,10 @@ export default function HomePage() {
     transition={{ repeat: Infinity, ease: 'linear', duration: 10 }}
     className="whitespace-nowrap text-white py-2 text-sm font-semibold flex w-max bg-black"
   >
-    <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
-    <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
-    <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
-    <span className="mx-12 inline-block">SUMMER DROP ☀️ — LIVE NOW</span>
+    <span className="mx-12 inline-block">NEW YEAR DROP 🎉 — LIVE NOW</span>
+    <span className="mx-12 inline-block">NEW YEAR DROP 🎉 — LIVE NOW</span>
+    <span className="mx-12 inline-block">NEW YEAR DROP 🎉 — LIVE NOW</span>
+    <span className="mx-12 inline-block">NEW YEAR DROP 🎉 — LIVE NOW</span>
   </motion.div>
 </div>
 
@@ -282,9 +294,16 @@ export default function HomePage() {
             className="scroll-popup-container"
           />
         )}
+
+<EmailSignUpPopup
+  isVisible={showNewsletterPopup}
+  onClose={() => setShowNewsletterPopup(false)}
+/>
+
       {/* Spacer to prevent overlap on mobile */}
 <div className="block sm:hidden h-24" />
 </div>
     </>
   );
+  
 }

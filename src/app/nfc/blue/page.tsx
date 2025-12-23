@@ -52,21 +52,25 @@ function ScrollProgressBar() {
 // --------------------------------------------------
 function Tee3DModel() {
   const modelRef = useRef<THREE.Group>(null);
+
+  // Lazy-load and preload GLB for faster first paint
+  useGLTF.preload("/models/t-shirt.glb");
   const { scene } = useGLTF("/models/t-shirt.glb") as { scene: THREE.Group };
 
-  // Apply slightly lighter black/charcoal material
-scene.traverse((child) => {
-  if ((child as THREE.Mesh).isMesh) {
-    (child as THREE.Mesh).material = new THREE.MeshStandardMaterial({
-      color: "#000000ff", // lighter than pure black
-      metalness: 0.25,
-      roughness: 0.55,
-    });
-  }
-});
-
-  // Center & scale
+  // Apply slightly lighter black/charcoal material (memoized)
   useMemo(() => {
+    scene.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        (child as THREE.Mesh).material = new THREE.MeshStandardMaterial({
+          color: "#000000ff",
+          metalness: 0.25,
+          roughness: 0.55,
+        });
+        (child as THREE.Mesh).frustumCulled = true; // skip offscreen
+      }
+    });
+
+    // Center & scale
     const box = new THREE.Box3().setFromObject(scene);
     const size = new THREE.Vector3();
     box.getSize(size);
@@ -81,13 +85,12 @@ scene.traverse((child) => {
 
   // Subtle multi-axis rotation & bob
   useFrame(({ clock }) => {
-    if (modelRef.current) {
-      const t = clock.elapsedTime;
-      modelRef.current.rotation.y = 0.05 * Math.sin(t * 0.7);
-      modelRef.current.rotation.x = 0.02 * Math.sin(t * 1.1);
-      modelRef.current.rotation.z = 0.015 * Math.sin(t * 0.9);
-      modelRef.current.position.y = 0.03 * Math.abs(Math.sin(t * 1.2));
-    }
+    if (!modelRef.current) return;
+    const t = clock.elapsedTime;
+    modelRef.current.rotation.y = 0.05 * Math.sin(t * 0.7);
+    modelRef.current.rotation.x = 0.02 * Math.sin(t * 1.1);
+    modelRef.current.rotation.z = 0.015 * Math.sin(t * 0.9);
+    modelRef.current.position.y = 0.03 * Math.abs(Math.sin(t * 1.2));
   });
 
   return (
@@ -103,8 +106,10 @@ scene.traverse((child) => {
 function FloatingParticles({ count = 120 }) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
+
+  // Reduced particle count & memoized positions
   const particles = useMemo(() => {
-    return Array.from({ length: count }).map(() => ({
+    return Array.from({ length: Math.min(count, 90) }).map(() => ({
       x: (Math.random() - 0.5) * 8,
       y: Math.random() * 4,
       z: (Math.random() - 0.5) * 4,
@@ -127,10 +132,10 @@ function FloatingParticles({ count = 120 }) {
   });
 
   return (
-<instancedMesh
-  ref={meshRef}
-  args={[undefined as unknown as THREE.BufferGeometry, undefined as unknown as THREE.Material, count]}
->
+    <instancedMesh
+      ref={meshRef}
+      args={[undefined as unknown as THREE.BufferGeometry, undefined as unknown as THREE.Material, particles.length]}
+    >
       <sphereGeometry args={[1, 6, 6]} />
       <meshStandardMaterial color="#ffffff" transparent opacity={0.05} />
     </instancedMesh>
