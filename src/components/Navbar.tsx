@@ -359,7 +359,6 @@ export default function Navbar() {
           <Link href="/shop" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">Shop</Link>
           <Link href="/checkout" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">Checkout</Link>
           <Link href="/about" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">About Us</Link>
-          <Link href="/how-we-work" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">How We Work</Link>
           <Link href="/faq" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">FAQ</Link>
           <Link href="/reviews" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">Reviews</Link>
           <Link href="/privacy" onClick={() => setMenuOpen(false)} className="block text-lg font-medium hover:underline">Privacy</Link>
