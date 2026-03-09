@@ -12,7 +12,7 @@ export async function sendWelcomeEmail(email: string, name: string) {
         <h1>Hey ${name},</h1>
         <p>Thanks for joining Evangelical Threads! ✨</p>
         <p>You are the light of the world. Let your light shine.</p>
-        <p>We'll keep you updated with new drops and reflections soon.</p>
+        <p>We'll keep you updated with new drops soon.</p>
         <br/>
         <p style="color: #999;">You can unsubscribe anytime.</p>
       </div>

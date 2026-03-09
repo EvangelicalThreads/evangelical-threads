@@ -155,10 +155,10 @@ useEffect(() => {
     transition={{ repeat: Infinity, ease: 'linear', duration: 10 }}
     className="whitespace-nowrap text-white py-2 text-sm font-semibold flex w-max bg-black"
   >
-    <span className="mx-12 inline-block">NEW YEAR DROP 🎉 — LIVE NOW</span>
-    <span className="mx-12 inline-block">NEW YEAR DROP 🎉 — LIVE NOW</span>
-    <span className="mx-12 inline-block">NEW YEAR DROP 🎉 — LIVE NOW</span>
-    <span className="mx-12 inline-block">NEW YEAR DROP 🎉 — LIVE NOW</span>
+    <span className="mx-12 inline-block">NEW DROP 💫 — LIVE NOW</span>
+    <span className="mx-12 inline-block">NEW DROP 💫 — LIVE NOW</span>
+    <span className="mx-12 inline-block">NEW DROP 💫 — LIVE NOW</span>
+    <span className="mx-12 inline-block">NEW DROP 💫 — LIVE NOW</span>
   </motion.div>
 </div>
 
@@ -229,8 +229,8 @@ useEffect(() => {
         >
           {[
             { src: '/model-blue.jpeg', alt: 'Model Jacket', link: '/shop' },
-            { src: '/model-girl.png', alt: 'Model Girl', link: '/shop' },
             { src: '/model-guy.png', alt: 'Model Guy', link: '/shop' },
+            { src: '/model-girl.png', alt: 'Model Girl', link: '/shop' },
           ].map((model, idx) => (
             <Link
               key={idx}

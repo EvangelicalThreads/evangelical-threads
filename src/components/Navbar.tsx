@@ -98,13 +98,7 @@ export default function Navbar() {
 
             {aboutDropdownOpen && (
               <div className="absolute top-full left-0 mt-1 w-40 bg-white border border-gray-200 rounded shadow-lg z-50">
-                <Link
-                  href="/how-we-work"
-                  className="block px-4 py-2 hover:bg-gray-100"
-                  onClick={() => setAboutDropdownOpen(false)}
-                >
-                  How We Work
-                </Link>
+                
                 <Link
                   href="/faq"
                   className="block px-4 py-2 hover:bg-gray-100"

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Link from "next/link";
 import Image from "next/image";
@@ -15,23 +15,16 @@ type Product = {
 
 const products: Product[] = [
   {
-      id: 'pink-shirt',
-  name: 'Pink Shirt',
-  price: 49.99,
-  imageFront: '/products/pink-shirt-front.png',
-  imageBack: '/products/pink-shirt-back.png',
-  },
-  {
-    id: "blue-shirt",
-    name: "Blue Shirt",
+    id: 'gods-world',
+    name: "God's World Tee",
     price: 49.99,
-    imageFront: "/products/blue-shirt-front.png",
-    imageBack: "/products/blue-shirt-back.png",
+    imageFront: '/products/gods-world-front.jpeg',
+    imageBack: '/products/gods-world-back.png',
   },
 ];
 
 export default function ShopPage() {
-  const availableProductIds = ["pink-shirt", "blue-shirt"];
+  const availableProductIds = ["gods-world"];
   const availableProducts = products.filter(product =>
     availableProductIds.includes(product.id)
   );
@@ -47,19 +40,13 @@ export default function ShopPage() {
             className="border rounded-xl p-4 group hover:shadow-lg transition-all duration-300 bg-white"
           >
             <Link href={`/shop/${product.id}`} className="block">
-              <div
-                className={`relative w-full h-80 rounded-lg mb-4 p-4 bg-white border border-gray-200 ${
-                  product.id === "blue-shirt" ? "" : "overflow-hidden"
-                }`}
-              >
+              <div className="relative w-full h-80 rounded-lg mb-4 p-4 bg-white border border-gray-200 overflow-hidden">
                 <Image
                   src={product.imageFront}
                   alt={`${product.name} Front`}
                   layout="fill"
                   objectFit="cover"
-                  className={`transition-opacity duration-300 group-hover:opacity-0 rounded-lg ${
-                    product.id === "blue-shirt" ? "scale-80" : ""
-                  }`}
+                  className="transition-opacity duration-300 group-hover:opacity-0 rounded-lg"
                   style={{ transformOrigin: "center" }}
                 />
                 <Image
@@ -67,9 +54,7 @@ export default function ShopPage() {
                   alt={`${product.name} Back`}
                   layout="fill"
                   objectFit="cover"
-                  className={`opacity-0 transition-opacity duration-300 group-hover:opacity-100 rounded-lg ${
-                    product.id === "blue-shirt" ? "scale-80" : ""
-                  }`}
+                  className="opacity-0 transition-opacity duration-300 group-hover:opacity-100 rounded-lg"
                   style={{ transformOrigin: "center" }}
                 />
               </div>
