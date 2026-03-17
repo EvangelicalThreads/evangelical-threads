@@ -150,7 +150,7 @@ export default function HomePage() {
         <h3 className="text-lg font-semibold text-black mb-2">Follow us</h3>
         <div className="flex justify-center gap-6 text-black text-2xl">
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/evangelicalthreads"
             target="_blank"
             rel="noreferrer"
             aria-label="Instagram"
@@ -158,7 +158,7 @@ export default function HomePage() {
             <FaInstagram />
           </a>
           <a
-            href="https://tiktok.com"
+            href="https://www.tiktok.com/@evangelicalthreads"
             target="_blank"
             rel="noreferrer"
             aria-label="TikTok"
