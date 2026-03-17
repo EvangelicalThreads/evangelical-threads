@@ -10,13 +10,17 @@ const products = [
   {
     id: 'gods-world',
     name: "God's World Tee",
-    price: 38.00,
-    description:
-      "Our iconic God's World Tee features a bold front design and a powerful back graphic. Soft, premium cotton ensures comfort and style.",
+    price: 38.0,
+description: `The God’s World Tee is a statement of faith, purpose, and identity. Rooted in the idea that everything moves under a greater design, this piece reflects a mindset of trust, discipline, and direction.
+
+Crafted from premium cotton, the tee offers a structured yet comfortable fit that holds its shape over time. The weight, feel, and finish are built to elevate everyday wear without sacrificing durability`,    
+
     imageFront: '/products/gods-world-front.jpeg',
     imageBack: '/products/gods-world-back.png',
-    flatLayFront: '/products/flatlay-front.png', // new
-    flatLayBack: '/products/flatlay-back.png',   // new
+    flatLayFront: '/products/flatlay-front.png',
+    flatLayBack: '/products/flatlay-back.png',
+    modelFront: '/products/model-front.png',
+    modelBack: '/products/model-back.png',
   },
 ];
 
@@ -38,7 +42,7 @@ export default function ProductPage() {
 
   const { addToCart } = useCart();
   const [selectedImage, setSelectedImage] = useState<
-    'front' | 'back' | 'flatFront' | 'flatBack'
+    'front' | 'back' | 'flatFront' | 'flatBack' | 'modelFront' | 'modelBack'
   >('front');
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
@@ -68,14 +72,7 @@ export default function ProductPage() {
       id: product.id,
       name: product.name,
       price: product.price,
-      image:
-        selectedImage === 'front'
-          ? product.imageFront
-          : selectedImage === 'back'
-          ? product.imageBack
-          : selectedImage === 'flatFront'
-          ? product.flatLayFront
-          : product.flatLayBack,
+     image: product.imageBack,
       quantity: 1,
       size: selectedSize,
     });
@@ -92,6 +89,10 @@ export default function ProductPage() {
                 ? product.imageFront
                 : selectedImage === 'back'
                 ? product.imageBack
+                : selectedImage === 'modelFront'
+                ? product.modelFront
+                : selectedImage === 'modelBack'
+                ? product.modelBack
                 : selectedImage === 'flatFront'
                 ? product.flatLayFront
                 : product.flatLayBack
@@ -111,6 +112,7 @@ export default function ProductPage() {
             >
               Front
             </button>
+
             <button
               className={`px-4 py-2 rounded border transition ${
                 selectedImage === 'back' ? 'bg-black text-white' : 'bg-white hover:bg-gray-100'
@@ -119,6 +121,25 @@ export default function ProductPage() {
             >
               Back
             </button>
+
+            <button
+              className={`px-4 py-2 rounded border transition ${
+                selectedImage === 'modelFront' ? 'bg-black text-white' : 'bg-white hover:bg-gray-100'
+              }`}
+              onClick={() => setSelectedImage('modelFront')}
+            >
+              Model Front
+            </button>
+
+            <button
+              className={`px-4 py-2 rounded border transition ${
+                selectedImage === 'modelBack' ? 'bg-black text-white' : 'bg-white hover:bg-gray-100'
+              }`}
+              onClick={() => setSelectedImage('modelBack')}
+            >
+              Model Back
+            </button>
+
             <button
               className={`px-4 py-2 rounded border transition ${
                 selectedImage === 'flatFront' ? 'bg-black text-white' : 'bg-white hover:bg-gray-100'
@@ -127,6 +148,7 @@ export default function ProductPage() {
             >
               Flat Lay Front
             </button>
+
             <button
               className={`px-4 py-2 rounded border transition ${
                 selectedImage === 'flatBack' ? 'bg-black text-white' : 'bg-white hover:bg-gray-100'
@@ -137,12 +159,17 @@ export default function ProductPage() {
             </button>
           </div>
         </div>
-
         {/* Product Info */}
         <div>
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
           <p className="text-xl text-gray-700 mb-4">${product.price}</p>
-          <p className="text-gray-600 mb-6">{product.description}</p>
+         <p className="text-gray-600 mb-6 whitespace-pre-line leading-relaxed">
+  {product.description}
+
+  <p className="text-xs text-gray-500 mt-6 mb-6 tracking-wide">
+  LIMITED FIRST DROP — NO RESTOCKS ONCE SOLD OUT
+</p>
+</p>
 
           {/* Size Selector */}
           <div className="mb-4">

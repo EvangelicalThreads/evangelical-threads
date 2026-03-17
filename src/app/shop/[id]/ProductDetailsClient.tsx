@@ -12,6 +12,10 @@ interface Product {
   description: string;
   imageFront: string;
   imageBack: string;
+  flatLayFront: string;
+  flatLayBack: string;
+  modelFront: string;
+  modelBack: string;
 }
 
 interface Props {
@@ -22,7 +26,9 @@ const sizes = ['S', 'M', 'L', 'XL'];
 
 export default function ProductDetailsClient({ product }: Props) {
   const { addToCart } = useCart();
-  const [selectedImage, setSelectedImage] = useState<'front' | 'back'>('front');
+  const [selectedImage, setSelectedImage] = useState<
+    'front' | 'back' | 'flatFront' | 'flatBack' | 'modelFront' | 'modelBack'
+  >('front');
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   const handleAddToCart = () => {
@@ -31,14 +37,14 @@ export default function ProductDetailsClient({ product }: Props) {
       return;
     }
 
-   addToCart({
-  id: product.id,
-  name: product.name,
-  price: product.price,
-  image: product.imageFront,
-  quantity: 1,
-  size: selectedSize,
-});
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.imageFront,
+      quantity: 1,
+      size: selectedSize,
+    });
   };
 
   return (
@@ -46,14 +52,26 @@ export default function ProductDetailsClient({ product }: Props) {
       <div className="grid md:grid-cols-2 gap-10 items-start">
         <div className="w-full">
           <Image
-            src={selectedImage === 'front' ? product.imageFront : product.imageBack}
+            src={
+              selectedImage === 'front'
+                ? product.imageFront
+                : selectedImage === 'back'
+                ? product.imageBack
+                : selectedImage === 'modelFront'
+                ? product.modelFront
+                : selectedImage === 'modelBack'
+                ? product.modelBack
+                : selectedImage === 'flatFront'
+                ? product.flatLayFront
+                : product.flatLayBack
+            }
             alt={product.name}
             width={600}
             height={600}
             className="w-full h-auto rounded-lg object-contain"
           />
 
-          <div className="flex space-x-4 mt-4 justify-center">
+          <div className="flex flex-wrap gap-2 mt-4 justify-center">
             <button
               className={`px-4 py-2 rounded border transition ${
                 selectedImage === 'front' ? 'bg-black text-white' : 'bg-white hover:bg-gray-100'
@@ -62,6 +80,7 @@ export default function ProductDetailsClient({ product }: Props) {
             >
               Front
             </button>
+
             <button
               className={`px-4 py-2 rounded border transition ${
                 selectedImage === 'back' ? 'bg-black text-white' : 'bg-white hover:bg-gray-100'
@@ -69,6 +88,42 @@ export default function ProductDetailsClient({ product }: Props) {
               onClick={() => setSelectedImage('back')}
             >
               Back
+            </button>
+
+            <button
+              className={`px-4 py-2 rounded border transition ${
+                selectedImage === 'modelFront' ? 'bg-black text-white' : 'bg-white hover:bg-gray-100'
+              }`}
+              onClick={() => setSelectedImage('modelFront')}
+            >
+              Model Front
+            </button>
+
+            <button
+              className={`px-4 py-2 rounded border transition ${
+                selectedImage === 'modelBack' ? 'bg-black text-white' : 'bg-white hover:bg-gray-100'
+              }`}
+              onClick={() => setSelectedImage('modelBack')}
+            >
+              Model Back
+            </button>
+
+            <button
+              className={`px-4 py-2 rounded border transition ${
+                selectedImage === 'flatFront' ? 'bg-black text-white' : 'bg-white hover:bg-gray-100'
+              }`}
+              onClick={() => setSelectedImage('flatFront')}
+            >
+              Flat Lay Front
+            </button>
+
+            <button
+              className={`px-4 py-2 rounded border transition ${
+                selectedImage === 'flatBack' ? 'bg-black text-white' : 'bg-white hover:bg-gray-100'
+              }`}
+              onClick={() => setSelectedImage('flatBack')}
+            >
+              Flat Lay Back
             </button>
           </div>
         </div>
