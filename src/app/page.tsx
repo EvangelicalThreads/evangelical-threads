@@ -1,309 +1,172 @@
 'use client';
 
-import React, { Suspense, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, useAnimation } from 'framer-motion';
-import { FaInstagram, FaTiktok } from 'react-icons/fa';
-import Newsletter from '../components/Newsletter';
-import UserStatus from '../components/UserStatus';
-import ScrollPopup from '../components/ScrollPopup';
-import { signIn } from 'next-auth/react';
-import { useSession } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
-import EmailSignUpPopup from '../components/EmailSignupPopup';
-
-
-function ScrollVerseManager({
-  onShowVerse,
-  hasPopupShown,
-  setHasPopupShown,
-}: {
-  onShowVerse: () => void;
-  hasPopupShown: boolean;
-  setHasPopupShown: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const welcomeName = searchParams.get('welcomeName');
-    const justLoggedIn = sessionStorage.getItem('justLoggedIn') === 'true';
-
-    if ((welcomeName || justLoggedIn) && !hasPopupShown) {
-      onShowVerse();
-      setHasPopupShown(true);
-      sessionStorage.removeItem('justLoggedIn');
-    }
-  }, [searchParams, hasPopupShown, onShowVerse, setHasPopupShown]);
-
-  return null;
-}
+import Newsletter from '@/components/Newsletter';
+import { FaInstagram, FaTiktok } from 'react-icons/fa6';
 
 export default function HomePage() {
-  const logoControls = useAnimation();
-  const jacketControls = useAnimation();
-  const navControls = useAnimation();
-  const leftControls = useAnimation();
-  const priceControls = useAnimation();
-  const { data: session } = useSession();
-
-  const [showScrollVerse, setShowScrollVerse] = useState(false);
-  const [showScrollLogin, setShowScrollLogin] = useState(false);
-  const [hasPopupShown, setHasPopupShown] = useState(false);
-  const [showLine, setShowLine] = useState(false);
-  const [hideSmallLogo, setHideSmallLogo] = useState(false);
-  const [showNewsletterPopup, setShowNewsletterPopup] = useState(false);
-
-
-  const handleLogin = async () => {
-    sessionStorage.setItem('justLoggedIn', 'true');
-    await signIn('credentials', { redirect: true, callbackUrl: '/' });
-  };
-
-  useEffect(() => {
-    const handleScrollLogin = () => {
-      setShowScrollLogin(window.scrollY >= 100);
-    };
-    window.addEventListener('scroll', handleScrollLogin);
-    return () => window.removeEventListener('scroll', handleScrollLogin);
-  }, []);
-
-  useEffect(() => {
-    const hasVisited = sessionStorage.getItem('homeAnimationPlayed');
-    if (!hasVisited) {
-      sessionStorage.setItem('homeAnimationPlayed', 'true');
-      const sequence = async () => {
-        await new Promise((resolve) => setTimeout(resolve, 200));
-        setShowLine(true);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setShowLine(false);
-        setHideSmallLogo(true);
-        await logoControls.start({
-          scale: 1.15,
-          opacity: 1,
-          y: 60,
-          transition: { duration: 0.8, ease: 'easeOut' },
-        });
-        await jacketControls.start({
-          opacity: 1,
-          transition: { duration: 0.6 },
-        });
-        navControls.start({ opacity: 1, x: 0, transition: { duration: 0.6 } });
-        leftControls.start({ opacity: 1, x: 0, transition: { duration: 0.6 } });
-        priceControls.start({ opacity: 1, x: 0, transition: { duration: 0.6 } });
-      };
-      sequence();
-    } else {
-      setHideSmallLogo(true);
-      logoControls.set({ scale: 1.15, opacity: 1, y: 60 });
-      jacketControls.set({ opacity: 1 });
-      navControls.set({ opacity: 1, x: 0 });
-      leftControls.set({ opacity: 1, x: 0 });
-      priceControls.set({ opacity: 1, x: 0 });
-    }
-  }, [logoControls, jacketControls, navControls, leftControls, priceControls]);
-
-  useEffect(() => {
-    if (!showScrollVerse) return;
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (!(e.target as HTMLElement).closest('.scroll-popup-container')) {
-        setShowScrollVerse(false);
-      }
-    };
-    document.addEventListener('click', handleOutsideClick);
-    return () => document.removeEventListener('click', handleOutsideClick);
-  }, [showScrollVerse]);
-
-useEffect(() => {
-  // Show popup 5 seconds after visiting the page
-  const timer = setTimeout(() => setShowNewsletterPopup(true), 4000);
-  return () => clearTimeout(timer);
-}, []);
-
-
+  const collectionCards = [
+    {
+      title: 'Front View',
+      image: '/city.png',
+      href: '/shop',
+      imageClass: 'object-cover object-[50%_22%]',
+    },
+    {
+      title: 'Back Graphic',
+      image: '/sunset.png',
+      href: '/shop',
+      imageClass: 'object-cover object-[50%_18%]',
+    },
+    {
+      title: 'On Body',
+      image: '/beach.png',
+      href: '/shop',
+      imageClass: 'object-cover object-[50%_20%]',
+    },
+  ];
 
   return (
-    <>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ScrollVerseManager
-          onShowVerse={() => setShowScrollVerse(true)}
-          hasPopupShown={hasPopupShown}
-          setHasPopupShown={setHasPopupShown}
-        />
-      </Suspense>
+    <div className="bg-white min-h-screen">
 
-      <div className="bg-white min-h-screen flex flex-col relative overflow-hidden">
-        {!hideSmallLogo && (
-          <div className="absolute top-[12%] md:top-[18%] left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2">
-            <Image src="/small-logo.png" alt="Small Logo" width={95} height={60} priority />
-          </div>
-        )}
+{/* Hero */}
+<section className="relative w-full h-[64vh] min-h-[430px] md:h-[86vh] md:min-h-[720px] overflow-hidden bg-[#f5f5f3]">
 
-        {showLine && (
-          <motion.div
-            initial={{ width: '0%' }}
-            animate={{ width: '100%' }}
-            transition={{ duration: 1, ease: 'easeInOut' }}
-            className="absolute top-[12%] md:top-[18%] left-0 h-[2px] bg-black z-40"
-            style={{ transform: 'translateY(-50%)' }}
-          />
-        )}
-<div className="w-full overflow-hidden relative z-40">
-  <motion.div
-    initial={{ x: '100%' }}
-    animate={{ x: '-100%' }}
-    transition={{ repeat: Infinity, ease: 'linear', duration: 10 }}
-    className="whitespace-nowrap text-white py-2 text-sm font-semibold flex w-max bg-black"
-  >
-    <span className="mx-12 inline-block">NEW DROP 💫 — LIVE NOW</span>
-    <span className="mx-12 inline-block">NEW DROP 💫 — LIVE NOW</span>
-    <span className="mx-12 inline-block">NEW DROP 💫 — LIVE NOW</span>
-    <span className="mx-12 inline-block">NEW DROP 💫 — LIVE NOW</span>
-  </motion.div>
-</div>
+  <Image
+    src="/hero-image.png"
+    alt="God's World Collection"
+    fill
+    priority
+    sizes="100vw"
+    className="object-cover object-[53%_center] md:object-[54%_center]"
+  />
 
+  <div className="absolute inset-0 bg-black/10" />
 
-        <main className="flex flex-1 max-w-[1200px] mx-auto p-8 gap-20 relative items-start w-full">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={leftControls}
-            className="flex flex-col justify-center items-center max-w-xs z-12 text-black ml-24 mt-20 text-center"
+  <div className="absolute inset-0">
+    <div className="relative w-full h-full">
+
+      <div className="absolute bottom-12 right-0 w-[52%] md:bottom-16 md:left-1/2 md:right-auto md:w-full md:-translate-x-1/2">
+
+        <div className="text-white text-left md:text-center">
+
+          <p className="text-[10px] md:text-xs tracking-[0.28em] uppercase mb-3 md:mb-4">
+            New Drop
+          </p>
+
+          <h1 className="text-[26px] leading-[0.95] md:text-[72px] md:leading-[0.98] font-medium tracking-[-0.03em]">
+            God&apos;s World Collection
+          </h1>
+
+          <Link
+            href="/shop"
+            className="inline-block mt-4 md:mt-5 text-[14px] md:text-lg underline underline-offset-4 hover:opacity-75 transition"
           >
-            <h1 className="text-3xl font-bold leading-tight">
-              <span className="block">Evangelical</span>
-              <span className="block">Threads</span>
-            </h1>
-            <div className="mt-8 max-w-[220px]">
-              <p className="text-lg font-light leading-snug">Faith driven fashion</p>
-              <p className="text-lg font-bold leading-snug mt-1">combined with tech</p>
-            </div>
-            <Link
-              href="/shop"
-              className="mt-8 px-6 py-2 border-2 border-black text-black font-semibold hover:bg-black hover:text-white transition duration-300 ease-in-out max-w-[120px]"
-            >
-              Buy Now
-            </Link>
-          </motion.div>
+            Shop Now
+          </Link>
 
-          <div className="relative flex-1 flex justify-center items-center overflow-visible">
-            <motion.div
-              initial={{ scale: 0.1, opacity: 0 }}
-              animate={logoControls}
-              className="relative w-[80vw] max-w-[950px]"
-              style={{ marginLeft: '-60%' }}
-            >
-              <Image src="/big-logo.svg" alt="Big Logo" width={950} height={475} priority />
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={jacketControls}
-                className="absolute"
-                style={{
-                  top: '43%',
-                  left: '60%',
-                  transform: 'translate(-50%, -50%)',
-                  pointerEvents: 'none',
-                  zIndex: 25,
-                }}
-              >
-                <Image src="/jacket.svg" alt="Jacket" width={400} height={400} priority />
-              </motion.div>
-            </motion.div>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={priceControls}
-            className="absolute bottom-8 right-5 flex flex-col items-end text-black z-10"
-          >
-            <p className="text-sm">Starting at</p>
-            <p className="text-3xl font-bold -mt-1">$45</p>
-          </motion.div>
-        </main>
-
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="flex flex-wrap justify-center gap-6 mt-12 px-4"
-        >
-          {[
-            { src: '/model-blue.jpeg', alt: 'Model Jacket', link: '/shop' },
-            { src: '/model-guy.png', alt: 'Model Guy', link: '/shop' },
-            { src: '/model-girl.png', alt: 'Model Girl', link: '/shop' },
-          ].map((model, idx) => (
-            <Link
-              key={idx}
-              href={model.link}
-              className="relative w-64 sm:w-72 md:w-80 lg:w-[22rem] xl:w-[24rem] h-[24rem] md:h-[26rem] lg:h-[28rem] group overflow-hidden rounded-2xl shadow-md block"
-            >
-              <Image
-  src={model.src}
-  alt={model.alt}
-  fill
-  className={`transition-transform duration-500 transform ${
-    idx === 0
-      ? 'object-contain scale-[1] group-hover:scale-[1.1]'
-      : 'object-cover group-hover:scale-105'
-  }`}
-  priority
-/>
-              <div className="hidden md:block absolute bottom-0 left-0 w-full bg-black/60 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <span className="text-sm font-semibold">Shop Now</span>
-              </div>
-              <div className="md:hidden absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-3 py-1 rounded-md z-10">
-                Shop Now
-              </div>
-            </Link>
-          ))}
-        </motion.div>
-
-        <Newsletter />
-
-        <div className="text-center mb-12">
-          <h3 className="text-lg font-semibold text-black mb-2">Follow us</h3>
-          <div className="flex justify-center gap-6 text-black text-2xl">
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
-              <FaInstagram />
-            </a>
-            <a href="https://tiktok.com" target="_blank" rel="noreferrer" aria-label="TikTok">
-              <FaTiktok />
-            </a>
-          </div>
         </div>
+      </div>
 
-        {!session && showScrollLogin && (
-          <div className="fixed bottom-5 right-5 bg-white shadow-lg rounded-md p-4 max-w-xs z-50">
-            <p className="mb-2">Log in to see personalized verses.</p>
-            <button
-              onClick={handleLogin}
-              className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition"
-            >
-              Log In
-            </button>
+    </div>
+  </div>
+</section>
+{/* Collection Grid */}
+<section className="w-full border-t border-black/10 bg-white">
+  <div className="max-w-[1180px] mx-auto px-5 md:px-8 py-16 md:py-24">
+
+    <div className="mb-10 md:mb-14 text-center">
+      <p className="text-[11px] md:text-xs uppercase tracking-[0.28em] text-black/55 mb-3">
+        Collection
+      </p>
+      <h2 className="text-[34px] md:text-[56px] leading-none font-medium tracking-[-0.04em] text-black">
+        God&apos;s World
+      </h2>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-7">
+      {collectionCards.map((item, index) => (
+        <Link key={index} href={item.href} className="group block">
+          <div className="relative aspect-[4/5.2] overflow-hidden bg-[#f5f5f3]">
+            <Image
+              src={item.image}
+              alt={item.title}
+              fill
+              className={`${item.imageClass} transition duration-700 ease-out group-hover:scale-[1.04]`}
+            />
           </div>
-        )}
 
-        <UserStatus />
+          <div className="pt-4 md:pt-5 text-center">
+            <p className="text-[15px] md:text-[19px] text-black tracking-[-0.02em]">
+              {item.title}
+            </p>
+          </div>
+        </Link>
+      ))}
+    </div>
+  </div>
+</section>
 
-        {session && (
-          <ScrollPopup
-            isVisible={showScrollVerse}
-            onClose={() => setShowScrollVerse(false)}
-            verseText={`“You are the light of the world.” — Matthew 5:14`}
-            className="scroll-popup-container"
-          />
-        )}
+      {/* Split Video Section */}
+      <section className="w-full h-screen overflow-hidden bg-white">
 
-<EmailSignUpPopup
-  isVisible={showNewsletterPopup}
-  onClose={() => setShowNewsletterPopup(false)}
-/>
+        <div className="grid grid-cols-2 h-full w-full">
 
-      {/* Spacer to prevent overlap on mobile */}
-<div className="block sm:hidden h-24" />
-</div>
-    </>
+          <div className="relative h-full w-full overflow-hidden">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="none"
+              className="absolute inset-0 h-full w-full object-cover"
+              style={{ objectPosition: 'center 20%' }}
+            >
+              <source src="/mvi-8191-2.mp4" type="video/mp4" />
+            </video>
+          </div>
+
+          <div className="relative h-full w-full overflow-hidden">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="none"
+              className="absolute inset-0 h-full w-full object-cover"
+              style={{ objectPosition: 'center center' }}
+            >
+              <source src="/mvi-8472.mp4" type="video/mp4" />
+            </video>
+          </div>
+
+        </div>
+      </section>
+
+           <Newsletter />
+
+      <div className="text-center mb-12">
+        <h3 className="text-lg font-semibold text-black mb-2">Follow us</h3>
+        <div className="flex justify-center gap-6 text-black text-2xl">
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Instagram"
+          >
+            <FaInstagram />
+          </a>
+          <a
+            href="https://tiktok.com"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="TikTok"
+          >
+            <FaTiktok />
+          </a>
+        </div>
+      </div>
+    </div>
   );
-  
 }

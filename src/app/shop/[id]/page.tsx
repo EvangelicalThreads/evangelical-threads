@@ -10,7 +10,7 @@ const products = [
   {
     id: 'gods-world',
     name: "God's World Tee",
-    price: 49.99,
+    price: 38.00,
     description:
       "Our iconic God's World Tee features a bold front design and a powerful back graphic. Soft, premium cotton ensures comfort and style.",
     imageFront: '/products/gods-world-front.jpeg',

@@ -17,7 +17,7 @@ const products: Product[] = [
   {
     id: 'gods-world',
     name: "God's World Tee",
-    price: 49.99,
+    price: 38.00,
     imageFront: '/products/gods-world-front.jpeg',
     imageBack: '/products/gods-world-back.png',
   },
