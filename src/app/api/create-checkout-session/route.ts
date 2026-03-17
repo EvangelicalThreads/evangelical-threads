@@ -19,7 +19,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid cart items' }, { status: 400 });
     }
 
-    const origin = req.headers.get('origin') || 'https://yourdomain.com';
+const origin = req.headers.get('origin') || 'https://www.evangelicalthreads.com';
 
     // 1️⃣ Create Stripe checkout session with shipping address collection
     const session = await stripe.checkout.sessions.create({
