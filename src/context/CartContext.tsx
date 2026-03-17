@@ -93,7 +93,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const clearCart = () => setCart([]);
+  const clearCart = () => {
+    setCart([]);
+    localStorage.removeItem("cart");
+  };
 
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 

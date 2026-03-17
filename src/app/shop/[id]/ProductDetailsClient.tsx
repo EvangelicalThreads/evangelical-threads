@@ -31,14 +31,14 @@ export default function ProductDetailsClient({ product }: Props) {
       return;
     }
 
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: selectedImage === 'front' ? product.imageFront : product.imageBack,
-      quantity: 1,
-      size: selectedSize,
-    });
+   addToCart({
+  id: product.id,
+  name: product.name,
+  price: product.price,
+  image: product.imageFront,
+  quantity: 1,
+  size: selectedSize,
+});
   };
 
   return (

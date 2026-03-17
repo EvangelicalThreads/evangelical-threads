@@ -19,9 +19,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid cart items' }, { status: 400 });
     }
 
-const origin = req.headers.get('origin') || 'https://www.evangelicalthreads.com';
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL || 'https://www.evangelicalthreads.com';
 
-    // 1️⃣ Create Stripe checkout session with shipping address collection
+    console.log('cartItems received:', cartItems);
+    console.log(
+      'Stripe image URLs:',
+      cartItems.map((item) => `${siteUrl}${item.image}`)
+    );
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
@@ -30,24 +36,23 @@ const origin = req.headers.get('origin') || 'https://www.evangelicalthreads.com'
           currency: 'usd',
           product_data: {
             name: item.name,
-            images: [`${origin}/products/${item.image}`],
+            images: [`${siteUrl}${item.image}`],
           },
           unit_amount: Math.round(item.price * 100),
         },
         quantity: item.quantity,
       })),
       shipping_address_collection: {
-        allowed_countries: ['US', 'CA'], // add more countries if needed
+        allowed_countries: ['US', 'CA'],
       },
-      success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/checkout`,
+      success_url: `${siteUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${siteUrl}/checkout`,
     });
 
-    // 2️⃣ Store initial order in your DB with "pending" status
     await prisma.orders.create({
       data: {
         stripe_session_id: session.id,
-        name: '', // will fill after webhook
+        name: '',
         address: '',
         city: '',
         state: '',
@@ -60,6 +65,9 @@ const origin = req.headers.get('origin') || 'https://www.evangelicalthreads.com'
     return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error('Stripe error:', error);
-    return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to create checkout session' },
+      { status: 500 }
+    );
   }
 }
