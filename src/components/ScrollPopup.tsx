@@ -39,7 +39,7 @@ export default function ScrollPopup({
       scaleY: 1,
       rotateX: 0,
       transformOrigin: 'top center',
-      transition: { type: 'spring', stiffness: 280, damping: 30, mass: 0.7 },
+      transition: { type: 'spring' as const, stiffness: 280, damping: 30, mass: 0.7 },
     },
     exit: {
       height: 0,
@@ -47,7 +47,7 @@ export default function ScrollPopup({
       scaleY: 0.2,
       rotateX: 90,
       transformOrigin: 'top center',
-      transition: { duration: 0.6, ease: 'easeInOut' },
+      transition: { duration: 0.6, ease: 'easeInOut' as const },
     },
   };
 
@@ -56,12 +56,12 @@ export default function ScrollPopup({
     visible: {
       opacity: 1,
       y: 0,
-      transition: { delay: 0.2, duration: 0.8, ease: 'easeOut' },
+      transition: { delay: 0.2, duration: 0.8, ease: 'easeOut' as const },
     },
     exit: {
       opacity: 0,
       y: -30,
-      transition: { duration: 0.3, ease: 'easeIn' },
+      transition: { duration: 0.3, ease: 'easeIn' as const },
     },
   };
 
