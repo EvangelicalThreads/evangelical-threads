@@ -23,7 +23,7 @@ const faqData = [
   },
   {
     question: "What payment methods do you accept?",
-    answer: "We accept all major credit/debit cards via Stripe and PayPal.",
+    answer: "We accept all major credit/debit cards via Stripe.",
   },
   {
     question: "Can I change or cancel my order after placing it?",

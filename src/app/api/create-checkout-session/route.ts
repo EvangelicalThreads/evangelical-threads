@@ -7,6 +7,7 @@ interface CartItem {
   image: string;
   price: number;
   quantity: number;
+  size?: string;
 }
 
 const prisma = new PrismaClient();
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: item.name,
+            name: item.size ? `${item.name} (Size: ${item.size})` : item.name,
             images: [`${siteUrl}${item.image}`],
           },
           unit_amount: Math.round(item.price * 100),
