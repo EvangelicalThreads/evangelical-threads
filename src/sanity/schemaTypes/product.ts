@@ -1,4 +1,5 @@
-export default {
+/* eslint-disable import/no-anonymous-default-export */
+const product = {
   name: 'product',
   title: 'Product',
   type: 'document',
@@ -63,7 +64,6 @@ export default {
         { name: 'oneSize', type: 'number', title: 'One Size (for non-apparel)' },
       ],
     },
-    // Apparel fixed image slots
     {
       name: 'imageFront',
       title: '📸 Front',
@@ -100,7 +100,6 @@ export default {
       type: 'image',
       hidden: ({ document }: { document: { category?: string } }) => document?.category !== 'apparel',
     },
-    // Non-apparel flexible images
     {
       name: 'images',
       title: 'Product Images',
@@ -142,3 +141,5 @@ export default {
     },
   ],
 }
+
+export default product
