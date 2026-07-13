@@ -41,7 +41,7 @@ export default function CheckoutPage() {
         <p>Add some products from the shop to get started.</p>
         <Link
           href="/shop"
-          className="inline-block mt-6 px-6 py-3 border border-[#D4AF37] text-[#D4AF37] rounded hover:bg-[#D4AF37] hover:text-white transition font-semibold shadow-md"
+          className="inline-block mt-6 px-6 py-3 border border-[#14161a ] text-[#14161a ] rounded hover:bg-[#14161a ] hover:text-white transition font-semibold shadow-md"
         >
           Continue Shopping
         </Link>
@@ -128,7 +128,7 @@ export default function CheckoutPage() {
       <div className="mt-6">
         <Link
           href="/shop"
-          className="inline-block mt-6 px-6 py-3 border border-[#D4AF37] text-[#D4AF37] rounded hover:bg-[#D4AF37] hover:text-white transition font-semibold shadow-md"
+          className="inline-block mt-6 px-6 py-3 border border-[#14161a ] text-[#14161a ] rounded hover:bg-[#14161a ] hover:text-white transition font-semibold shadow-md"
         >
           Continue Shopping
         </Link>

@@ -3,6 +3,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =============== RYVOL palette ===============
+   off-white #F2F0EB | stone #C8C4BC | charcoal #2A2A2A
+   ink #14161a | navy #0E1114 | rust #A1543E
+*/
+
 /* =============== Base Layout =============== */
 html,
 body {
@@ -10,15 +15,26 @@ body {
   width: 100%;
   padding: 0;
   margin: 0;
-  font-family: 'Playfair Display', serif;
-  background-color: #ffffff;
-  color: #171717;
+  font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #F2F0EB;
+  color: #14161a;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
 }
 
 #__next, main {
   min-height: 100%;
+}
+
+::selection {
+  background: #14161a;
+  color: #F2F0EB;
+}
+
+video,
+img {
+  user-select: none;
 }
 
 /* =============== Animations =============== */
@@ -33,34 +49,20 @@ body {
   }
 }
 
-@keyframes wave {
-  0% { transform: rotate(0deg); }
-  15% { transform: rotate(15deg); }
-  30% { transform: rotate(-10deg); }
-  45% { transform: rotate(15deg); }
-  60% { transform: rotate(-10deg); }
-  75% { transform: rotate(15deg); }
-  100% { transform: rotate(0deg); }
-}
-
-.animate-wave {
-  display: inline-block;
-  transform-origin: 70% 70%;
-  animation: wave 2.5s infinite;
-}
-
 .animate-fadeIn {
   animation: fadeIn 0.6s ease forwards;
 }
 
-/* =============== Header Font Resize =============== */
-.evangelical-header {
-  font-size: 2.5rem;
+/* =============== RYVOL utilities =============== */
+.rv-wordmark {
+  letter-spacing: 0.38em;
+  text-indent: 0.38em; /* optically centers tracked text */
   font-weight: 700;
+  text-transform: uppercase;
 }
 
-@media (max-width: 640px) {
-  .evangelical-header {
-    font-size: 1rem;
-  }
+.rv-navlink {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
 }

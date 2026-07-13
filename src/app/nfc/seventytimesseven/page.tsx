@@ -162,7 +162,7 @@ export default function SharedReflectionsPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-8 font-sans text-gray-900">
-      <h1 className="text-4xl font-extrabold mb-8 text-[#D4AF37]">Seventy Times Seven Community Reflections</h1>
+      <h1 className="text-4xl font-extrabold mb-8 text-[#14161a ]">Seventy Times Seven Community Reflections</h1>
 
       <form onSubmit={handleSubmit} className="mb-8 flex flex-col">
         <textarea
@@ -171,12 +171,12 @@ export default function SharedReflectionsPage() {
           value={newReflection}
           onChange={(e) => setNewReflection(e.target.value)}
           rows={5}
-          className="border border-[#D4AF37] rounded-lg p-4 resize-none shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] mb-4"
+          className="border border-[#14161a ] rounded-lg p-4 resize-none shadow-sm focus:outline-none focus:ring-2 focus:ring-[#14161a ] mb-4"
           required
         />
         <button
           type="submit"
-          className="self-start px-8 py-3 bg-[#D4AF37] text-white font-semibold rounded-lg hover:bg-yellow-600 transition shadow-md"
+          className="self-start px-8 py-3 bg-[#14161a ] text-white font-semibold rounded-lg hover:bg-yellow-600 transition shadow-md"
         >
           Submit Reflection
         </button>
@@ -218,7 +218,7 @@ export default function SharedReflectionsPage() {
                   if (!isOpen) fetchComments(r.id);
                   setShowComments((prev) => ({ ...prev, [r.id]: !isOpen }));
                 }}
-                className="text-sm text-[#D4AF37] underline self-start"
+                className="text-sm text-[#14161a ] underline self-start"
               >
                 {showComments[r.id] ? "Hide Comments" : "View Comments"}
               </button>
@@ -260,12 +260,12 @@ export default function SharedReflectionsPage() {
                           [r.id]: e.target.value,
                         }))
                       }
-                      className="w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none"
+                      className="w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#14161a ] resize-none"
                       required
                     />
                     <button
                       type="submit"
-                      className="mt-1 px-4 py-2 bg-[#D4AF37] text-white rounded hover:bg-yellow-600 transition text-sm font-semibold"
+                      className="mt-1 px-4 py-2 bg-[#14161a ] text-white rounded hover:bg-yellow-600 transition text-sm font-semibold"
                     >
                       Submit Comment
                     </button>

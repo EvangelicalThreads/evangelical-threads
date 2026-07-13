@@ -59,7 +59,7 @@ export default function ResetPasswordPage() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-[#D4AF37] text-white rounded px-4 py-3 font-semibold hover:bg-yellow-500 transition"
+          className="bg-[#14161a ] text-white rounded px-4 py-3 font-semibold hover:bg-yellow-500 transition"
         >
           {loading ? 'Sending...' : 'Send Reset Link'}
         </button>
@@ -70,7 +70,7 @@ export default function ResetPasswordPage() {
 
       <button
         onClick={() => router.push('/login')}
-        className="mt-8 text-[#D4AF37] underline hover:text-yellow-500"
+        className="mt-8 text-[#14161a ] underline hover:text-yellow-500"
       >
         Back to Login
       </button>

@@ -1,6 +1,6 @@
-# Evangelical Threads
+# RYVOL
 
-Evangelical Threads official site built with Next.js and Stripe.
+RYVOL official site built with Next.js and Stripe.
 
 ## Getting Started
 

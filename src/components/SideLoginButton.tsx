@@ -11,7 +11,7 @@ export default function SideLoginButton() {
     return (
       <button
         onClick={() => signIn("credentials", { callbackUrl: "/" })}
-        className="fixed top-1/2 right-0 transform -translate-y-1/2 rotate-[-90deg] origin-right bg-[#D4AF37] text-white text-sm px-4 py-2 rounded-tl-lg rounded-bl-lg shadow-lg hover:bg-yellow-600 transition z-50"
+        className="fixed top-1/2 right-0 transform -translate-y-1/2 rotate-[-90deg] origin-right bg-[#14161a ] text-white text-sm px-4 py-2 rounded-tl-lg rounded-bl-lg shadow-lg hover:bg-yellow-600 transition z-50"
 
       >
         Log In

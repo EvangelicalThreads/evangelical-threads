@@ -73,7 +73,7 @@ export default function PurchasedPage() {
         </p>
         <Link
           href="/shop"
-          className="inline-block px-6 py-3 bg-[#D4AF37] text-white font-semibold rounded-lg hover:bg-yellow-600 transition"
+          className="inline-block px-6 py-3 bg-[#14161a ] text-white font-semibold rounded-lg hover:bg-yellow-600 transition"
         >
           Back to Shop
         </Link>
@@ -85,7 +85,7 @@ export default function PurchasedPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-8 font-sans text-gray-900 text-center">
-      <h1 className="text-4xl font-extrabold mb-8 text-[#D4AF37]">
+      <h1 className="text-4xl font-extrabold mb-8 text-[#14161a ]">
         You own shirt #{shirtNumber}, thank you for your purchase,{" "}
         {session.user.name?.trim() ? session.user.name : "Friend"}!
       </h1>
@@ -101,7 +101,7 @@ export default function PurchasedPage() {
 
      <Link
   href="/nfc/seventytimesseven"
-  className="inline-block px-6 py-3 bg-[#D4AF37] text-white font-semibold rounded-lg hover:bg-yellow-600 transition"
+  className="inline-block px-6 py-3 bg-[#14161a ] text-white font-semibold rounded-lg hover:bg-yellow-600 transition"
 >
   Connect with others who bought this item
 </Link>

@@ -4,7 +4,7 @@ export default function PrivacyPage() {
       <h1 className="text-3xl font-bold mb-8 tracking-tight text-black">Privacy & Cookies</h1>
 
       <p className="mb-4">
-        At <strong>Evangelical Threads</strong>, your privacy is deeply respected. We only collect what’s necessary to
+        At <strong>RYVOL</strong>, your privacy is deeply respected. We only collect what’s necessary to
         help you shop, stay logged in, and receive updates — nothing more.
       </p>
 

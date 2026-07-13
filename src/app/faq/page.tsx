@@ -92,7 +92,7 @@ export default function FAQPage() {
             href="https://www.instagram.com/evangelicalthreads"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-[#D4AF37] transition transform hover:scale-110"
+            className="hover:text-[#14161a ] transition transform hover:scale-110"
             aria-label="Instagram"
           >
             <FaInstagram />
@@ -101,7 +101,7 @@ export default function FAQPage() {
             href="https://www.tiktok.com/@evangelicalthreads"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-[#D4AF37] transition transform hover:scale-110"
+            className="hover:text-[#14161a ] transition transform hover:scale-110"
             aria-label="TikTok"
           >
             <FaTiktok />

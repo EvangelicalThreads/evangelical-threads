@@ -5,7 +5,6 @@ import { SessionProvider } from 'next-auth/react';
 import type { Session } from 'next-auth';
 import { Toaster } from 'react-hot-toast';
 import Navbar from '../components/Navbar';
-import ScrollPopup from '../components/ScrollPopup';
 import { CartProvider } from '../context/CartContext';
 import React, { useState, useEffect } from 'react';
 
@@ -15,17 +14,12 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({ children, session }: RootLayoutProps) {
-  const [scrollVisible, setScrollVisible] = useState(false);
   const [showCookieBanner, setShowCookieBanner] = useState(false);
 
   useEffect(() => {
     const accepted = localStorage.getItem('cookieAccepted');
     if (!accepted) setShowCookieBanner(true);
   }, []);
-
-  const handleScrollClose = () => {
-    setScrollVisible(false);
-  };
 
   const acceptCookies = () => {
     localStorage.setItem('cookieAccepted', 'true');
@@ -34,33 +28,38 @@ export default function RootLayout({ children, session }: RootLayoutProps) {
 
   return (
     <html lang="en">
-      <body className="min-h-screen overflow-x-hidden">
+      <body className="min-h-screen overflow-x-hidden bg-[#F2F0EB] text-[#14161a]">
         <SessionProvider session={session}>
           <CartProvider>
             <Navbar />
-            <ScrollPopup
-              isVisible={scrollVisible}
-              onClose={handleScrollClose}
-              verseText="You are the light of the world."
-            />
             {children}
           </CartProvider>
         </SessionProvider>
 
-        <Toaster position="top-center" />
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: '#14161a',
+              color: '#F2F0EB',
+              borderRadius: '0',
+              fontSize: '13px',
+              letterSpacing: '0.05em',
+            },
+          }}
+        />
 
         {showCookieBanner && (
-          <div className="fixed bottom-0 w-full bg-white border-4 border-[#D4AF37] text-[#D4AF37] text-sm px-4 py-3 flex justify-between items-center z-50 shadow-md rounded-t-md">
-            <span>
-              We use essential cookies to keep your cart and login sessions active and
-              improve your experience.{' '}
-              <a href="/privacy" className="underline text-[#D4AF37] hover:text-[#bfa236]">
+          <div className="fixed bottom-0 w-full bg-[#F2F0EB] border-t border-[#14161a]/15 text-[#14161a] text-xs px-5 py-4 flex justify-between items-center z-50">
+            <span className="tracking-[0.02em]">
+              We use essential cookies to keep your cart and login sessions active.{' '}
+              <a href="/privacy" className="underline underline-offset-2 hover:text-[#A1543E]">
                 Privacy Policy
               </a>
             </span>
             <button
               onClick={acceptCookies}
-              className="ml-4 border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-white text-[#D4AF37] px-3 py-1 rounded font-semibold transition"
+              className="ml-4 shrink-0 bg-[#14161a] text-[#F2F0EB] px-5 py-2 text-[10px] uppercase tracking-[0.28em] hover:bg-[#A1543E] transition"
             >
               Accept
             </button>

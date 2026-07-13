@@ -100,7 +100,7 @@ export default function ResetPasswordConfirmContent() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-[#D4AF37] text-white rounded px-4 py-3 font-semibold hover:bg-yellow-500 transition"
+            className="bg-[#14161a ] text-white rounded px-4 py-3 font-semibold hover:bg-yellow-500 transition"
           >
             {loading ? "Updating..." : "Update Password"}
           </button>

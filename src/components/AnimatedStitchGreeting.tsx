@@ -40,7 +40,7 @@ export default function AnimatedStitchGreeting({ name, onComplete }: AnimatedSti
           textAnchor="middle"
           fontSize="48"
           fontFamily="'Dancing Script', cursive"
-          stroke="#D4AF37"
+          stroke="#14161a "
           strokeWidth="1.2"
           fill="none"
           style={{
@@ -56,7 +56,7 @@ export default function AnimatedStitchGreeting({ name, onComplete }: AnimatedSti
         {/* Needle icon */}
         <circle
           r="6"
-          fill="#D4AF37"
+          fill="#14161a "
           style={{
             transformOrigin: "center",
             animation: animationDone ? "none" : "needleMove 4s cubic-bezier(0.4, 0, 0.2, 1) forwards",

@@ -2,7 +2,7 @@
 "use client";
 
 /**
- * Evangelical Threads — QR Shirt Experience (FW23)
+ * RYVOL — QR Shirt Experience (FW23)
  * Ultra-polished LV-level launch page
  * - Faith × Future Fashion
  * - Fully interactive, frictionless, luxury animations
@@ -513,7 +513,7 @@ function Footer() {
           transition={{ duration: 0.8 }}
           className="text-white font-bold text-2xl"
         >
-          EVANGELICAL THREADS
+          RYVOL
         </motion.h5>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -521,7 +521,7 @@ function Footer() {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          © {new Date().getFullYear()} Evangelical Threads. All rights reserved.
+          © {new Date().getFullYear()} RYVOL. All rights reserved.
         </motion.p>
         <motion.div
           className="flex justify-center gap-6 mt-6"

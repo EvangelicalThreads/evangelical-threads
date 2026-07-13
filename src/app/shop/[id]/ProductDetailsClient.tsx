@@ -187,9 +187,9 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
 
           {showSizeChart && product.sizeChart?.length > 0 && (
             <div className="fixed inset-0 bg-[rgba(255,255,255,0.6)] backdrop-blur-sm flex justify-center items-center z-50">
-              <div className="bg-white/90 border border-[#D4AF37]/30 rounded-2xl p-6 w-[90%] max-w-lg shadow-xl relative">
+              <div className="bg-white/90 border border-[#14161a ]/30 rounded-2xl p-6 w-[90%] max-w-lg shadow-xl relative">
                 <button onClick={() => setShowSizeChart(false)} className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl font-bold">×</button>
-                <h2 className="text-2xl font-semibold mb-4 text-center text-[#D4AF37]">Size Chart</h2>
+                <h2 className="text-2xl font-semibold mb-4 text-center text-[#14161a ]">Size Chart</h2>
                 <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
                   <thead className="bg-gray-100 text-gray-700">
                     <tr>
@@ -228,7 +228,7 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
       </div>
 
       <div className="mt-12 text-center">
-        <Link href="/shop" className="inline-block px-6 py-3 border border-[#D4AF37] text-[#D4AF37] rounded hover:bg-[#D4AF37] hover:text-white transition font-semibold shadow-md">
+        <Link href="/shop" className="inline-block px-6 py-3 border border-[#14161a ] text-[#14161a ] rounded hover:bg-[#14161a ] hover:text-white transition font-semibold shadow-md">
           View More Products
         </Link>
       </div>
