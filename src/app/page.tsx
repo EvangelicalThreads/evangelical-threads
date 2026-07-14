@@ -41,7 +41,7 @@ export default function HomePage() {
       title: 'On Body',
       image: '/beach.png', // TODO: on-body shot — 5146 hood / mesh short
       href: '/shop',
-      imageClass: 'object-cover object-[50%_20%]',
+      imageClass: 'object-cover object-[38%_30%]'
     },
   ];
 
@@ -76,8 +76,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#F2F0EB]/40 via-transparent to-transparent" />
 
         <div className="absolute left-[6vw] top-1/2 -translate-y-[58%] max-w-[560px]">
-          <h1 className="text-[26px] md:text-[52px] font-semibold uppercase tracking-[0.16em] leading-[1.28] text-[#14161a]">
-            <span className="block">Built for<br />Movement.</span>
+<h1 className="text-[22px] md:text-[42px] font-semibold uppercase tracking-[0.14em] leading-[1.15] text-[#14161a]">            <span className="block">Built for<br />Movement.</span>
             <span className="block mt-[0.55em]">Designed for<br />Freedom.</span>
           </h1>
 
@@ -142,48 +141,41 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Split Video Section */}
-      <section className="w-full h-[70vh] md:h-screen overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-2 h-full w-full">
+      {/* Split Image Section */}
+<section className="w-full h-[70vh] md:h-screen overflow-hidden">
+  <div className="grid grid-cols-1 md:grid-cols-2 h-full w-full">
 
-          <div className="relative h-full w-full overflow-hidden rv-reveal">
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="none"
-              className="absolute inset-0 h-full w-full object-cover"
-              style={{ objectPosition: 'center 20%' }}
-            >
-              <source src="/mvi-8191-2.mp4" type="video/mp4" /> {/* TODO: RYVOL footage */}
-            </video>
-            <p className="absolute bottom-8 left-8 text-[12px] uppercase tracking-[0.3em] text-[#F2F0EB]">
-              Move with intention.
-            </p>
-          </div>
+    <div className="relative h-full w-full overflow-hidden rv-reveal">
+     <Image
+  src="/split-image1.png"
+  alt="Move with intention"
+  fill
+  className="object-cover"
+  style={{ objectPosition: '70% 10%' }}
 
-          <div className="relative h-full w-full overflow-hidden rv-reveal">
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="none"
-              className="absolute inset-0 h-full w-full object-cover"
-              style={{ objectPosition: 'center center' }}
-            >
-              <source src="/mvi-8472.mp4" type="video/mp4" />
-            </video>
-            <p className="absolute bottom-8 left-8 text-[12px] uppercase tracking-[0.3em] text-[#F2F0EB]">
-              Live without limits.
-            </p>
-          </div>
+      />
+      <p className="absolute bottom-8 left-8 text-[12px] uppercase tracking-[0.3em] text-[#F2F0EB]">
+        UNRYVOLED.
+      </p>
+    </div>
 
-        </div>
-      </section>
+    <div className="relative h-full w-full overflow-hidden rv-reveal">
+      <Image
+        src="/split-image2.png"
+        alt="Live without limits"
+        fill
+        className="object-cover"
+        style={{ objectPosition: 'center center' }}
+      />
+      <p className="absolute bottom-8 left-8 text-[12px] uppercase tracking-[0.3em] text-[#F2F0EB]">
+        PURSUIT.
+      </p>
+    </div>
 
-      <Newsletter />
+  </div>
+</section>
+
+<Newsletter />
 
     </div>
   );
