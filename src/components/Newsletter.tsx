@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 
-export default function Newsletter() {
+export default function Newsletter({ showHeading = true }: { showHeading?: boolean }) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
@@ -25,8 +25,12 @@ export default function Newsletter() {
 
   return (
     <div className="mt-20 mb-6 px-6 text-center">
-      <h2 className="text-xl font-bold mb-2 text-black">Stay Updated</h2>
-      <p className="text-gray-600 mb-4 text-sm">Get notified about future drops, restocks, and more.</p>
+      {showHeading && (
+        <>
+          <h2 className="text-xl font-bold mb-2 text-black">Be First.</h2>
+          <p className="text-gray-600 mb-4 text-sm">Limited quantities. Join the list before the first drop.</p>
+        </>
+      )}
       <form
         onSubmit={handleSubmit}
         className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto"

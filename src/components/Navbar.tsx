@@ -4,10 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useCart } from "../context/CartContext";
-import { ShoppingCart, User, ChevronDown } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-// RYVOL palette: off-white #F2F0EB | ink #14161a | rust #A1543E
+// RYVOL palette:
+// Off-white: #F2F0EB
+// Ink: #14161a
+// Rust: #A1543E
 
 export default function Navbar() {
   const {
@@ -21,11 +24,11 @@ export default function Navbar() {
   } = useCart();
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
+
   const cartRefDesktop = useRef<HTMLDivElement>(null);
   const cartRefMobile = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const aboutRef = useRef<HTMLDivElement>(null);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -36,7 +39,10 @@ export default function Navbar() {
         isCartOpen &&
         !cartRefDesktop.current?.contains(target) &&
         !cartRefMobile.current?.contains(target) &&
-        !(target instanceof HTMLElement && target.closest('[aria-label="Toggle cart"]'))
+        !(
+          target instanceof HTMLElement &&
+          target.closest('[aria-label="Toggle cart"]')
+        )
       ) {
         toggleCart();
       }
@@ -44,22 +50,20 @@ export default function Navbar() {
       if (
         menuRef.current &&
         !menuRef.current.contains(target) &&
-        !(target instanceof HTMLElement && target.closest('[aria-label="Toggle menu"]'))
+        !(
+          target instanceof HTMLElement &&
+          target.closest('[aria-label="Toggle menu"]')
+        )
       ) {
         setMenuOpen(false);
-      }
-
-      if (
-        aboutRef.current &&
-        !aboutRef.current.contains(target) &&
-        !(target instanceof HTMLElement && target.closest('[aria-label="Toggle about dropdown"]'))
-      ) {
-        setAboutDropdownOpen(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [isCartOpen, toggleCart]);
 
   const totalCount = useMemo(
@@ -68,90 +72,85 @@ export default function Navbar() {
   );
 
   return (
-    <nav className="bg-[#F2F0EB] border-b border-[#14161a]/10 sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto flex items-center justify-between h-16 px-4">
-        <Link href="/" className="flex items-center min-w-0">
-          {/* TODO: swap to RYVOL logotype file when ready:
-          <Image src="/ryvol-logo.svg" alt="RYVOL" width={110} height={16} draggable={false} /> */}
-          <span className="rv-wordmark text-[15px] text-[#14161a]">Ryvol</span>
+    <nav className="sticky top-0 z-50 border-b border-[#14161a]/10 bg-[#F2F0EB]">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+        {/* Wordmark */}
+        <Link
+          href="/"
+          className="flex min-w-0 items-center"
+          aria-label="RYVOL home"
+        >
+          {/* Replace with the custom SVG when ready:
+
+          <Image
+            src="/ryvol-wordmark.svg"
+            alt="RYVOL"
+            width={110}
+            height={18}
+            draggable={false}
+          />
+
+          */}
+
+          <span className="rv-wordmark text-[15px] uppercase text-[#14161a]">
+            RYVOL
+          </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-7 relative">
-          <Link href="/shop" className="rv-navlink text-[#14161a]/75 hover:text-[#14161a] transition">
-            Shop
+        {/* Desktop Navigation */}
+        <div className="relative hidden items-center gap-10 md:flex">
+          <Link
+            href="/shop"
+            className="rv-navlink text-[#14161a]/75 transition hover:text-[#14161a]"
+          >
+            SHOP
           </Link>
 
-          <div className="relative" ref={aboutRef}>
-            <button
-              aria-label="Toggle about dropdown"
-              onClick={() => setAboutDropdownOpen(!aboutDropdownOpen)}
-              className="rv-navlink flex items-center gap-1 text-[#14161a]/75 hover:text-[#14161a] transition focus:outline-none"
-            >
-              About <ChevronDown className="w-3.5 h-3.5" />
-            </button>
-
-            {aboutDropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 w-44 bg-[#F2F0EB] border border-[#14161a]/12 z-50">
-                <Link
-                  href="/faq"
-                  className="rv-navlink block px-4 py-3 text-[#14161a]/75 hover:text-[#14161a] hover:bg-[#14161a]/5"
-                  onClick={() => setAboutDropdownOpen(false)}
-                >
-                  FAQ
-                </Link>
-                <Link
-                  href="/about"
-                  className="rv-navlink block px-4 py-3 text-[#14161a]/75 hover:text-[#14161a] hover:bg-[#14161a]/5"
-                  onClick={() => setAboutDropdownOpen(false)}
-                >
-                  About Us
-                </Link>
-              </div>
-            )}
-          </div>
-
-          <Link href="/reviews" className="rv-navlink text-[#14161a]/75 hover:text-[#14161a] transition">Reviews</Link>
-          <Link href="/checkout" className="rv-navlink text-[#14161a] hover:text-[#A1543E] transition">Checkout</Link>
-          <Link href="/login" className="flex items-center text-[#14161a]/75 hover:text-[#14161a] transition">
-            <User className="w-[18px] h-[18px]" />
+          <Link
+            href="/about"
+            className="rv-navlink text-[#14161a]/75 transition hover:text-[#14161a]"
+          >
+            ABOUT
           </Link>
+
           <button
             aria-label="Toggle cart"
             onClick={toggleCart}
             className="relative p-2 text-[#14161a]"
           >
-            <ShoppingCart className="w-5 h-5" />
+            <ShoppingCart className="h-5 w-5" />
+
             {totalCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-[#A1543E] text-[#F2F0EB] rounded-full text-[10px] w-4.5 h-4.5 min-w-[18px] min-h-[18px] flex items-center justify-center">
+              <span className="absolute -right-0.5 -top-0.5 flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#A1543E] text-[10px] text-[#F2F0EB]">
                 {totalCount}
               </span>
             )}
           </button>
         </div>
 
-        <div className="flex md:hidden items-center gap-2 text-[#14161a]">
-          <Link href="/login" aria-label="Login">
-            <User className="w-5 h-5" />
-          </Link>
+        {/* Mobile Navigation Controls */}
+        <div className="flex items-center gap-3 text-[#14161a] md:hidden">
           <button
             aria-label="Toggle cart"
             onClick={toggleCart}
             className="relative p-1"
           >
-            <ShoppingCart className="w-5 h-5" />
+            <ShoppingCart className="h-5 w-5" />
+
             {totalCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#A1543E] text-[#F2F0EB] text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-semibold">
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#A1543E] text-[10px] font-semibold text-[#F2F0EB]">
                 {totalCount}
               </span>
             )}
           </button>
+
           <button
             aria-label="Toggle menu"
             onClick={() => setMenuOpen(!menuOpen)}
             className="p-1"
           >
             <svg
-              className="w-5 h-5"
+              className="h-5 w-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -175,10 +174,13 @@ export default function Navbar() {
       {isCartOpen && (
         <div
           ref={cartRefDesktop}
-          className="hidden md:block fixed top-20 right-4 w-[90%] sm:w-96 max-w-full bg-[#F2F0EB] border border-[#14161a]/12 p-5 z-50"
+          className="fixed right-4 top-20 z-50 hidden w-[90%] max-w-full border border-[#14161a]/12 bg-[#F2F0EB] p-5 sm:w-96 md:block"
         >
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="rv-navlink text-[13px] text-[#14161a]">Your Cart</h3>
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="rv-navlink text-[13px] text-[#14161a]">
+              CART
+            </h3>
+
             <button
               onClick={toggleCart}
               className="text-xl font-bold text-[#14161a]/50 hover:text-[#14161a]"
@@ -187,15 +189,19 @@ export default function Navbar() {
               ×
             </button>
           </div>
+
           {cart.length === 0 ? (
-            <div className="text-center mt-6">
-              <p className="text-[#14161a]/50 mb-5 text-sm">Cart is empty</p>
+            <div className="mt-6 text-center">
+              <p className="mb-5 text-sm text-[#14161a]/50">
+                Your pursuit starts here.
+              </p>
+
               <button
                 onClick={() => {
                   toggleCart();
                   router.push("/shop");
                 }}
-                className="inline-block px-7 py-3 bg-[#14161a] text-[#F2F0EB] text-[10px] uppercase tracking-[0.28em] hover:bg-[#A1543E] transition"
+                className="inline-block bg-[#14161a] px-7 py-3 text-[10px] uppercase tracking-[0.28em] text-[#F2F0EB] transition hover:bg-[#A1543E]"
               >
                 Shop the Drop
               </button>
@@ -203,9 +209,12 @@ export default function Navbar() {
           ) : (
             <>
               {/* Desktop Cart Items */}
-              <ul className="max-h-64 overflow-y-auto divide-y divide-[#14161a]/10">
+              <ul className="max-h-64 divide-y divide-[#14161a]/10 overflow-y-auto">
                 {cart.map((item) => (
-                  <li key={`${item.id}-${item.size}`} className="py-3 flex gap-3 items-center">
+                  <li
+                    key={`${item.id}-${item.size}`}
+                    className="flex items-center gap-3 py-3"
+                  >
                     <Image
                       src={item.image}
                       alt={item.name}
@@ -213,43 +222,80 @@ export default function Navbar() {
                       height={64}
                       className="object-cover"
                     />
+
                     <div className="flex-grow">
-                      <p className="font-medium text-sm">{item.name}</p>
-                      {item.size && <p className="text-xs text-[#14161a]/50">Size: {item.size}</p>}
+                      <p className="text-sm font-medium">{item.name}</p>
+
+                      {item.size && (
+                        <p className="text-xs text-[#14161a]/50">
+                          Size: {item.size}
+                        </p>
+                      )}
+
                       <p className="text-sm text-[#14161a]/60">
                         {item.quantity} × ${item.price.toFixed(2)}
                       </p>
                     </div>
-                    <div className="flex flex-col gap-1 items-end">
+
+                    <div className="flex flex-col items-end gap-1">
                       <div className="flex items-center gap-1">
-                        <button onClick={() => decreaseQty(item.id, item.size)} className="border border-[#14161a]/20 px-2 hover:border-[#14161a] transition">−</button>
-                        <span className="px-1 text-sm">{item.quantity}</span>
-                        <button onClick={() => increaseQty(item.id, item.size)} className="border border-[#14161a]/20 px-2 hover:border-[#14161a] transition">+</button>
+                        <button
+                          onClick={() =>
+                            decreaseQty(item.id, item.size)
+                          }
+                          className="border border-[#14161a]/20 px-2 transition hover:border-[#14161a]"
+                        >
+                          −
+                        </button>
+
+                        <span className="px-1 text-sm">
+                          {item.quantity}
+                        </span>
+
+                        <button
+                          onClick={() =>
+                            increaseQty(item.id, item.size)
+                          }
+                          className="border border-[#14161a]/20 px-2 transition hover:border-[#14161a]"
+                        >
+                          +
+                        </button>
                       </div>
-                      <button onClick={() => removeFromCart(item.id, item.size)} className="text-xs text-[#14161a]/50 hover:text-[#A1543E] transition">
+
+                      <button
+                        onClick={() =>
+                          removeFromCart(item.id, item.size)
+                        }
+                        className="text-xs text-[#14161a]/50 transition hover:text-[#A1543E]"
+                      >
                         Remove
                       </button>
                     </div>
                   </li>
                 ))}
               </ul>
-              <div className="mt-4 text-right font-semibold text-sm">Subtotal: ${total.toFixed(2)}</div>
-              <div className="flex gap-2 mt-2">
+
+              <div className="mt-4 text-right text-sm font-semibold">
+                Subtotal: ${total.toFixed(2)}
+              </div>
+
+              <div className="mt-2 flex gap-2">
                 <button
                   onClick={() => {
                     toggleCart();
                     router.push("/shop");
                   }}
-                  className="mt-4 flex-1 border border-[#14161a] text-[#14161a] px-4 py-3 text-[10px] uppercase tracking-[0.24em] hover:bg-[#14161a] hover:text-[#F2F0EB] transition text-center"
+                  className="mt-4 flex-1 border border-[#14161a] px-4 py-3 text-center text-[10px] uppercase tracking-[0.24em] text-[#14161a] transition hover:bg-[#14161a] hover:text-[#F2F0EB]"
                 >
                   Add More
                 </button>
+
                 <button
                   onClick={() => {
                     toggleCart();
                     router.push("/checkout");
                   }}
-                  className="mt-4 flex-1 bg-[#14161a] text-[#F2F0EB] px-4 py-3 text-[10px] uppercase tracking-[0.24em] hover:bg-[#A1543E] transition text-center"
+                  className="mt-4 flex-1 bg-[#14161a] px-4 py-3 text-center text-[10px] uppercase tracking-[0.24em] text-[#F2F0EB] transition hover:bg-[#A1543E]"
                 >
                   Checkout
                 </button>
@@ -262,24 +308,37 @@ export default function Navbar() {
       {/* Mobile Cart Slide-In */}
       <div
         ref={cartRefMobile}
-        className={`fixed top-0 right-0 h-full w-80 max-w-full bg-[#F2F0EB] z-50 border-l border-[#14161a]/10 transform transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed right-0 top-0 z-50 h-full w-80 max-w-full transform border-l border-[#14161a]/10 bg-[#F2F0EB] transition-transform duration-300 ease-in-out md:hidden ${
           isCartOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="p-4 h-full flex flex-col">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="rv-navlink text-[13px] text-[#14161a]">Your Cart</h3>
-            <button onClick={toggleCart} className="text-xl font-bold text-[#14161a]/50">×</button>
+        <div className="flex h-full flex-col p-4">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="rv-navlink text-[13px] text-[#14161a]">
+              CART
+            </h3>
+
+            <button
+              onClick={toggleCart}
+              className="text-xl font-bold text-[#14161a]/50"
+              aria-label="Close cart"
+            >
+              ×
+            </button>
           </div>
+
           {cart.length === 0 ? (
-            <div className="text-center mt-10">
-              <p className="text-[#14161a]/50 text-sm">Your cart is empty.</p>
+            <div className="mt-10 text-center">
+              <p className="text-sm text-[#14161a]/50">
+                Your pursuit starts here.
+              </p>
+
               <button
                 onClick={() => {
                   toggleCart();
                   router.push("/shop");
                 }}
-                className="inline-block mt-5 px-7 py-3 bg-[#14161a] text-[#F2F0EB] text-[10px] uppercase tracking-[0.28em] hover:bg-[#A1543E] transition"
+                className="mt-5 inline-block bg-[#14161a] px-7 py-3 text-[10px] uppercase tracking-[0.28em] text-[#F2F0EB] transition hover:bg-[#A1543E]"
               >
                 Shop the Drop
               </button>
@@ -288,7 +347,10 @@ export default function Navbar() {
             <>
               <ul className="max-h-[50vh] overflow-y-auto">
                 {cart.map((item) => (
-                  <li key={item.id + item.size} className="flex items-center justify-between mb-4 border-b border-[#14161a]/10 pb-2">
+                  <li
+                    key={item.id + item.size}
+                    className="mb-4 flex items-center justify-between border-b border-[#14161a]/10 pb-2"
+                  >
                     <div className="flex items-center gap-3">
                       <Image
                         src={item.image}
@@ -297,38 +359,81 @@ export default function Navbar() {
                         height={56}
                         className="object-cover"
                       />
+
                       <div>
-                        <p className="font-medium text-sm">{item.name}</p>
-                        {item.size && <p className="text-xs text-[#14161a]/50">Size: {item.size}</p>}
-                        <p className="text-sm text-[#14161a]/60">{item.quantity} × ${item.price.toFixed(2)}</p>
+                        <p className="text-sm font-medium">
+                          {item.name}
+                        </p>
+
+                        {item.size && (
+                          <p className="text-xs text-[#14161a]/50">
+                            Size: {item.size}
+                          </p>
+                        )}
+
+                        <p className="text-sm text-[#14161a]/60">
+                          {item.quantity} × ${item.price.toFixed(2)}
+                        </p>
                       </div>
                     </div>
+
                     <div className="flex items-center gap-1">
-                      <button onClick={() => decreaseQty(item.id, item.size)} className="px-2 py-1 text-sm border border-[#14161a]/20">−</button>
-                      <span className="px-1 text-sm">{item.quantity}</span>
-                      <button onClick={() => increaseQty(item.id, item.size)} className="px-2 py-1 text-sm border border-[#14161a]/20">+</button>
-                      <button onClick={() => removeFromCart(item.id, item.size)} className="ml-2 px-2 text-sm text-[#14161a]/50 hover:text-[#A1543E]">Remove</button>
+                      <button
+                        onClick={() =>
+                          decreaseQty(item.id, item.size)
+                        }
+                        className="border border-[#14161a]/20 px-2 py-1 text-sm"
+                      >
+                        −
+                      </button>
+
+                      <span className="px-1 text-sm">
+                        {item.quantity}
+                      </span>
+
+                      <button
+                        onClick={() =>
+                          increaseQty(item.id, item.size)
+                        }
+                        className="border border-[#14161a]/20 px-2 py-1 text-sm"
+                      >
+                        +
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          removeFromCart(item.id, item.size)
+                        }
+                        className="ml-2 px-2 text-sm text-[#14161a]/50 hover:text-[#A1543E]"
+                      >
+                        Remove
+                      </button>
                     </div>
                   </li>
                 ))}
               </ul>
-              <div className="mt-auto pt-4 border-t border-[#14161a]/10">
-                <div className="text-right font-semibold mb-4">Subtotal: ${total.toFixed(2)}</div>
+
+              <div className="mt-auto border-t border-[#14161a]/10 pt-4">
+                <div className="mb-4 text-right font-semibold">
+                  Subtotal: ${total.toFixed(2)}
+                </div>
+
                 <button
                   onClick={() => {
                     toggleCart();
                     router.push("/checkout");
                   }}
-                  className="block w-full bg-[#14161a] text-[#F2F0EB] text-center py-3 px-4 text-[10px] uppercase tracking-[0.24em] hover:bg-[#A1543E] transition"
+                  className="block w-full bg-[#14161a] px-4 py-3 text-center text-[10px] uppercase tracking-[0.24em] text-[#F2F0EB] transition hover:bg-[#A1543E]"
                 >
                   Go to Checkout
                 </button>
+
                 <button
                   onClick={() => {
                     toggleCart();
                     router.push("/shop");
                   }}
-                  className="block w-full mt-2 border border-[#14161a] text-[#14161a] py-3 px-4 text-[10px] uppercase tracking-[0.24em] hover:bg-[#14161a] hover:text-[#F2F0EB] transition text-center"
+                  className="mt-2 block w-full border border-[#14161a] px-4 py-3 text-center text-[10px] uppercase tracking-[0.24em] text-[#14161a] transition hover:bg-[#14161a] hover:text-[#F2F0EB]"
                 >
                   Keep Shopping
                 </button>
@@ -341,19 +446,50 @@ export default function Navbar() {
       {/* Mobile Menu Slide-In */}
       <div
         ref={menuRef}
-        className={`fixed top-0 right-0 h-full w-64 bg-[#F2F0EB] border-l border-[#14161a]/10 z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed right-0 top-0 z-50 h-full w-64 transform border-l border-[#14161a]/10 bg-[#F2F0EB] transition-transform duration-300 ease-in-out ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="p-6 space-y-6 relative">
-          <button onClick={() => setMenuOpen(false)} className="absolute top-4 right-4 text-2xl font-bold text-[#14161a]/50 hover:text-[#14161a]">×</button>
-          <Link href="/" onClick={() => setMenuOpen(false)} className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]">Home</Link>
-          <Link href="/shop" onClick={() => setMenuOpen(false)} className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]">Shop</Link>
-          <Link href="/checkout" onClick={() => setMenuOpen(false)} className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]">Checkout</Link>
-          <Link href="/about" onClick={() => setMenuOpen(false)} className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]">About Us</Link>
-          <Link href="/faq" onClick={() => setMenuOpen(false)} className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]">FAQ</Link>
-          <Link href="/reviews" onClick={() => setMenuOpen(false)} className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]">Reviews</Link>
-          <Link href="/privacy" onClick={() => setMenuOpen(false)} className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]">Privacy</Link>
+        <div className="relative space-y-7 p-6 pt-16">
+          <button
+            onClick={() => setMenuOpen(false)}
+            className="absolute right-4 top-4 text-2xl font-bold text-[#14161a]/50 hover:text-[#14161a]"
+            aria-label="Close menu"
+          >
+            ×
+          </button>
+
+          <Link
+            href="/shop"
+            onClick={() => setMenuOpen(false)}
+            className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]"
+          >
+            SHOP
+          </Link>
+
+          <Link
+            href="/about"
+            onClick={() => setMenuOpen(false)}
+            className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]"
+          >
+            ABOUT
+          </Link>
+
+          <Link
+            href="/faq"
+            onClick={() => setMenuOpen(false)}
+            className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]"
+          >
+            FAQ
+          </Link>
+
+          <Link
+            href="/privacy"
+            onClick={() => setMenuOpen(false)}
+            className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]"
+          >
+            PRIVACY
+          </Link>
         </div>
       </div>
     </nav>

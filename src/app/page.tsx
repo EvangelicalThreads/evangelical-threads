@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Newsletter from '@/components/Newsletter';
+import { FaInstagram, FaTiktok } from 'react-icons/fa';
 
 // RYVOL palette: off-white #F2F0EB | stone #C8C4BC | charcoal #2A2A2A | ink #14161a | rust #A1543E
 
@@ -26,19 +27,19 @@ export default function HomePage() {
 
   const collectionCards = [
     {
-      title: 'Front View',
+      title: 'Heavyweight Cotton',
       image: '/city.png', // TODO: RYVOL product shot — 5030 tee front
       href: '/shop',
       imageClass: 'object-cover object-[50%_22%]',
     },
     {
-      title: 'Back Graphic',
+      title: 'Oversized Fit',
       image: '/sunset.png', // TODO: back graphic shot
       href: '/shop',
       imageClass: 'object-cover object-[50%_18%]',
     },
     {
-      title: 'On Body',
+      title: 'Built for Movement',
       image: '/beach.png', // TODO: on-body shot — 5146 hood / mesh short
       href: '/shop',
       imageClass: 'object-cover object-[38%_30%]'
@@ -65,7 +66,7 @@ export default function HomePage() {
       <section className="relative w-full h-[72vh] min-h-[480px] md:h-[86vh] md:min-h-[640px] overflow-hidden bg-[#b9b5ac]">
         <Image
           src="/hero-image.png" // TODO: monochrome hero — b&w, subject right, negative space left for copy
-          alt="RYVOL — Built for Movement"
+          alt="RYVOL — Unryvoled Pursuit"
           fill
           priority
           sizes="100vw"
@@ -76,8 +77,8 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#F2F0EB]/40 via-transparent to-transparent" />
 
         <div className="absolute left-[6vw] top-1/2 -translate-y-[58%] max-w-[560px]">
-<h1 className="text-[22px] md:text-[42px] font-semibold uppercase tracking-[0.14em] leading-[1.15] text-[#14161a]">            <span className="block">Built for<br />Movement.</span>
-            <span className="block mt-[0.55em]">Designed for<br />Freedom.</span>
+<h1 className="text-[22px] md:text-[42px] font-semibold uppercase tracking-[0.14em] leading-[1.15] text-[#14161a]">            <span className="block">Unryvoled</span>
+            <span className="block mt-[0.55em]">Pursuit.</span>
           </h1>
 
           <Link
@@ -97,8 +98,7 @@ export default function HomePage() {
               key={i}
               className="text-[11px] uppercase tracking-[0.4em] text-[#14161a]/55"
             >
-              Unryvoled Pursuit <em className="not-italic text-[#A1543E]">—</em> Ryvol{' '}
-              <em className="not-italic text-[#A1543E]">—</em> Move With Intention{' '}
+              Unryvoled Pursuit <em className="not-italic text-[#A1543E]">—</em> First Drop Coming Soon{' '}
               <em className="not-italic text-[#A1543E]">—</em> Ryvol{' '}
               <em className="not-italic text-[#A1543E]">—</em>
             </span>
@@ -111,12 +111,15 @@ export default function HomePage() {
         <div className="max-w-[1180px] mx-auto px-5 md:px-8 py-20 md:py-24">
 
           <div className="mb-12 md:mb-14 text-center rv-reveal">
-            <p className="text-[10px] uppercase tracking-[0.4em] text-[#14161a]/45 mb-4">
-              Collection
+            <p className="text-[10px] uppercase tracking-[0.4em] text-[#A1543E] mb-4">
+              First Drop
             </p>
             <h2 className="text-[26px] md:text-[44px] leading-none font-semibold tracking-[0.22em] uppercase">
               Ryvol 001
             </h2>
+            <p className="mt-5 text-[11px] uppercase tracking-[0.24em] text-[#14161a]/55">
+              Coming soon. 
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-7">
@@ -148,7 +151,7 @@ export default function HomePage() {
     <div className="relative h-full w-full overflow-hidden rv-reveal">
      <Image
   src="/split-image1.png"
-  alt="Move with intention"
+  alt="UNRYVOLED PURSUIT."
   fill
   className="object-cover"
   style={{ objectPosition: '70% 10%' }}
@@ -162,7 +165,7 @@ export default function HomePage() {
     <div className="relative h-full w-full overflow-hidden rv-reveal">
       <Image
         src="/split-image2.png"
-        alt="Live without limits"
+        alt="RYVOL campaign"
         fill
         className="object-cover"
         style={{ objectPosition: 'center center' }}
@@ -176,6 +179,32 @@ export default function HomePage() {
 </section>
 
 <Newsletter />
+
+<div className="text-center mt-24 pb-20">
+  <h3 className="text-[11px] uppercase tracking-[0.3em] text-[#14161a]/60 mb-5">
+    Follow the Pursuit
+  </h3>
+
+  <div className="flex justify-center gap-6 text-[#14161a] text-2xl">
+    <a
+      href="https://www.instagram.com/shopryvol"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Instagram"
+    >
+      <FaInstagram className="hover:text-[#A1543E] transition" />
+    </a>
+
+    <a
+      href="https://www.tiktok.com/@shopryvol"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="TikTok"
+    >
+      <FaTiktok className="hover:text-[#A1543E] transition" />
+    </a>
+  </div>
+</div>
 
     </div>
   );

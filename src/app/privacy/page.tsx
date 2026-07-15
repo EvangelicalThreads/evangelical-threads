@@ -29,10 +29,10 @@ export default function PrivacyPage() {
       <p className="mt-10">
         Questions? Reach us at{' '}
         <a
-          href="mailto:evangelicalthreads@gmail.com"
+          href="mailto:ryvol.shop@gmail.com"
           className="underline text-emerald-600 hover:text-emerald-800 transition-colors duration-200"
         >
-          evangelicalthreads@gmail.com
+          ryvol.shop@gmail.com
         </a>.
       </p>
     </div>

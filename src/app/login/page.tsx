@@ -253,6 +253,8 @@ export default function LoginPage() {
         <Link href="/" className={textLinkClass}>
           Back to homepage
         </Link>
+
+        
       </div>
     </div>
   );

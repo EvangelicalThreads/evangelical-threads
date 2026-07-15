@@ -76,18 +76,33 @@ export default async function ShopPage() {
       </div>
 
       <Newsletter />
-
-      <div className="text-center mb-12">
-        <h3 className="text-lg font-semibold text-black mb-2">Join the community!!</h3>
-        <div className="flex justify-center gap-6 text-black text-2xl">
-          <a href="https://www.instagram.com/evangelicalthreads" target="_blank" rel="noopener noreferrer">
-            <FaInstagram className="hover:text-gray-600 transition" />
+      
+      <div className="text-center mt-24 pb-20">
+        <h3 className="text-[11px] uppercase tracking-[0.3em] text-[#14161a]/60 mb-5">
+          Follow the Pursuit
+        </h3>
+      
+        <div className="flex justify-center gap-6 text-[#14161a] text-2xl">
+          <a
+            href="https://www.instagram.com/shopryvol"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+          >
+            <FaInstagram className="hover:text-[#A1543E] transition" />
           </a>
-          <a href="https://www.tiktok.com/@evangelicalthreads" target="_blank" rel="noopener noreferrer">
-            <FaTiktok className="hover:text-gray-600 transition" />
+      
+          <a
+            href="https://www.tiktok.com/@shopryvol"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok"
+          >
+            <FaTiktok className="hover:text-[#A1543E] transition" />
           </a>
         </div>
       </div>
+      
     </main>
   );
 }
