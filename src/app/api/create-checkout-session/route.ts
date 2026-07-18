@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     }
 
     const siteUrl =
-      process.env.NEXT_PUBLIC_SITE_URL || 'https://www.evangelicalthreads.com';
+      process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ryvol.shop';
 
     console.log('cartItems received:', cartItems);
     console.log(

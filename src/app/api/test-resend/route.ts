@@ -12,7 +12,7 @@ export async function GET() {
 
   try {
     const response = await resend.emails.send({
-      from: 'no-reply@evangelicalthreads.com',
+      from: 'no-reply@ryvol.shop',
       to: 'katie.pg32@gmail.com',
       subject: 'Test Email from Resend',
       html: '<p>If you get this, Resend email sending works!</p>',
