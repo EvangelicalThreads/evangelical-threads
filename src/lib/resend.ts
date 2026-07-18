@@ -4,7 +4,7 @@ const resend = new Resend(process.env.RESEND_API_KEY!);
 
 export async function sendWelcomeEmail(email: string, name: string) {
   return await resend.emails.send({
-    from: 'RYVOL <welcome@evangelicalthreads.com>',
+    from: 'RYVOL <hello@ryvol.shop>',
     to: email,
     subject: `Welcome, ${name}! ✨`,
     html: `
