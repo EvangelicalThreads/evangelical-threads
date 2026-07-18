@@ -9,16 +9,20 @@ export default function Newsletter({ showHeading = true }: { showHeading?: boole
     e.preventDefault();
     setStatus('loading');
 
-    const res = await fetch('/api/newsletter', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
-    });
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
 
-    if (res.ok) {
-      setStatus('success');
-      setEmail('');
-    } else {
+      if (res.ok) {
+        setStatus('success');
+        setEmail('');
+      } else {
+        setStatus('error');
+      }
+    } catch {
       setStatus('error');
     }
   };
@@ -27,13 +31,17 @@ export default function Newsletter({ showHeading = true }: { showHeading?: boole
     <div className="mt-20 mb-6 px-6 text-center">
       {showHeading && (
         <>
-          <h2 className="text-xl font-bold mb-2 text-black">Be First.</h2>
-          <p className="text-gray-600 mb-4 text-sm">Limited quantities. Join the list before the first drop.</p>
+          <h2 className="text-xl font-bold uppercase tracking-[0.08em] mb-2 text-neutral-900">
+            Be First
+          </h2>
+          <p className="text-neutral-500 mb-6 text-sm">
+            Limited quantities. Join the list before the first drop.
+          </p>
         </>
       )}
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto"
+        className="flex flex-col sm:flex-row items-stretch justify-center gap-3 max-w-md mx-auto"
       >
         <input
           type="email"
@@ -41,23 +49,27 @@ export default function Newsletter({ showHeading = true }: { showHeading?: boole
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+          className="w-full px-4 py-3 border border-neutral-900 rounded-none bg-transparent text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-900"
           required
         />
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="px-6 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition disabled:opacity-50"
+          className="px-8 py-3 bg-neutral-900 text-[#f4f1ea] rounded-none uppercase tracking-[0.12em] text-sm hover:bg-neutral-700 transition disabled:opacity-50 whitespace-nowrap"
         >
-          {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
+          {status === 'loading' ? 'Joining…' : 'Subscribe'}
         </button>
       </form>
 
       {status === 'success' && (
-        <p className="mt-2 text-green-600 font-semibold">You’re subscribed!</p>
+        <p className="mt-4 text-neutral-900 text-sm uppercase tracking-[0.08em]">
+          You&rsquo;re in.
+        </p>
       )}
       {status === 'error' && (
-        <p className="mt-2 text-red-600 font-semibold">Something went wrong.</p>
+        <p className="mt-4 text-[#a3512b] text-sm">
+          Something went wrong. Try again.
+        </p>
       )}
     </div>
   );
