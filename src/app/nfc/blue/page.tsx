@@ -531,7 +531,7 @@ function Footer() {
           transition={{ duration: 0.8, delay: 0.4 }}
         >
            <a
-    href="https://www.instagram.com/evangelicalthreads"
+    href="https://www.instagram.com/ryvol.shop"
     target="_blank"
     rel="noopener noreferrer"
     className="hover:text-white transition-colors duration-300"
@@ -540,7 +540,7 @@ function Footer() {
   </a>
 
   <a
-    href="https://www.tiktok.com/@evangelicalthreads"
+    href="https://www.tiktok.com/@ryvol.shop"
     target="_blank"
     rel="noopener noreferrer"
     className="hover:text-white transition-colors duration-300"

@@ -25,14 +25,14 @@ export default function ReviewsPage() {
         <h3 className="text-lg font-semibold text-black mb-2">Join the community!!</h3>
         <div className="flex justify-center gap-6 text-black text-2xl">
           <a
-            href="https://www.instagram.com/evangelicalthreads"
+            href="https://www.instagram.com/ryvol.shop"
             target="_blank"
             rel="noopener noreferrer"
           >
             <FaInstagram className="hover:text-gray-600 transition" />
           </a>
           <a
-            href="https://www.tiktok.com/@evangelicalthreads"
+            href="https://www.tiktok.com/@ryvol.shop"
             target="_blank"
             rel="noopener noreferrer"
           >
