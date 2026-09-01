@@ -3,7 +3,7 @@
    photo availability is decided server-side (see app/page.tsx), so there's
    no client-side guessing here. */
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Newsletter from '@/components/Newsletter';
 import { FaInstagram, FaTiktok } from 'react-icons/fa';
@@ -98,6 +98,66 @@ function DropTile({
       alt={alt}
       className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.015]"
     />
+  );
+}
+
+type HomeReview = {
+  id: string;
+  name: string;
+  rating: number;
+  text: string;
+  created_at: string;
+};
+
+function ReviewStars({ rating }: { rating: number }) {
+  return (
+    <span className="text-[13px] tracking-[0.12em] text-[var(--rv-navy)]">
+      {'★'.repeat(rating)}
+      <span className="text-[#14161a]/15">{'★'.repeat(5 - rating)}</span>
+    </span>
+  );
+}
+
+/** Recent reviews, pulled live from /api/reviews/recent. Renders nothing
+ *  at all until there's real proof to show — this is a trust-building
+ *  moment on the homepage, not a section that should ever appear empty
+ *  or in a loading state. */
+function ReviewsHomeSection() {
+  const [reviews, setReviews] = useState<HomeReview[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/reviews/recent?limit=6')
+      .then((res) => res.json())
+      .then((data) => setReviews(data.reviews || []))
+      .catch(() => {})
+      .finally(() => setLoaded(true));
+  }, []);
+
+  if (!loaded || reviews.length === 0) return null;
+
+  return (
+    <section className="w-full border-t border-[#14161a]/10">
+      <div className="max-w-[1180px] mx-auto px-6 md:px-10 py-20 md:py-28">
+        <p className="rv-serif italic text-center text-[22px] md:text-[26px] text-[#14161a] mb-16 md:mb-20">
+          In their words.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-14 md:gap-x-14">
+          {reviews.map((review) => (
+            <div key={review.id} className="text-center sm:text-left">
+              <ReviewStars rating={review.rating} />
+              <p className="rv-serif italic text-[17px] md:text-[18px] leading-[1.5] text-[#14161a] mt-4 mb-4">
+                &ldquo;{review.text}&rdquo;
+              </p>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[#14161a]/45">
+                {review.name}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -264,6 +324,8 @@ export default function HomeClient({
           </div>
         ))}
       </section>
+
+      <ReviewsHomeSection />
 
       {/* Mark */}
       <section className="w-full border-t border-[#14161a]/10">
