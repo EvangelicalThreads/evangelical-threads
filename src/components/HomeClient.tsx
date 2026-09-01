@@ -6,7 +6,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Newsletter from '@/components/Newsletter';
-import { FaInstagram, FaTiktok, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaInstagram, FaTiktok, FaChevronLeft, FaChevronRight, FaPlay } from 'react-icons/fa';
 
 // RYVOL — coastal apparel, quiet and restrained. Palette: cream #F2F0EB |
 // stone #C8C4BC | charcoal #2A2A2A | ink #14161a | navy var(--rv-navy).
@@ -195,6 +195,9 @@ export default function HomeClient({
   dropAvailability?: DropAvailability;
 }) {
   const heroVideoRef = useRef<HTMLVideoElement>(null);
+  // Assume it's playing until proven otherwise — most visitors autoplay
+  // fine, so this avoids a flash of the play button on every load.
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
 
   // Mobile autoplay is gated on the video's live `muted` property being
   // true at the moment playback is attempted — the `muted` JSX attribute
@@ -202,14 +205,26 @@ export default function HomeClient({
   // on some mobile browsers, which silently blocks autoplay with no
   // error (the video just sits on the poster frame). Setting it directly
   // and explicitly calling play() here is the standard fix — a harmless
-  // no-op if the attribute already worked.
+  // no-op if the attribute already worked. Some platforms block autoplay
+  // outright regardless (iOS Low Power Mode, for one) — the promise
+  // rejecting is how we know to show the manual play button instead.
   useEffect(() => {
     const video = heroVideoRef.current;
     if (!video) return;
     video.muted = true;
     const playPromise = video.play();
-    if (playPromise) playPromise.catch(() => {});
+    if (playPromise) {
+      playPromise.then(() => setIsVideoPlaying(true)).catch(() => setIsVideoPlaying(false));
+    }
   }, []);
+
+  const handlePlayClick = () => {
+    const video = heroVideoRef.current;
+    if (!video) return;
+    // A direct response to a tap is exempt from autoplay restrictions,
+    // so this works even under Low Power Mode.
+    video.play().then(() => setIsVideoPlaying(true)).catch(() => {});
+  };
 
   // scroll reveal
   useEffect(() => {
@@ -254,12 +269,28 @@ export default function HomeClient({
             loop
             playsInline
             poster="/drop-01/hero-dolphins-poster.jpg"
+            onPlaying={() => setIsVideoPlaying(true)}
+            onPause={() => setIsVideoPlaying(false)}
             className="absolute left-1/2 top-1/2 h-full w-full min-h-full min-w-full -translate-x-1/2 -translate-y-1/2 object-cover"
           >
             <source src="/drop-01/hero-dolphins.mp4" type="video/mp4" />
           </video>
           <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F14]/55 via-[#0B0F14]/20 to-[#0B0F14]/60" />
         </div>
+
+        {/* Manual play control — only shown when autoplay didn't happen
+            (Low Power Mode, a browser that blocks it outright, etc.), so
+            the poster frame never feels like a dead end. */}
+        {!isVideoPlaying && (
+          <button
+            type="button"
+            onClick={handlePlayClick}
+            aria-label="Play video"
+            className="absolute bottom-28 right-6 md:bottom-28 md:right-10 z-10 w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#0B0F14]/30 backdrop-blur-sm border border-[#F2F0EB]/40 flex items-center justify-center hover:bg-[#0B0F14]/45 hover:border-[#F2F0EB]/70 transition"
+          >
+            <FaPlay size={12} className="text-[#F2F0EB] translate-x-[1px]" />
+          </button>
+        )}
 
         <div className="relative px-6 py-24 max-w-[560px] mx-auto flex flex-col items-center text-center">
           <img
