@@ -58,13 +58,13 @@ export default async function ShopPage() {
             Nothing available right now.
           </p>
         ) : (
-          <div className="grid grid-cols-3 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-14 md:gap-x-14 md:gap-y-16">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 sm:gap-x-8 sm:gap-y-14 md:gap-x-14 md:gap-y-16">
             {products.map((product) => (
               <div key={product.id} className="group">
                 <Link href={`/shop/${product.id}`} className="block">
-                  <div className="relative aspect-[4/5.2] overflow-hidden bg-[#EDEAE3] mb-2.5 sm:mb-4 md:mb-5">
+                  <div className="relative aspect-[4/5.2] overflow-hidden bg-[#EDEAE3] mb-3 sm:mb-4 md:mb-5">
                     {product.soldOut && (
-                      <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 text-[6px] sm:text-[9px] uppercase tracking-[0.1em] sm:tracking-[0.24em] text-[#14161a]/60 bg-[#F2F0EB]/90 px-1.5 py-0.5 sm:px-2.5 sm:py-1">
+                      <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 text-[8px] sm:text-[9px] uppercase tracking-[0.18em] sm:tracking-[0.24em] text-[#14161a]/60 bg-[#F2F0EB]/90 px-2 py-0.5 sm:px-2.5 sm:py-1">
                         Sold Out
                       </div>
                     )}
@@ -97,10 +97,10 @@ export default async function ShopPage() {
                   </div>
                 </Link>
 
-                <p className="rv-serif italic text-[12px] leading-[1.25] sm:text-[16px] md:text-[19px] text-[#14161a]">
+                <p className="rv-serif italic text-[15px] leading-[1.25] sm:text-[16px] md:text-[19px] text-[#14161a]">
                   {product.name}
                 </p>
-                <p className="mt-1 text-[7px] sm:text-[9px] md:text-[10px] uppercase tracking-[0.1em] sm:tracking-[0.2em] text-[#14161a]/45">
+                <p className="mt-1 text-[9px] sm:text-[9px] md:text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] text-[#14161a]/45">
                   ${product.price}
                 </p>
               </div>

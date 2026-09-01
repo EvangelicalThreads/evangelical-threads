@@ -3,10 +3,10 @@
    photo availability is decided server-side (see app/page.tsx), so there's
    no client-side guessing here. */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Newsletter from '@/components/Newsletter';
-import { FaInstagram, FaTiktok } from 'react-icons/fa';
+import { FaInstagram, FaTiktok, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 // RYVOL — coastal apparel, quiet and restrained. Palette: cream #F2F0EB |
 // stone #C8C4BC | charcoal #2A2A2A | ink #14161a | navy var(--rv-navy).
@@ -121,10 +121,13 @@ function ReviewStars({ rating }: { rating: number }) {
 /** Recent reviews, pulled live from /api/reviews/recent. Renders nothing
  *  at all until there's real proof to show — this is a trust-building
  *  moment on the homepage, not a section that should ever appear empty
- *  or in a loading state. */
+ *  or in a loading state. One review at a time, stepped through with
+ *  quiet arrows either side — reads more like a considered pull-quote
+ *  than a wall of cards. */
 function ReviewsHomeSection() {
   const [reviews, setReviews] = useState<HomeReview[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     fetch('/api/reviews/recent?limit=6')
@@ -136,26 +139,51 @@ function ReviewsHomeSection() {
 
   if (!loaded || reviews.length === 0) return null;
 
+  const review = reviews[index];
+  const canStep = reviews.length > 1;
+  const goPrev = () => setIndex((i) => (i - 1 + reviews.length) % reviews.length);
+  const goNext = () => setIndex((i) => (i + 1) % reviews.length);
+
   return (
     <section className="w-full border-t border-[#14161a]/10">
-      <div className="max-w-[1180px] mx-auto px-6 md:px-10 py-20 md:py-28">
-        <p className="rv-serif italic text-center text-[22px] md:text-[26px] text-[#14161a] mb-16 md:mb-20">
+      <div className="max-w-[680px] mx-auto px-6 md:px-10 py-20 md:py-28 text-center">
+        <p className="rv-serif italic text-[22px] md:text-[26px] text-[#14161a] mb-16 md:mb-20">
           In their words.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-14 md:gap-x-14">
-          {reviews.map((review) => (
-            <div key={review.id} className="text-center sm:text-left">
-              <ReviewStars rating={review.rating} />
-              <p className="rv-serif italic text-[17px] md:text-[18px] leading-[1.5] text-[#14161a] mt-4 mb-4">
-                &ldquo;{review.text}&rdquo;
-              </p>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-[#14161a]/45">
-                {review.name}
-              </p>
-            </div>
-          ))}
+        <div key={review.id} className="rv-fade">
+          <ReviewStars rating={review.rating} />
+          <p className="rv-serif italic text-[19px] md:text-[22px] leading-[1.55] text-[#14161a] mt-5 mb-5">
+            &ldquo;{review.text}&rdquo;
+          </p>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-[#14161a]/45">
+            {review.name}
+          </p>
         </div>
+
+        {canStep && (
+          <div className="mt-14 flex items-center justify-center gap-8">
+            <button
+              type="button"
+              onClick={goPrev}
+              aria-label="Previous review"
+              className="text-[#14161a]/40 hover:text-[#14161a] transition p-2 -m-2"
+            >
+              <FaChevronLeft size={12} />
+            </button>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#14161a]/35 tabular-nums">
+              {String(index + 1).padStart(2, '0')} — {String(reviews.length).padStart(2, '0')}
+            </p>
+            <button
+              type="button"
+              onClick={goNext}
+              aria-label="Next review"
+              className="text-[#14161a]/40 hover:text-[#14161a] transition p-2 -m-2"
+            >
+              <FaChevronRight size={12} />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -166,6 +194,23 @@ export default function HomeClient({
 }: {
   dropAvailability?: DropAvailability;
 }) {
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+
+  // Mobile autoplay is gated on the video's live `muted` property being
+  // true at the moment playback is attempted — the `muted` JSX attribute
+  // above sets it in most cases, but React/hydration timing can lose it
+  // on some mobile browsers, which silently blocks autoplay with no
+  // error (the video just sits on the poster frame). Setting it directly
+  // and explicitly calling play() here is the standard fix — a harmless
+  // no-op if the attribute already worked.
+  useEffect(() => {
+    const video = heroVideoRef.current;
+    if (!video) return;
+    video.muted = true;
+    const playPromise = video.play();
+    if (playPromise) playPromise.catch(() => {});
+  }, []);
+
   // scroll reveal
   useEffect(() => {
     const io = new IntersectionObserver(
@@ -189,8 +234,11 @@ export default function HomeClient({
         .rv-reveal { opacity: 0; transform: translateY(16px);
           transition: opacity 1s ease, transform 1s cubic-bezier(.2,.7,.2,1); }
         .rv-in { opacity: 1; transform: none; }
+        .rv-fade { animation: rvFade 400ms ease; }
+        @keyframes rvFade { from { opacity: 0; } to { opacity: 1; } }
         @media (prefers-reduced-motion: reduce) {
           .rv-reveal { opacity: 1; transform: none; transition: none; }
+          .rv-fade { animation: none; }
         }
       `}</style>
 
@@ -200,6 +248,7 @@ export default function HomeClient({
       <section className="relative w-full min-h-[92vh] md:min-h-screen flex items-center justify-center overflow-hidden bg-[#0B0F14]">
         <div className="absolute inset-0">
           <video
+            ref={heroVideoRef}
             autoPlay
             muted
             loop
