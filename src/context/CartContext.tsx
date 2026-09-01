@@ -36,15 +36,26 @@ export function useCart() {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  // Guards the write-effect below until the read-effect has actually run.
+  // Without this, the write-effect fires on mount with the still-empty
+  // initial `cart` state and overwrites (wipes) whatever was saved in
+  // localStorage a moment before the read-effect's setCart lands — a race
+  // that's made worse (near-guaranteed) by React Strict Mode's dev-only
+  // double-invoke of effects. Both state updates below land in the same
+  // render, so by the time this flips true, `cart` already holds the
+  // restored value.
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) setCart(JSON.parse(savedCart));
+    setHydrated(true);
   }, []);
 
   useEffect(() => {
+    if (!hydrated) return;
     localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+  }, [cart, hydrated]);
 
   const toggleCart = () => setIsCartOpen((open) => !open);
   const openCart = () => setIsCartOpen(true);

@@ -100,7 +100,7 @@ export default function FAQPage() {
               rel="noopener noreferrer"
               aria-label="Instagram"
             >
-              <FaInstagram className="hover:text-[#A1543E] transition" />
+              <FaInstagram className="hover:text-[var(--rv-navy)] transition" />
             </a>
         
             <a
@@ -109,7 +109,7 @@ export default function FAQPage() {
               rel="noopener noreferrer"
               aria-label="TikTok"
             >
-              <FaTiktok className="hover:text-[#A1543E] transition" />
+              <FaTiktok className="hover:text-[var(--rv-navy)] transition" />
             </a>
           </div>
         </div>

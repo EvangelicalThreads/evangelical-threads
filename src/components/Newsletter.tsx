@@ -31,11 +31,11 @@ export default function Newsletter({ showHeading = true }: { showHeading?: boole
     <div className="mt-20 mb-6 px-6 text-center">
       {showHeading && (
         <>
-          <h2 className="text-xl font-bold uppercase tracking-[0.08em] mb-2 text-neutral-900">
-            Be First
+          <h2 className="rv-serif italic text-[26px] md:text-[30px] mb-3 text-[#14161a]">
+            The List
           </h2>
-          <p className="text-neutral-500 mb-6 text-sm">
-            Limited quantities. Join the list before the first drop.
+          <p className="text-[#14161a]/50 mb-8 text-[12px] uppercase tracking-[0.18em]">
+            Occasional word. Nothing more.
           </p>
         </>
       )}
@@ -48,26 +48,26 @@ export default function Newsletter({ showHeading = true }: { showHeading?: boole
           name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email"
-          className="w-full px-4 py-3 border border-neutral-900 rounded-none bg-transparent text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-900"
+          placeholder="Email address"
+          className="w-full px-4 py-3 border border-[#14161a]/25 rounded-none bg-transparent text-[#14161a] placeholder:text-[#14161a]/35 focus:outline-none focus:border-[#14161a] transition"
           required
         />
         <button
           type="submit"
           disabled={status === 'loading'}
-          className="px-8 py-3 bg-neutral-900 text-[#f4f1ea] rounded-none uppercase tracking-[0.12em] text-sm hover:bg-neutral-700 transition disabled:opacity-50 whitespace-nowrap"
+          className="px-8 py-3 border border-[#14161a] text-[#14161a] rounded-none uppercase tracking-[0.24em] text-[11px] hover:bg-[#14161a] hover:text-[#F2F0EB] transition disabled:opacity-50 whitespace-nowrap"
         >
-          {status === 'loading' ? 'Joining…' : 'Subscribe'}
+          {status === 'loading' ? 'Joining…' : 'Join'}
         </button>
       </form>
 
       {status === 'success' && (
-        <p className="mt-4 text-neutral-900 text-sm uppercase tracking-[0.08em]">
-          You&rsquo;re in.
+        <p className="mt-4 text-[#14161a] text-[11px] uppercase tracking-[0.18em]">
+          You&rsquo;re on the list.
         </p>
       )}
       {status === 'error' && (
-        <p className="mt-4 text-[#a3512b] text-sm">
+        <p className="mt-4 text-[var(--rv-navy)] text-sm">
           Something went wrong. Try again.
         </p>
       )}

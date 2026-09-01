@@ -12,18 +12,27 @@ export default function SuccessPage() {
   }, [clearCart]);
 
   return (
-    <main className="max-w-4xl mx-auto p-8 text-center">
-      <h1 className="text-4xl font-bold mb-6">Payment Successful!</h1>
-      <p className="mb-6">
-        Thank you for your purchase. Your order is being processed.
-      </p>
-
-      <Link
-        href="/"
-        className="inline-block px-6 py-3 bg-black text-white rounded hover:bg-gray-800 transition"
-      >
-        Back to Home
-      </Link>
+    <main className="bg-[#F2F0EB] min-h-screen text-[#14161a] flex items-center">
+      <div className="max-w-[560px] mx-auto px-6 py-32 text-center">
+        <img
+          src="/brand/ryvol-emblem-navy.png"
+          alt="RYVOL"
+          className="w-11 h-11 mx-auto mb-10"
+        />
+        <p className="rv-serif italic text-[34px] md:text-[42px] leading-[1.1] text-[#14161a] mb-5">
+          Order Confirmed.
+        </p>
+        <p className="text-[13px] leading-[1.8] text-[#14161a]/60 mb-12 max-w-[380px] mx-auto">
+          Thank you for your purchase. A confirmation is on its way — your
+          pursuit begins shortly.
+        </p>
+        <Link
+          href="/"
+          className="inline-block px-9 py-3.5 border border-[#14161a] text-[11px] uppercase tracking-[0.24em] text-[#14161a] hover:bg-[#14161a] hover:text-[#F2F0EB] transition"
+        >
+          Back to Home
+        </Link>
+      </div>
     </main>
   );
 }

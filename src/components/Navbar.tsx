@@ -6,11 +6,40 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { useCart } from "../context/CartContext";
 import { ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { FaInstagram, FaTiktok } from "react-icons/fa";
 
 // RYVOL palette:
 // Off-white: #F2F0EB
 // Ink: #14161a
-// Rust: #A1543E
+// Navy accent: var(--rv-navy)
+
+// Free shipping unlocks past this subtotal — adjust freely, it's the only
+// place this number lives.
+const FREE_SHIPPING_THRESHOLD = 50;
+
+function ShippingProgress({ total }: { total: number }) {
+  const remaining = FREE_SHIPPING_THRESHOLD - total;
+  if (remaining <= 0) {
+    return (
+      <p className="mb-4 text-[10px] uppercase tracking-[0.2em] text-[var(--rv-navy)]">
+        Free Shipping Unlocked
+      </p>
+    );
+  }
+  return (
+    <div className="mb-5">
+      <p className="mb-2 text-[10px] uppercase tracking-[0.18em] text-[#14161a]/50">
+        ${remaining.toFixed(2)} away from free shipping
+      </p>
+      <div className="h-[2px] w-full bg-[#14161a]/10">
+        <div
+          className="h-full bg-[var(--rv-navy)] transition-all duration-500"
+          style={{ width: `${Math.min(100, (total / FREE_SHIPPING_THRESHOLD) * 100)}%` }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default function Navbar() {
   const {
@@ -74,26 +103,24 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b border-[#14161a]/10 bg-[#F2F0EB]">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-        {/* Wordmark */}
+        {/* Wordmark — emblem + serif italic, matching the mark everywhere
+            else it appears (hero, About, footer). */}
         <Link
           href="/"
-          className="flex min-w-0 items-center"
+          className="flex min-w-0 items-center gap-2.5"
           aria-label="RYVOL home"
         >
-          {/* Replace with the custom SVG when ready:
-
           <Image
-            src="/ryvol-wordmark.svg"
-            alt="RYVOL"
-            width={110}
-            height={18}
+            src="/brand/ryvol-emblem-navy.png"
+            alt=""
+            aria-hidden="true"
+            width={26}
+            height={26}
+            className="shrink-0"
             draggable={false}
           />
-
-          */}
-
-          <span className="rv-wordmark text-[15px] uppercase text-[#14161a]">
-            RYVOL
+          <span className="rv-serif italic text-[20px] md:text-[22px] text-[#14161a]">
+            Ryvol
           </span>
         </Link>
 
@@ -121,7 +148,7 @@ export default function Navbar() {
             <ShoppingCart className="h-5 w-5" />
 
             {totalCount > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#A1543E] text-[10px] text-[#F2F0EB]">
+              <span className="absolute -right-0.5 -top-0.5 flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[var(--rv-navy)] text-[10px] text-[#F2F0EB]">
                 {totalCount}
               </span>
             )}
@@ -138,7 +165,7 @@ export default function Navbar() {
             <ShoppingCart className="h-5 w-5" />
 
             {totalCount > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#A1543E] text-[10px] font-semibold text-[#F2F0EB]">
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--rv-navy)] text-[10px] font-semibold text-[#F2F0EB]">
                 {totalCount}
               </span>
             )}
@@ -201,7 +228,7 @@ export default function Navbar() {
                   toggleCart();
                   router.push("/shop");
                 }}
-                className="inline-block bg-[#14161a] px-7 py-3 text-[10px] uppercase tracking-[0.28em] text-[#F2F0EB] transition hover:bg-[#A1543E]"
+                className="inline-block bg-[#14161a] px-7 py-3 text-[10px] uppercase tracking-[0.28em] text-[#F2F0EB] transition hover:bg-[var(--rv-navy)]"
               >
                 Shop the Drop
               </button>
@@ -209,46 +236,48 @@ export default function Navbar() {
           ) : (
             <>
               {/* Desktop Cart Items */}
-              <ul className="max-h-64 divide-y divide-[#14161a]/10 overflow-y-auto">
+              <ul className="max-h-72 divide-y divide-[#14161a]/8 overflow-y-auto">
                 {cart.map((item) => (
                   <li
                     key={`${item.id}-${item.size}`}
-                    className="flex items-center gap-3 py-3"
+                    className="flex items-center gap-4 py-4"
                   >
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      width={64}
-                      height={64}
-                      className="object-cover"
-                    />
+                    <div className="relative h-16 w-16 shrink-0 overflow-hidden bg-[#EDEAE3]">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
 
                     <div className="flex-grow">
-                      <p className="text-sm font-medium">{item.name}</p>
+                      <p className="rv-serif italic text-[15px] text-[#14161a]">{item.name}</p>
 
                       {item.size && (
-                        <p className="text-xs text-[#14161a]/50">
+                        <p className="mt-0.5 text-[10px] uppercase tracking-[0.16em] text-[#14161a]/45">
                           Size: {item.size}
                         </p>
                       )}
 
-                      <p className="text-sm text-[#14161a]/60">
+                      <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-[#14161a]/45">
                         {item.quantity} × ${item.price.toFixed(2)}
                       </p>
                     </div>
 
-                    <div className="flex flex-col items-end gap-1">
-                      <div className="flex items-center gap-1">
+                    <div className="flex flex-col items-end gap-2">
+                      <div className="flex items-center gap-3 text-[13px] text-[#14161a]">
                         <button
                           onClick={() =>
                             decreaseQty(item.id, item.size)
                           }
-                          className="border border-[#14161a]/20 px-2 transition hover:border-[#14161a]"
+                          className="w-3 text-[#14161a]/50 transition hover:text-[#14161a]"
+                          aria-label="Decrease quantity"
                         >
                           −
                         </button>
 
-                        <span className="px-1 text-sm">
+                        <span className="w-3 text-center">
                           {item.quantity}
                         </span>
 
@@ -256,7 +285,8 @@ export default function Navbar() {
                           onClick={() =>
                             increaseQty(item.id, item.size)
                           }
-                          className="border border-[#14161a]/20 px-2 transition hover:border-[#14161a]"
+                          className="w-3 text-[#14161a]/50 transition hover:text-[#14161a]"
+                          aria-label="Increase quantity"
                         >
                           +
                         </button>
@@ -266,7 +296,7 @@ export default function Navbar() {
                         onClick={() =>
                           removeFromCart(item.id, item.size)
                         }
-                        className="text-xs text-[#14161a]/50 transition hover:text-[#A1543E]"
+                        className="text-[10px] uppercase tracking-[0.14em] text-[#14161a]/40 transition hover:text-[var(--rv-navy)]"
                       >
                         Remove
                       </button>
@@ -275,8 +305,16 @@ export default function Navbar() {
                 ))}
               </ul>
 
-              <div className="mt-4 text-right text-sm font-semibold">
-                Subtotal: ${total.toFixed(2)}
+              <div className="mt-5 pt-4 border-t border-[#14161a]/10">
+                <ShippingProgress total={total} />
+                <div className="flex items-baseline justify-between">
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-[#14161a]/50">
+                    Subtotal
+                  </span>
+                  <span className="rv-serif italic text-[19px] text-[#14161a]">
+                    ${total.toFixed(2)}
+                  </span>
+                </div>
               </div>
 
               <div className="mt-2 flex gap-2">
@@ -295,7 +333,7 @@ export default function Navbar() {
                     toggleCart();
                     router.push("/checkout");
                   }}
-                  className="mt-4 flex-1 bg-[#14161a] px-4 py-3 text-center text-[10px] uppercase tracking-[0.24em] text-[#F2F0EB] transition hover:bg-[#A1543E]"
+                  className="mt-4 flex-1 bg-[#14161a] px-4 py-3 text-center text-[10px] uppercase tracking-[0.24em] text-[#F2F0EB] transition hover:bg-[var(--rv-navy)]"
                 >
                   Checkout
                 </button>
@@ -338,73 +376,78 @@ export default function Navbar() {
                   toggleCart();
                   router.push("/shop");
                 }}
-                className="mt-5 inline-block bg-[#14161a] px-7 py-3 text-[10px] uppercase tracking-[0.28em] text-[#F2F0EB] transition hover:bg-[#A1543E]"
+                className="mt-5 inline-block bg-[#14161a] px-7 py-3 text-[10px] uppercase tracking-[0.28em] text-[#F2F0EB] transition hover:bg-[var(--rv-navy)]"
               >
                 Shop the Drop
               </button>
             </div>
           ) : (
             <>
-              <ul className="max-h-[50vh] overflow-y-auto">
+              <ul className="max-h-[46vh] overflow-y-auto">
                 {cart.map((item) => (
                   <li
                     key={item.id + item.size}
-                    className="mb-4 flex items-center justify-between border-b border-[#14161a]/10 pb-2"
+                    className="mb-4 flex items-center justify-between border-b border-[#14161a]/8 pb-4"
                   >
                     <div className="flex items-center gap-3">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        width={56}
-                        height={56}
-                        className="object-cover"
-                      />
+                      <div className="relative h-14 w-14 shrink-0 overflow-hidden bg-[#EDEAE3]">
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
 
                       <div>
-                        <p className="text-sm font-medium">
+                        <p className="rv-serif italic text-[14px] text-[#14161a]">
                           {item.name}
                         </p>
 
                         {item.size && (
-                          <p className="text-xs text-[#14161a]/50">
+                          <p className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-[#14161a]/45">
                             Size: {item.size}
                           </p>
                         )}
 
-                        <p className="text-sm text-[#14161a]/60">
+                        <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-[#14161a]/45">
                           {item.quantity} × ${item.price.toFixed(2)}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() =>
-                          decreaseQty(item.id, item.size)
-                        }
-                        className="border border-[#14161a]/20 px-2 py-1 text-sm"
-                      >
-                        −
-                      </button>
+                    <div className="flex flex-col items-end gap-2">
+                      <div className="flex items-center gap-2.5 text-[13px] text-[#14161a]">
+                        <button
+                          onClick={() =>
+                            decreaseQty(item.id, item.size)
+                          }
+                          className="w-3 text-[#14161a]/50"
+                          aria-label="Decrease quantity"
+                        >
+                          −
+                        </button>
 
-                      <span className="px-1 text-sm">
-                        {item.quantity}
-                      </span>
+                        <span className="w-3 text-center">
+                          {item.quantity}
+                        </span>
 
-                      <button
-                        onClick={() =>
-                          increaseQty(item.id, item.size)
-                        }
-                        className="border border-[#14161a]/20 px-2 py-1 text-sm"
-                      >
-                        +
-                      </button>
+                        <button
+                          onClick={() =>
+                            increaseQty(item.id, item.size)
+                          }
+                          className="w-3 text-[#14161a]/50"
+                          aria-label="Increase quantity"
+                        >
+                          +
+                        </button>
+                      </div>
 
                       <button
                         onClick={() =>
                           removeFromCart(item.id, item.size)
                         }
-                        className="ml-2 px-2 text-sm text-[#14161a]/50 hover:text-[#A1543E]"
+                        className="text-[10px] uppercase tracking-[0.14em] text-[#14161a]/40 hover:text-[var(--rv-navy)]"
                       >
                         Remove
                       </button>
@@ -414,8 +457,14 @@ export default function Navbar() {
               </ul>
 
               <div className="mt-auto border-t border-[#14161a]/10 pt-4">
-                <div className="mb-4 text-right font-semibold">
-                  Subtotal: ${total.toFixed(2)}
+                <ShippingProgress total={total} />
+                <div className="mb-4 flex items-baseline justify-between">
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-[#14161a]/50">
+                    Subtotal
+                  </span>
+                  <span className="rv-serif italic text-[19px] text-[#14161a]">
+                    ${total.toFixed(2)}
+                  </span>
                 </div>
 
                 <button
@@ -423,7 +472,7 @@ export default function Navbar() {
                     toggleCart();
                     router.push("/checkout");
                   }}
-                  className="block w-full bg-[#14161a] px-4 py-3 text-center text-[10px] uppercase tracking-[0.24em] text-[#F2F0EB] transition hover:bg-[#A1543E]"
+                  className="block w-full bg-[#14161a] px-4 py-3 text-center text-[10px] uppercase tracking-[0.24em] text-[#F2F0EB] transition hover:bg-[var(--rv-navy)]"
                 >
                   Go to Checkout
                 </button>
@@ -446,50 +495,82 @@ export default function Navbar() {
       {/* Mobile Menu Slide-In */}
       <div
         ref={menuRef}
-        className={`fixed right-0 top-0 z-50 h-full w-64 transform border-l border-[#14161a]/10 bg-[#F2F0EB] transition-transform duration-300 ease-in-out ${
+        className={`fixed right-0 top-0 z-50 h-full w-[82%] max-w-[380px] transform border-l border-[#14161a]/10 bg-[#F2F0EB] transition-transform duration-300 ease-in-out ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="relative space-y-7 p-6 pt-16">
-          <button
-            onClick={() => setMenuOpen(false)}
-            className="absolute right-4 top-4 text-2xl font-bold text-[#14161a]/50 hover:text-[#14161a]"
-            aria-label="Close menu"
-          >
-            ×
-          </button>
+        <div className="flex h-full flex-col p-8 pt-9">
+          <div className="mb-20 flex items-center justify-between">
+            <Image
+              src="/brand/ryvol-emblem-navy.png"
+              alt="RYVOL"
+              width={30}
+              height={30}
+            />
+            <button
+              onClick={() => setMenuOpen(false)}
+              className="text-2xl leading-none text-[#14161a]/50 transition hover:text-[#14161a]"
+              aria-label="Close menu"
+            >
+              ×
+            </button>
+          </div>
 
-          <Link
-            href="/shop"
-            onClick={() => setMenuOpen(false)}
-            className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]"
-          >
-            SHOP
-          </Link>
+          <nav className="flex flex-col gap-8">
+            <Link
+              href="/shop"
+              onClick={() => setMenuOpen(false)}
+              className="rv-serif italic text-[30px] leading-none text-[#14161a] transition hover:text-[var(--rv-navy)]"
+            >
+              Shop
+            </Link>
 
-          <Link
-            href="/about"
-            onClick={() => setMenuOpen(false)}
-            className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]"
-          >
-            ABOUT
-          </Link>
+            <Link
+              href="/about"
+              onClick={() => setMenuOpen(false)}
+              className="rv-serif italic text-[30px] leading-none text-[#14161a] transition hover:text-[var(--rv-navy)]"
+            >
+              About
+            </Link>
 
-          <Link
-            href="/faq"
-            onClick={() => setMenuOpen(false)}
-            className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]"
-          >
-            FAQ
-          </Link>
+            <Link
+              href="/faq"
+              onClick={() => setMenuOpen(false)}
+              className="rv-serif italic text-[30px] leading-none text-[#14161a] transition hover:text-[var(--rv-navy)]"
+            >
+              FAQ
+            </Link>
+          </nav>
 
-          <Link
-            href="/privacy"
-            onClick={() => setMenuOpen(false)}
-            className="rv-navlink block text-[13px] text-[#14161a]/75 hover:text-[#14161a]"
-          >
-            PRIVACY
-          </Link>
+          <div className="mt-auto border-t border-[#14161a]/10 pt-8">
+            <Link
+              href="/privacy"
+              onClick={() => setMenuOpen(false)}
+              className="mb-8 block text-[10px] uppercase tracking-[0.2em] text-[#14161a]/40 transition hover:text-[#14161a]"
+            >
+              Privacy
+            </Link>
+
+            <div className="flex gap-6 text-[#14161a]/60 text-lg">
+              <a
+                href="https://www.instagram.com/shopryvol"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+              >
+                <FaInstagram className="transition hover:text-[#14161a]" />
+              </a>
+
+              <a
+                href="https://www.tiktok.com/@shopryvol"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok"
+              >
+                <FaTiktok className="transition hover:text-[#14161a]" />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </nav>

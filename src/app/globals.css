@@ -3,10 +3,25 @@
 @tailwind components;
 @tailwind utilities;
 
-/* =============== RYVOL palette ===============
-   off-white #F2F0EB | stone #C8C4BC | charcoal #2A2A2A
-   ink #14161a | navy #0E1114 | rust #A1543E
+/* =============== RYVOL palette (Drop 01) ===============
+   cream    #F2F0EB  base / paper
+   stone    #C8C4BC  quiet fill
+   charcoal #2A2A2A  secondary ink
+   ink      #14161a  primary text
+   navy     #111B2B  accent — from the Drop 01 emblem + tote/trim colorway
+   void     #0B0F14  deepest panels (hero, footers-on-dark)
+
+   Defined as CSS variables so every arbitrary Tailwind value
+   (e.g. bg-[var(--rv-navy)]) stays in sync from one place.
 */
+:root {
+  --rv-cream: #F2F0EB;
+  --rv-stone: #C8C4BC;
+  --rv-charcoal: #2A2A2A;
+  --rv-ink: #14161a;
+  --rv-navy: #111B2B;
+  --rv-void: #0B0F14;
+}
 
 /* =============== Base Layout =============== */
 html,
@@ -65,4 +80,36 @@ img {
   font-size: 11px;
   letter-spacing: 0.24em;
   text-transform: uppercase;
+}
+
+/* Editorial serif — headlines and pull-quotes only. Font itself loaded via
+   next/font in layout.tsx (--font-serif); this just makes it reachable as a
+   plain class instead of repeating the var() everywhere. */
+.rv-serif {
+  font-family: var(--font-serif), Georgia, 'Times New Roman', serif;
+}
+
+/* =============== Drop 01 utilities =============== */
+/* Note: no `position` here on purpose — Tailwind v4's utilities live in
+   @layer utilities, and any unlayered rule (like a plain custom class below)
+   beats a layered one regardless of source order. Setting position here would
+   silently win over the Tailwind `relative`/`absolute` class already on the
+   element and break its layout. Isolation only; positioning stays with
+   Tailwind classes on each element that uses .rv-grain. */
+.rv-grain {
+  isolation: isolate;
+}
+.rv-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+.rv-digit {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }

@@ -9,16 +9,16 @@ import Newsletter from '@/components/Newsletter';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-// RYVOL palette: off-white #F2F0EB | ink #14161a | rust #A1543E
+// RYVOL palette (Drop 01): cream #F2F0EB | ink #14161a | navy var(--rv-navy)
 
 const inputClass =
   'border border-[#14161a]/25 bg-transparent px-5 py-3 text-[#14161a] placeholder-[#14161a]/40 focus:outline-none focus:border-[#14161a] transition';
 
 const buttonClass =
-  'inline-block px-8 py-3.5 bg-[#14161a] text-[#F2F0EB] text-[10px] uppercase tracking-[0.32em] hover:bg-[#A1543E] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#A1543E] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F2F0EB]';
+  'inline-block px-8 py-3.5 bg-[#14161a] text-[#F2F0EB] text-[10px] uppercase tracking-[0.32em] hover:bg-[var(--rv-navy)] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--rv-navy)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F2F0EB]';
 
 const textLinkClass =
-  'text-[#14161a] font-medium underline underline-offset-2 hover:text-[#A1543E] transition-colors';
+  'text-[#14161a] font-medium underline underline-offset-2 hover:text-[var(--rv-navy)] transition-colors';
 
 export default function LoginPage() {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
@@ -101,7 +101,7 @@ export default function LoginPage() {
           </h1>
 
           <p className="mb-8 max-w-lg text-center text-[#14161a]/60 text-[13px] uppercase tracking-[0.3em]">
-            Unryvoled Pursuit<span className="text-[#A1543E]">.</span>
+            Unryvoled Pursuit<span className="text-[var(--rv-navy)]">.</span>
           </p>
 
           <button onClick={() => signOut()} className={`${buttonClass} mb-14`}>
@@ -123,7 +123,7 @@ export default function LoginPage() {
                   href="https://www.instagram.com/shopryvol" // TODO: confirm handle
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-[#A1543E] transition"
+                  className="hover:text-[var(--rv-navy)] transition"
                   aria-label="Instagram"
                 >
                   <FaInstagram />
@@ -132,7 +132,7 @@ export default function LoginPage() {
                   href="https://www.tiktok.com/@shopryvol" // TODO: confirm handle
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-[#A1543E] transition"
+                  className="hover:text-[var(--rv-navy)] transition"
                   aria-label="TikTok"
                 >
                   <FaTiktok />
@@ -216,7 +216,7 @@ export default function LoginPage() {
       </form>
 
       {error && (
-        <p className="mt-4 text-center text-[#A1543E] font-medium text-sm">{error}</p>
+        <p className="mt-4 text-center text-[var(--rv-navy)] font-medium text-sm">{error}</p>
       )}
 
       <div className="mt-6 text-center text-sm text-[#14161a]/70">
