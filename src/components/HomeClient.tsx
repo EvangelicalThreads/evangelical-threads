@@ -264,7 +264,14 @@ export default function HomeClient({
         <div className="absolute inset-0">
           <video
             ref={heroVideoRef}
-            autoPlay
+            // No `autoplay` attribute on purpose — playback is started by
+            // the effect below via video.play() instead. When the
+            // declarative `autoplay` attribute is the one that fails
+            // (e.g. iOS Low Power Mode), WebKit shows its own big native
+            // play icon centered over the video, on top of everything.
+            // A script-driven play() call that gets rejected doesn't
+            // trigger that native fallback UI, so this keeps the only
+            // play button the small one we built.
             muted
             loop
             playsInline
