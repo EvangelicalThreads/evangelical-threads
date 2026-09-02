@@ -5,6 +5,7 @@ import { SessionProvider } from 'next-auth/react';
 import type { Session } from 'next-auth';
 import { Toaster } from 'react-hot-toast';
 import Navbar from '../components/Navbar';
+import Analytics from '../components/Analytics';
 import { CartProvider } from '../context/CartContext';
 import React, { useState, useEffect } from 'react';
 import { Cormorant_Garamond } from 'next/font/google';
@@ -36,11 +37,15 @@ export default function RootLayout({ children, session }: RootLayoutProps) {
   const acceptCookies = () => {
     localStorage.setItem('cookieAccepted', 'true');
     setShowCookieBanner(false);
+    // Lets Analytics (mounted below, already past its own initial check)
+    // start tracking immediately instead of waiting for a page reload.
+    window.dispatchEvent(new Event('cookie-consent-accepted'));
   };
 
   return (
     <html lang="en" className={serif.variable}>
       <body className="min-h-screen overflow-x-hidden bg-[#F2F0EB] text-[#14161a]">
+        <Analytics />
         <SessionProvider session={session}>
           <CartProvider>
             <Navbar />

@@ -57,6 +57,11 @@ export async function POST(req: Request) {
     const productById = new Map(products.map((p) => [p.id, p]));
 
     const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+    // A plain snapshot of what was actually ordered — stored on the order
+    // now, while we have the validated (not client-trusted) product data
+    // in hand, so /admin/orders can show line items without needing to
+    // re-fetch anything from Stripe later.
+    const orderedItems: { name: string; size?: string; quantity: number; price: number }[] = [];
     let subtotal = 0;
 
     for (const item of cartItems) {
@@ -77,6 +82,13 @@ export async function POST(req: Request) {
 
       const quantity = Math.max(1, Math.floor(item.quantity) || 1);
       subtotal += product.price * quantity;
+
+      orderedItems.push({
+        name: product.name,
+        ...(item.size ? { size: item.size } : {}),
+        quantity,
+        price: product.price,
+      });
 
       line_items.push({
         price_data: {
@@ -132,6 +144,7 @@ export async function POST(req: Request) {
         postal_code: '',
         country: '',
         status: 'pending',
+        items: orderedItems,
       },
     });
 

@@ -2,6 +2,7 @@ import { stripe } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import Stripe from 'stripe';
+import { sendNewSaleEmail } from '@/lib/resend';
 
 export const config = { api: { bodyParser: false } };
 
@@ -50,10 +51,42 @@ export async function POST(req: Request) {
         postal_code: details?.address?.postal_code ?? '',
         country: details?.address?.country ?? '',
         status: 'paid',
+        email: details?.email ?? null,
+        amount_total: session.amount_total ?? null,
       },
     });
 
     console.log(`Order updated for session ${session.id}`);
+
+    // Best-effort "new sale" alert — same pattern as the review
+    // notification email. Read the order back rather than trusting the
+    // updateMany payload directly, since it already holds the item list
+    // written at checkout-session creation time. A flaky email send must
+    // never make this webhook look like it failed to Stripe (that would
+    // trigger retries) when the order itself was already saved correctly.
+    try {
+      const order = await prisma.orders.findFirst({
+        where: { stripe_session_id: session.id! },
+        orderBy: { created_at: 'desc' },
+      });
+      if (order) {
+        await sendNewSaleEmail({
+          name: order.name,
+          email: order.email,
+          address: order.address,
+          city: order.city,
+          state: order.state,
+          postal_code: order.postal_code,
+          country: order.country,
+          amountTotal: order.amount_total,
+          items: order.items as
+            | { name: string; size?: string; quantity: number; price: number }[]
+            | null,
+        });
+      }
+    } catch (notifyErr) {
+      console.error('New sale email failed:', notifyErr);
+    }
 
     return NextResponse.json({ received: true });
   } catch (err) {
