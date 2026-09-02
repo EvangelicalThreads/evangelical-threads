@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { sendWelcomeEmail } from '@/lib/resend';
+import { sendWelcomeEmail, syncNewsletterContact } from '@/lib/resend';
 
 export async function POST(req: Request) {
   const { email } = await req.json();
@@ -23,6 +23,10 @@ export async function POST(req: Request) {
     });
 
     await sendWelcomeEmail(email, '');
+
+    // Best-effort — never blocks or fails the signup itself (see the
+    // function for why: no Audience configured yet just logs and no-ops).
+    await syncNewsletterContact(email);
 
     return NextResponse.json({ success: true });
   } catch (error) {

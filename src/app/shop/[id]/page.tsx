@@ -78,7 +78,7 @@ export async function generateMetadata({
 
   const description =
     product.description?.trim() ||
-    `${product.name} — $${product.price.toFixed(2)}. Coastal luxury apparel from RYVOL.`;
+    `${product.name}: $${product.price.toFixed(2)}. Coastal luxury apparel from RYVOL.`;
   const image = product.imageFront || product.images?.[0]?.url;
 
   return {

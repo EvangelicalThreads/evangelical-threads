@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET /api/reviews?productId=men-dolphin-tee — approved reviews for one
+// GET /api/reviews?productId=dolphin-tee — approved reviews for one
 // product, plus the average rating and count so the product page doesn't
 // have to compute it client-side from a possibly-empty list.
 export async function GET(req: NextRequest) {

@@ -5,13 +5,13 @@ export default function PrivacyPage() {
 
       <p className="mb-4">
         At <strong>RYVOL</strong>, your privacy is deeply respected. We only collect what’s necessary to
-        help you shop, stay logged in, and receive updates — nothing more.
+        help you shop, stay logged in, and receive updates. Nothing more.
       </p>
 
       <h2 className="text-lg font-semibold mt-8 mb-3">What We Use</h2>
       <ul className="list-disc ml-6 space-y-2">
         <li><strong>Essential cookies</strong> to keep items in your cart and manage login sessions.</li>
-        <li><strong>Optional analytics</strong> (like page views) to help us improve — but only if you opt in.</li>
+        <li><strong>Optional analytics</strong> (like page views) to help us improve, but only if you opt in.</li>
       </ul>
 
       <h2 className="text-lg font-semibold mt-8 mb-3">We Don’t</h2>

@@ -101,7 +101,7 @@ export default function LoginPage() {
           </h1>
 
           <p className="mb-8 max-w-lg text-center text-[#14161a]/60 text-[13px] uppercase tracking-[0.3em]">
-            Unryvoled Pursuit<span className="text-[var(--rv-navy)]">.</span>
+            Follow the Current<span className="text-[var(--rv-navy)]">.</span>
           </p>
 
           <button onClick={() => signOut()} className={`${buttonClass} mb-14`}>

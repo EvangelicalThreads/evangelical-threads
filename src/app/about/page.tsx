@@ -35,7 +35,7 @@ export default function AboutPage() {
           </p>
           <p className="text-[16px] md:text-[18px] leading-[1.9] text-[#14161a]/75">
             RYVOL takes its shape from rival, and revolve. Not a rivalry with
-            anyone else — only with who you were before.
+            anyone else, only with who you were before.
           </p>
         </section>
 
@@ -46,7 +46,7 @@ export default function AboutPage() {
           </p>
           <p className="text-[16px] md:text-[18px] leading-[1.9] text-[#14161a]/75">
             Made along the Southern California coast, where mornings are slow
-            and nothing is rushed. RYVOL is built for those hours — worn in,
+            and nothing is rushed. RYVOL is built for those hours: worn in,
             not worn out.
           </p>
         </section>
@@ -65,7 +65,7 @@ export default function AboutPage() {
         {/* Mark */}
         <section className="border-y border-[#14161a]/10 py-16 md:py-20 mb-20 md:mb-24 text-center">
           <p className="rv-serif italic text-[24px] md:text-[28px] text-[#14161a]">
-            Unryvoled Pursuit.
+            Follow the Current.
           </p>
         </section>
 

@@ -146,7 +146,7 @@ function ReviewsSection({ productId }: { productId: string }) {
       setRating(0);
       setText('');
     } catch {
-      setFormError('Something went wrong — try again in a moment.');
+      setFormError('Something went wrong. Try again in a moment.');
     } finally {
       setSubmitting(false);
     }
@@ -167,7 +167,7 @@ function ReviewsSection({ productId }: { productId: string }) {
       </div>
 
       {!loading && count === 0 && (
-        <p className="text-[13px] text-[#14161a]/50 mb-10">No reviews yet — be the first.</p>
+        <p className="text-[13px] text-[#14161a]/50 mb-10">No reviews yet. Be the first.</p>
       )}
 
       {reviews.length > 0 && (
@@ -189,7 +189,7 @@ function ReviewsSection({ productId }: { productId: string }) {
 
       {submitted && (
         <p className="text-[13px] text-[#14161a]/60 mb-6">
-          Thanks — your review is live.
+          Thanks, your review is live.
         </p>
       )}
 

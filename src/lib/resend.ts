@@ -19,6 +19,37 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ryvol.shop';
 // this inbox ever changes.
 const ADMIN_EMAIL = 'ryvol.shop@gmail.com';
 
+// Resend renamed Audiences to Segments (contacts are now global, just
+// tagged with a segment) — this is that Segment's ID. Set it in the
+// environment once it exists. Until then, contact syncing and broadcasts
+// quietly no-op instead of throwing, so signups keep working either way.
+const RESEND_SEGMENT_ID = process.env.RESEND_SEGMENT_ID;
+
+// Adds a newsletter signup to the Resend Segment so it's reachable from a
+// Broadcast (the weekly "Current" send). This is separate from — and in
+// addition to — the Prisma `User` row: Prisma is the source of truth for
+// the site's own records, Resend's Segment is just the mailing list. Best
+// effort on purpose: a signup should never fail just because the Segment
+// sync hiccuped, so this always resolves rather than throwing.
+export async function syncNewsletterContact(email: string) {
+  if (!RESEND_SEGMENT_ID) {
+    console.warn('RESEND_SEGMENT_ID not set — skipping Segment sync for', email);
+    return;
+  }
+  try {
+    const result = await getResend().contacts.create({
+      email,
+      unsubscribed: false,
+      segments: [{ id: RESEND_SEGMENT_ID }],
+    });
+    if (result.error) {
+      console.error('Resend contact sync error:', result.error.message);
+    }
+  } catch (err) {
+    console.error('Resend contact sync threw:', err);
+  }
+}
+
 export async function sendWelcomeEmail(email: string, name: string) {
   const result = await getResend().emails.send({
     from: 'RYVOL <hello@ryvol.shop>',
@@ -61,7 +92,7 @@ export async function sendWelcomeEmail(email: string, name: string) {
             </tr>
             <tr>
               <td align="center" style="font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size:13px; letter-spacing:1px; color:#14161a; padding-bottom:28px;">
-                Unryvoled Pursuit
+                Follow the Current
               </td>
             </tr>
             <tr>
@@ -140,7 +171,7 @@ export async function sendShippingEmail(order: {
             }
             <tr>
               <td align="center" style="font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size:13px; letter-spacing:1px; color:#14161a; padding-bottom:28px;">
-                Unryvoled Pursuit
+                Follow the Current
               </td>
             </tr>
             <tr>
@@ -223,7 +254,7 @@ export async function sendReviewRequestEmail(order: {
             ${itemsHtml ? `<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${itemsHtml}</table></td></tr><tr><td style="padding-bottom:12px;"></td></tr>` : ''}
             <tr>
               <td align="center" style="font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size:13px; letter-spacing:1px; color:#14161a; padding-top:20px; padding-bottom:28px;">
-                Unryvoled Pursuit
+                Follow the Current
               </td>
             </tr>
             <tr>
@@ -408,4 +439,133 @@ export async function sendReviewNotificationEmail(review: {
     throw new Error(`Resend API error: ${result.error.message}`);
   }
   return result;
+}
+
+// The weekly "Current" newsletter. `bodyHtml` is dropped in as-is inside
+// the same off-white/ink/serif shell every other RYVOL email uses — pass
+// plain paragraphs (`<p>…</p>`) or simple markup, not a full document.
+// {{{RESEND_UNSUBSCRIBE_URL}}} is a Resend merge tag: it only resolves on
+// an actual Broadcast send, not on a one-off `.emails.send()` test.
+function buildCurrentNewsletterHtml({
+  heading,
+  bodyHtml,
+  ctaText,
+  ctaHref,
+}: {
+  heading: string;
+  bodyHtml: string;
+  ctaText?: string;
+  ctaHref?: string;
+}) {
+  return `
+<!doctype html>
+<html>
+  <body style="margin:0; padding:0; background-color:#F2F0EB;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F2F0EB;">
+      <tr>
+        <td align="center" style="padding:56px 24px;">
+          <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="max-width:480px; width:100%;">
+            <tr>
+              <td align="center" style="padding-bottom:28px;">
+                <img src="${SITE_URL}/brand/ryvol-emblem-navy.png" width="40" height="40" alt="RYVOL" style="display:block; border:0;" />
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#14161a99; padding-bottom:18px;">
+                The Current
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-weight: 400; font-size:30px; line-height:1.15; color:#14161a; padding-bottom:26px;">
+                ${heading}
+              </td>
+            </tr>
+            <tr>
+              <td style="font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-size:14px; line-height:1.9; color:#55575c; padding-bottom:36px;">
+                ${bodyHtml}
+              </td>
+            </tr>
+            ${
+              ctaText && ctaHref
+                ? `
+            <tr>
+              <td align="center" style="padding-bottom:44px;">
+                <a href="${ctaHref}" style="display:inline-block; padding:14px 38px; border:1px solid #14161a; font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#14161a; text-decoration:none;">
+                  ${ctaText}
+                </a>
+              </td>
+            </tr>`
+                : ''
+            }
+            <tr>
+              <td align="center" style="font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size:13px; letter-spacing:1px; color:#14161a; padding-bottom:28px;">
+                Follow the Current
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="border-top:1px solid #ddd9d0; padding-top:22px; font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-size:11px; color:#9a9a9a;">
+                <a href="{{{RESEND_UNSUBSCRIBE_URL}}}" style="color:#9a9a9a;">Unsubscribe</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+  `;
+}
+
+// Creates a draft "Current" Broadcast against the RYVOL Segment — it does
+// NOT send by default. Review it in the Resend dashboard (Broadcasts) and
+// hit send there, or pass `send: true` once you're confident in the copy.
+// There's deliberately no API route wired up to trigger this: with no
+// admin auth in place yet, an unauthenticated endpoint that can blast the
+// whole list is not something to expose. Call this from a one-off script
+// instead until the admin panel has a real login.
+export async function createCurrentBroadcast({
+  subject,
+  heading,
+  bodyHtml,
+  ctaText,
+  ctaHref,
+  send = false,
+}: {
+  subject: string;
+  heading: string;
+  bodyHtml: string;
+  ctaText?: string;
+  ctaHref?: string;
+  send?: boolean;
+}) {
+  if (!RESEND_SEGMENT_ID) {
+    throw new Error('RESEND_SEGMENT_ID is not set — create a Segment in Resend first.');
+  }
+
+  const html = buildCurrentNewsletterHtml({ heading, bodyHtml, ctaText, ctaHref });
+
+  // `send` is a discriminated union in the SDK's types (send: true vs.
+  // send?: false), so a plain boolean variable doesn't satisfy either
+  // branch — the two calls below give TypeScript a literal in each.
+  const created = send
+    ? await getResend().broadcasts.create({
+        segmentId: RESEND_SEGMENT_ID,
+        from: 'RYVOL <hello@ryvol.shop>',
+        subject,
+        html,
+        send: true,
+      })
+    : await getResend().broadcasts.create({
+        segmentId: RESEND_SEGMENT_ID,
+        from: 'RYVOL <hello@ryvol.shop>',
+        subject,
+        html,
+        send: false,
+      });
+
+  if (created.error) {
+    throw new Error(`Resend API error: ${created.error.message}`);
+  }
+
+  return created;
 }

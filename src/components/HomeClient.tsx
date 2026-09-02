@@ -13,21 +13,28 @@ import { FaInstagram, FaTiktok, FaChevronLeft, FaChevronRight, FaPlay } from 're
 // The brand doesn't explain itself, so the layout doesn't either: no drop
 // countdowns, no hype copy, no loud CTAs — just the pieces, named and priced.
 
+// `id` matches the /public/drop-01 image filenames (and the
+// dropAvailability keys computed from them in app/page.tsx) — it's not
+// the Sanity product id, hence the separate `productId` field below used
+// for routing to the actual product page.
 const DROP_ITEMS = [
   {
     id: 'men-dolphin-tee',
+    productId: 'dolphin-tee',
     name: 'The Dolphin Tee',
     subtitle: "Men's — Heavyweight Cotton",
     image: '/drop-01/men-dolphin-tee.jpg',
   },
   {
     id: 'women-ringer-tee',
+    productId: 'ringer-tee',
     name: 'The Ringer Tee',
     subtitle: "Women's — Fitted Cotton",
     image: '/drop-01/women-ringer-tee.jpg',
   },
   {
     id: 'current-tote',
+    productId: 'current-tote',
     name: 'The Current Tote',
     subtitle: 'Canvas — One Size',
     image: '/drop-01/current-tote.jpg',
@@ -42,6 +49,7 @@ type DropAvailability = Partial<Record<(typeof DROP_ITEMS)[number]['id'], boolea
 const CAMPAIGN = [
   {
     id: 'dolphin-tee',
+    productId: 'dolphin-tee',
     name: 'The Dolphin Tee',
     subtitle: "Men's — Heavyweight Cotton — Sand",
     hero: '/drop-01/campaign/dolphin-tee-01.jpg',
@@ -50,6 +58,7 @@ const CAMPAIGN = [
   },
   {
     id: 'ringer-tee',
+    productId: 'ringer-tee',
     name: 'The Ringer Tee',
     subtitle: "Women's — Fitted Cotton — White",
     hero: '/drop-01/campaign/ringer-tee-01.jpg',
@@ -58,6 +67,7 @@ const CAMPAIGN = [
   },
   {
     id: 'current-tote',
+    productId: 'current-tote',
     name: 'The Current Tote',
     subtitle: 'Canvas — One Size — Navy',
     hero: '/drop-01/campaign/current-tote-01.jpg',
@@ -307,7 +317,7 @@ export default function HomeClient({
           />
 
           <h1 className="rv-serif italic rv-reveal text-[42px] md:text-[60px] leading-[1.08] text-[#F2F0EB]">
-            Unryvoled Pursuit.
+            Follow the Current.
           </h1>
 
           <div className="rv-reveal mt-10 flex items-center gap-8 text-[11px] uppercase tracking-[0.22em] text-[#F2F0EB]/80">
@@ -327,6 +337,33 @@ export default function HomeClient({
         </div>
       </section>
 
+      {/* Early newsletter — first thing after the hero, so it isn't missed
+          at the bottom of the page. Uses the poster art rather than a
+          form floating on cream, same restrained pairing as Campaign. */}
+      <section className="w-full border-t border-[#14161a]/10">
+        <div className="max-w-[1180px] mx-auto px-6 md:px-10 py-20 md:py-28 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-center">
+          <div className="md:col-span-6 rv-reveal">
+            <div className="relative aspect-[3/4] overflow-hidden bg-[#EDEAE3]">
+              <img
+                src="/brand/newsletter-poster.png"
+                alt="RYVOL"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
+          </div>
+
+          <div className="md:col-span-6 rv-reveal">
+            <p className="rv-serif italic text-[22px] md:text-[26px] text-[#14161a] mb-3">
+              Before it drops.
+            </p>
+            <p className="text-[#14161a]/50 mb-8 text-[12px] uppercase tracking-[0.18em]">
+              First access, restock notices, nothing else.
+            </p>
+            <Newsletter showHeading={false} align="left" compact />
+          </div>
+        </div>
+      </section>
+
       {/* Three pieces */}
       <section className="w-full border-t border-[#14161a]/10">
         <div className="max-w-[1180px] mx-auto px-6 md:px-10 py-20 md:py-28">
@@ -336,7 +373,7 @@ export default function HomeClient({
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-16 md:gap-x-14">
             {DROP_ITEMS.map((item) => (
-              <div key={item.id} className="group rv-reveal">
+              <Link key={item.id} href={`/shop/${item.productId}`} className="group rv-reveal block">
                 <div className="relative aspect-[4/5.2] overflow-hidden bg-[#EDEAE3] mb-5">
                   <DropTile
                     image={item.image}
@@ -348,7 +385,7 @@ export default function HomeClient({
                 <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-[#14161a]/45">
                   {item.subtitle}
                 </p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -366,13 +403,13 @@ export default function HomeClient({
                 item.align === 'right' ? 'md:order-2' : 'md:order-1'
               }`}
             >
-              <div className="relative aspect-[4/5] overflow-hidden bg-[#EDEAE3]">
+              <Link href={`/shop/${item.productId}`} className="relative aspect-[4/5] overflow-hidden bg-[#EDEAE3] block group">
                 <img
                   src={item.hero}
                   alt={item.name}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.015]"
                 />
-              </div>
+              </Link>
             </div>
 
             <div
@@ -389,19 +426,23 @@ export default function HomeClient({
 
               <div className="grid grid-cols-2 gap-3 w-full max-w-[360px]">
                 {item.detail.map((src) => (
-                  <div key={src} className="relative aspect-[4/5] overflow-hidden bg-[#EDEAE3]">
+                  <Link
+                    key={src}
+                    href={`/shop/${item.productId}`}
+                    className="relative aspect-[4/5] overflow-hidden bg-[#EDEAE3] block"
+                  >
                     <img
                       src={src}
                       alt=""
                       aria-hidden="true"
                       className="absolute inset-0 h-full w-full object-cover"
                     />
-                  </div>
+                  </Link>
                 ))}
               </div>
 
               <Link
-                href="/shop"
+                href={`/shop/${item.productId}`}
                 className="mt-10 text-[11px] uppercase tracking-[0.22em] text-[#14161a]/70 border-b border-[#14161a]/30 pb-0.5 hover:border-[#14161a] hover:text-[#14161a] transition self-start md:self-auto"
                 style={item.align === 'right' ? { alignSelf: 'flex-end' } : undefined}
               >

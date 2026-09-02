@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 // refactor its interactivity out into a separate component.
 export const metadata: Metadata = {
   title: 'About',
-  description: 'The story behind RYVOL — coastal luxury apparel, Unryvoled Pursuit.',
+  description: 'The story behind RYVOL: coastal luxury apparel, Follow the Current.',
 };
 
 export default function AboutLayout({ children }: { children: React.ReactNode }) {

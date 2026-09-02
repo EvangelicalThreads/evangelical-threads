@@ -47,7 +47,7 @@ export default function SuccessPage() {
           Order Confirmed.
         </p>
         <p className="text-[13px] leading-[1.8] text-[#14161a]/60 mb-12 max-w-[380px] mx-auto">
-          Thank you for your purchase. A confirmation is on its way — your
+          Thank you for your purchase. A confirmation is on its way, and your
           pursuit begins shortly.
         </p>
         <Link

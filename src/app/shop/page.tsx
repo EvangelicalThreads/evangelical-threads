@@ -2,14 +2,24 @@ export const revalidate = 0
 export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next';
-import Link from "next/link";
 import { FaInstagram, FaTiktok } from "react-icons/fa";
 import Newsletter from '../../components/Newsletter';
+import ProductCard from '../../components/ProductCard';
 import { sanityClient } from '../../lib/sanity';
 
 export const metadata: Metadata = {
   title: 'Shop',
-  description: 'Shop the full RYVOL collection — coastal luxury apparel, totes, and more.',
+  description: 'Shop the full RYVOL collection: coastal luxury apparel, totes, and more.',
+};
+
+type Stock = {
+  XS: number;
+  S: number;
+  M: number;
+  L: number;
+  XL: number;
+  XXL: number;
+  oneSize: number;
 };
 
 type Product = {
@@ -21,6 +31,7 @@ type Product = {
   imageFront?: string;
   imageBack?: string;
   images?: { url: string }[];
+  stock?: Stock;
 };
 
 export default async function ShopPage() {
@@ -34,6 +45,7 @@ export default async function ShopPage() {
       "imageFront": imageFront.asset->url,
       "imageBack": imageBack.asset->url,
       "images": images[]{ "url": image.asset->url },
+      stock,
     }
   `);
 
@@ -66,50 +78,7 @@ export default async function ShopPage() {
         ) : (
           <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 sm:gap-x-8 sm:gap-y-14 md:gap-x-14 md:gap-y-16">
             {products.map((product) => (
-              <div key={product.id} className="group">
-                <Link href={`/shop/${product.id}`} className="block">
-                  <div className="relative aspect-[4/5.2] overflow-hidden bg-[#EDEAE3] mb-3 sm:mb-4 md:mb-5">
-                    {product.soldOut && (
-                      <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 text-[8px] sm:text-[9px] uppercase tracking-[0.18em] sm:tracking-[0.24em] text-[#14161a]/60 bg-[#F2F0EB]/90 px-2 py-0.5 sm:px-2.5 sm:py-1">
-                        Sold Out
-                      </div>
-                    )}
-                    {product.front ? (
-                      // eslint-disable-next-line @next/next/no-img-element -- external Sanity CDN urls, simple cover crop
-                      <img
-                        src={product.front}
-                        alt={product.name}
-                        className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:opacity-0"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-[#EDEAE3]">
-                        <img
-                          src="/brand/ryvol-emblem-line-ink.png"
-                          alt=""
-                          aria-hidden="true"
-                          className="w-[22%] opacity-[0.12] select-none"
-                        />
-                      </div>
-                    )}
-                    {product.back && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={product.back}
-                        alt=""
-                        aria-hidden="true"
-                        className="absolute inset-0 h-full w-full object-cover opacity-0 transition duration-700 ease-out group-hover:opacity-100"
-                      />
-                    )}
-                  </div>
-                </Link>
-
-                <p className="rv-serif italic text-[15px] leading-[1.25] sm:text-[16px] md:text-[19px] text-[#14161a]">
-                  {product.name}
-                </p>
-                <p className="mt-1 text-[9px] sm:text-[9px] md:text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] text-[#14161a]/45">
-                  ${product.price}
-                </p>
-              </div>
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}

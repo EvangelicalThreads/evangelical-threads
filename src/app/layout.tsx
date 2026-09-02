@@ -16,7 +16,7 @@ const serif = Cormorant_Garamond({
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ryvol.shop';
 const SITE_DESCRIPTION =
-  'RYVOL — coastal luxury apparel. Unryvoled Pursuit. Shop tees, totes, and more built for the water, the shore, and everywhere after.';
+  'RYVOL: coastal luxury apparel. Follow the Current. Shop tees, totes, and more built for the water, the shore, and everywhere after.';
 
 // This is the one place site-wide SEO tags live — every page inherits this
 // unless it sets its own (product pages do, via generateMetadata). This
@@ -26,7 +26,7 @@ const SITE_DESCRIPTION =
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'RYVOL — Coastal Luxury Apparel',
+    default: 'RYVOL: Coastal Luxury Apparel',
     template: '%s | RYVOL',
   },
   description: SITE_DESCRIPTION,
