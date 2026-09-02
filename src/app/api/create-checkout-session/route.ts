@@ -25,9 +25,10 @@ const prisma = new PrismaClient();
 
 // Keep in sync with FREE_SHIPPING_THRESHOLD in src/components/Navbar.tsx.
 const FREE_SHIPPING_THRESHOLD = 50;
-// Flat rate charged when the order is under the threshold — arbitrary
-// placeholder, change to whatever you actually want to charge.
-const FLAT_SHIPPING_RATE = 6.95;
+// TEMPORARY — set to 0 for a real-money test checkout so you're not out
+// $6.95 on a $0.01 test order. Change this back to 6.95 once you're done
+// testing, then push again.
+const FLAT_SHIPPING_RATE = 0;
 
 export async function POST(req: Request) {
   try {
