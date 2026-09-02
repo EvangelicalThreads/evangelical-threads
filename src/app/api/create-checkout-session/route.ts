@@ -61,7 +61,7 @@ export async function POST(req: Request) {
     // now, while we have the validated (not client-trusted) product data
     // in hand, so /admin/orders can show line items without needing to
     // re-fetch anything from Stripe later.
-    const orderedItems: { name: string; size?: string; quantity: number; price: number }[] = [];
+    const orderedItems: { id: string; name: string; size?: string; quantity: number; price: number }[] = [];
     let subtotal = 0;
 
     for (const item of cartItems) {
@@ -84,6 +84,7 @@ export async function POST(req: Request) {
       subtotal += product.price * quantity;
 
       orderedItems.push({
+        id: product.id,
         name: product.name,
         ...(item.size ? { size: item.size } : {}),
         quantity,

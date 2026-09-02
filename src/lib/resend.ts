@@ -163,6 +163,89 @@ export async function sendShippingEmail(order: {
   return result;
 }
 
+// Fired by the daily cron job (see /api/cron/review-requests) a week after
+// an order ships — nudges the customer to actually leave a review instead
+// of relying on them to think of it themselves. `items` come straight from
+// the order's stored snapshot; only ones with an `id` get a real deep link
+// to that product's review section (older orders placed before item ids
+// were captured just won't have one — they fall back to a generic link).
+export async function sendReviewRequestEmail(order: {
+  email: string;
+  name: string;
+  items: { id?: string; name: string }[] | null;
+}) {
+  const firstName = order.name ? order.name.split(' ')[0] : '';
+
+  const itemsHtml =
+    order.items && order.items.length > 0
+      ? order.items
+          .map((item) => {
+            const href = item.id ? `${SITE_URL}/shop/${item.id}#reviews` : `${SITE_URL}/shop`;
+            return `
+            <tr>
+              <td style="padding:14px 0; border-bottom:1px solid #ddd9d0;">
+                <span style="font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size:15px; color:#14161a;">${item.name}</span>
+                <br/>
+                <a href="${href}" style="font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#111B2B; text-decoration:underline;">Leave a review</a>
+              </td>
+            </tr>`;
+          })
+          .join('')
+      : '';
+
+  const result = await getResend().emails.send({
+    from: 'RYVOL <hello@ryvol.shop>',
+    to: order.email,
+    subject: 'How are you liking it?',
+    html: `
+<!doctype html>
+<html>
+  <body style="margin:0; padding:0; background-color:#F2F0EB;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F2F0EB;">
+      <tr>
+        <td align="center" style="padding:56px 24px;">
+          <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="max-width:480px; width:100%;">
+            <tr>
+              <td align="center" style="padding-bottom:28px;">
+                <img src="${SITE_URL}/brand/ryvol-emblem-navy.png" width="40" height="40" alt="RYVOL" style="display:block; border:0;" />
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-weight: 400; font-size:28px; line-height:1.2; color:#14161a; padding-bottom:22px;">
+                How are you liking it${firstName ? `, ${firstName}` : ''}?
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-size:14px; line-height:1.9; color:#55575c; padding-bottom:34px;">
+                It's been about a week since your order shipped — a quick review helps other people find their way to RYVOL, and it means a lot to us directly.
+              </td>
+            </tr>
+            ${itemsHtml ? `<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${itemsHtml}</table></td></tr><tr><td style="padding-bottom:12px;"></td></tr>` : ''}
+            <tr>
+              <td align="center" style="font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size:13px; letter-spacing:1px; color:#14161a; padding-top:20px; padding-bottom:28px;">
+                Unryvoled Pursuit
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="border-top:1px solid #ddd9d0; padding-top:22px; font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-size:11px; color:#9a9a9a;">
+                Questions about your order? Just reply to this email.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+    `,
+  });
+
+  if (result.error) {
+    throw new Error(`Resend API error: ${result.error.message}`);
+  }
+  return result;
+}
+
 // Fired the moment a Stripe checkout session completes — so you find out
 // about a sale instantly instead of having to remember to check
 // /admin/orders. Best-effort, same pattern as the review notification:

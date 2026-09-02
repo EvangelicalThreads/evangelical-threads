@@ -152,7 +152,7 @@ function ReviewsSection({ productId }: { productId: string }) {
   };
 
   return (
-    <div className="mt-24 md:mt-32 pt-16 border-t border-[#14161a]/10">
+    <div id="reviews" className="mt-24 md:mt-32 pt-16 border-t border-[#14161a]/10">
       <div className="flex flex-wrap items-baseline justify-between gap-4 mb-12">
         <p className="text-[10px] uppercase tracking-[0.24em] text-[#14161a]/45">Reviews</p>
         {!loading && count > 0 && (
