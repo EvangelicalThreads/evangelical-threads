@@ -112,6 +112,8 @@ export async function GET() {
       <g:condition>new</g:condition>
       <g:product_type>${productType}</g:product_type>
       <g:size>${label}</g:size>
+      <g:gender>unisex</g:gender>
+      <g:age_group>adult</g:age_group>
     </item>`);
       }
     } else {
