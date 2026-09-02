@@ -41,6 +41,17 @@ export async function POST(req: Request) {
     // Extract customer/shipping details safely
     const details = session.customer_details;
 
+    // Grabbed before the update so we can tell whether this is a genuinely
+    // new "paid" transition or a duplicate webhook delivery for a session
+    // Stripe already told us about — Stripe's docs are explicit that
+    // events can be delivered more than once, and without this check a
+    // resent event would double-count a promo code's usage.
+    const existingOrder = await prisma.orders.findFirst({
+      where: { stripe_session_id: session.id! },
+      orderBy: { created_at: 'desc' },
+    });
+    const alreadyPaid = existingOrder?.status === 'paid';
+
     await prisma.orders.updateMany({
       where: { stripe_session_id: session.id! },
       data: {
@@ -86,6 +97,20 @@ export async function POST(req: Request) {
       }
     } catch (notifyErr) {
       console.error('New sale email failed:', notifyErr);
+    }
+
+    // Count the promo code's usage now that the order has genuinely gone
+    // through — not at checkout-session creation, since most sessions
+    // that get created are abandoned and never actually pay.
+    if (!alreadyPaid && existingOrder?.promo_code) {
+      try {
+        await prisma.promo_codes.update({
+          where: { code: existingOrder.promo_code },
+          data: { uses_count: { increment: 1 } },
+        });
+      } catch (promoErr) {
+        console.error('Promo code usage increment failed:', promoErr);
+      }
     }
 
     return NextResponse.json({ received: true });

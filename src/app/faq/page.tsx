@@ -14,7 +14,7 @@ const faqData = [
   {
     question: "What is your return/exchange policy?",
     answer:
-      "We accept returns or exchanges within 14 days of delivery. Items must be unworn and in original condition. Please contact ryvol.shop@gmail.com to start a return.",
+      "All sales are final — we're not currently accepting returns or exchanges. If something arrives damaged or isn't what you ordered, reach out to ryvol.shop@gmail.com and we'll make it right.",
   },
   {
     question: "How do I know what size to order?",

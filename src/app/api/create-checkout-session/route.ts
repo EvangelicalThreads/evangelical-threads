@@ -31,7 +31,10 @@ const FLAT_SHIPPING_RATE = 6.95;
 
 export async function POST(req: Request) {
   try {
-    const { cartItems } = (await req.json()) as { cartItems: CartItem[] };
+    const { cartItems, promoCode } = (await req.json()) as {
+      cartItems: CartItem[];
+      promoCode?: string;
+    };
 
     if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
       return NextResponse.json({ error: 'Invalid cart items' }, { status: 400 });
@@ -104,7 +107,55 @@ export async function POST(req: Request) {
       });
     }
 
-    const freeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+    let freeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+    let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined;
+    let appliedPromoCode: string | null = null;
+
+    // Promo codes are entirely custom (Stripe's own coupon/promo system
+    // can't touch shipping, and we want one field that handles both
+    // percent/dollar-off AND free-shipping codes) — validated here against
+    // our own table rather than anything in Stripe's dashboard.
+    if (promoCode && typeof promoCode === 'string' && promoCode.trim()) {
+      const normalized = promoCode.trim().toUpperCase();
+      const promo = await prisma.promo_codes.findUnique({ where: { code: normalized } });
+
+      if (!promo) {
+        return NextResponse.json({ error: 'Invalid promo code' }, { status: 400 });
+      }
+      if (!promo.active) {
+        return NextResponse.json({ error: 'This promo code is no longer active' }, { status: 400 });
+      }
+      if (promo.expires_at && promo.expires_at < new Date()) {
+        return NextResponse.json({ error: 'This promo code has expired' }, { status: 400 });
+      }
+      if (promo.max_uses != null && promo.uses_count >= promo.max_uses) {
+        return NextResponse.json({ error: 'This promo code has reached its usage limit' }, { status: 400 });
+      }
+
+      appliedPromoCode = normalized;
+
+      if (promo.type === 'free_shipping') {
+        freeShipping = true;
+      } else if (promo.type === 'percent') {
+        const coupon = await stripe.coupons.create({
+          percent_off: promo.value,
+          duration: 'once',
+          name: normalized,
+        });
+        discounts = [{ coupon: coupon.id }];
+      } else if (promo.type === 'fixed') {
+        // Stripe coupons can't discount more than the subtotal — cap it so
+        // a $20-off code on a $5 order doesn't error out the session.
+        const amountOff = Math.min(Math.round(promo.value * 100), Math.round(subtotal * 100));
+        const coupon = await stripe.coupons.create({
+          amount_off: amountOff,
+          currency: 'usd',
+          duration: 'once',
+          name: normalized,
+        });
+        discounts = [{ coupon: coupon.id }];
+      }
+    }
 
     console.log('Validated line items:', line_items);
 
@@ -112,6 +163,7 @@ export async function POST(req: Request) {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items,
+      ...(discounts ? { discounts } : {}),
       shipping_address_collection: {
         allowed_countries: ['US', 'CA'],
       },
@@ -146,6 +198,7 @@ export async function POST(req: Request) {
         country: '',
         status: 'pending',
         items: orderedItems,
+        promo_code: appliedPromoCode,
       },
     });
 

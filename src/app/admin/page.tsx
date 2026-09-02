@@ -7,6 +7,7 @@ const LINKS = [
   { href: '/admin/orders', label: 'Orders', desc: 'View and ship incoming orders' },
   { href: '/admin/reviews', label: 'Reviews', desc: 'Manage published reviews' },
   { href: '/admin/reflections', label: 'Reflections', desc: 'Review reflections' },
+  { href: '/admin/promo-codes', label: 'Promo Codes', desc: 'Create and manage discount codes' },
 ];
 
 // External tools you actually use to run the business — not embeddable

@@ -9,6 +9,7 @@ export default function CheckoutPage() {
   const { cart, removeFromCart, increaseQty, decreaseQty, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [promoCode, setPromoCode] = useState("");
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -19,13 +20,20 @@ export default function CheckoutPage() {
       const res = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cartItems: cart }),
+        body: JSON.stringify({
+          cartItems: cart,
+          ...(promoCode.trim() ? { promoCode: promoCode.trim() } : {}),
+        }),
       });
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setError("Failed to redirect to Stripe.");
+        // The API returns a specific reason (invalid/expired/exhausted
+        // code, etc.) when there is one — show that instead of a generic
+        // message so a bad promo code is obvious rather than looking like
+        // checkout is just broken.
+        setError(data.error || "Failed to redirect to Stripe.");
       }
     } catch {
       setError("Network error. Please try again.");
@@ -129,6 +137,15 @@ export default function CheckoutPage() {
           <span className="rv-serif italic text-[24px] text-[#14161a]">
             ${total.toFixed(2)}
           </span>
+        </div>
+
+        <div className="mt-6 flex justify-end">
+          <input
+            value={promoCode}
+            onChange={(e) => setPromoCode(e.target.value)}
+            placeholder="Promo code"
+            className="w-full max-w-[220px] border border-[#14161a]/20 bg-transparent px-3 py-2.5 text-[12px] uppercase tracking-[0.08em] text-[#14161a] placeholder:normal-case placeholder:tracking-normal placeholder:text-[#14161a]/35 focus:outline-none focus:border-[#14161a]/50"
+          />
         </div>
 
         <div className="mt-10 flex flex-col items-center gap-4">
