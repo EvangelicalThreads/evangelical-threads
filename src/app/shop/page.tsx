@@ -1,10 +1,16 @@
 export const revalidate = 0
 export const dynamic = 'force-dynamic'
 
+import type { Metadata } from 'next';
 import Link from "next/link";
 import { FaInstagram, FaTiktok } from "react-icons/fa";
 import Newsletter from '../../components/Newsletter';
 import { sanityClient } from '../../lib/sanity';
+
+export const metadata: Metadata = {
+  title: 'Shop',
+  description: 'Shop the full RYVOL collection — coastal luxury apparel, totes, and more.',
+};
 
 type Product = {
   id: string;

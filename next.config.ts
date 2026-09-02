@@ -9,9 +9,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    serverComponentsExternalPackages: ['sanity'],
-  },
+  serverExternalPackages: ['sanity'],
 };
 
 export default nextConfig;
