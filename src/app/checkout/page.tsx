@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "../../context/CartContext";
 import Link from "next/link";
 import Image from "next/image";
+import { trackPixelEvent } from "@/lib/metaPixel";
 
 export default function CheckoutPage() {
   const { cart, removeFromCart, increaseQty, decreaseQty, clearCart } = useCart();
@@ -12,6 +13,20 @@ export default function CheckoutPage() {
   const [promoCode, setPromoCode] = useState("");
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  useEffect(() => {
+    if (cart.length === 0) return;
+    trackPixelEvent("InitiateCheckout", {
+      value: total,
+      currency: "USD",
+      content_ids: cart.map((item) => item.id),
+      content_type: "product",
+      contents: cart.map((item) => ({ id: item.id, quantity: item.quantity })),
+      num_items: cart.reduce((sum, item) => sum + item.quantity, 0),
+    });
+    // Fires once per checkout-page visit rather than on every cart edit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleCheckout() {
     setLoading(true);

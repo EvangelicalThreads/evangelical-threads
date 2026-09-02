@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import Stripe from 'stripe';
 import { sendNewSaleEmail } from '@/lib/resend';
+import { sendMetaPurchaseEvent } from '@/lib/metaCapi';
 
 export const config = { api: { bodyParser: false } };
 
@@ -103,6 +104,31 @@ export async function POST(req: Request) {
         }
       } catch (notifyErr) {
         console.error('New sale email failed:', notifyErr);
+      }
+
+      // Server-side half of purchase tracking (Meta Conversions API) —
+      // event_id `purchase_<session id>` matches what the client-side
+      // Pixel sends from the success page, so Meta dedupes the two into
+      // one conversion instead of double-counting the sale. Gated on
+      // `!alreadyPaid` for the same reason as the email above: Stripe can
+      // redeliver this webhook, and a resend must never count as a second
+      // purchase.
+      try {
+        const order = await prisma.orders.findFirst({
+          where: { stripe_session_id: session.id! },
+          orderBy: { created_at: 'desc' },
+        });
+        if (order) {
+          const items = order.items as { id?: string }[] | null;
+          await sendMetaPurchaseEvent({
+            eventId: `purchase_${session.id}`,
+            email: order.email,
+            value: (order.amount_total ?? 0) / 100,
+            contentIds: items?.map((i) => i.id).filter((id): id is string => !!id),
+          });
+        }
+      } catch (metaErr) {
+        console.error('Meta Conversions API purchase event failed:', metaErr);
       }
     }
 

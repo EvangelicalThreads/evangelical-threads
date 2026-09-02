@@ -3,13 +3,37 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { trackPixelEvent } from "@/lib/metaPixel";
 
 export default function SuccessPage() {
-  const { clearCart } = useCart();
+  const { cart, total, clearCart } = useCart();
 
   useEffect(() => {
+    // Read the cart and fire Purchase BEFORE clearing it — the order that
+    // was just paid for is still sitting in state at this point. The
+    // event_id mirrors what the Stripe webhook sends server-side via the
+    // Conversions API (`purchase_<stripe session id>`), so Meta dedupes
+    // the browser and server copies of the same sale into one conversion
+    // instead of double-counting it.
+    const sessionId = new URLSearchParams(window.location.search).get("session_id");
+    trackPixelEvent(
+      "Purchase",
+      {
+        value: total,
+        currency: "USD",
+        content_ids: cart.map((item) => item.id),
+        content_type: "product",
+        contents: cart.map((item) => ({ id: item.id, quantity: item.quantity })),
+      },
+      sessionId ? `purchase_${sessionId}` : undefined
+    );
+
     clearCart();
-  }, [clearCart]);
+    // Runs once on mount only — cart/total are read from state at that
+    // moment, not tracked as effect deps (clearCart would immediately
+    // invalidate them anyway).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <main className="bg-[#F2F0EB] min-h-screen text-[#14161a] flex items-center">

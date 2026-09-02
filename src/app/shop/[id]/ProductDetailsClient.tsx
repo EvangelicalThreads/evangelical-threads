@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useCart } from '../../../context/CartContext';
 import Link from 'next/link';
+import { trackPixelEvent } from '@/lib/metaPixel';
 
 interface SizeChartRow {
   size: string;
@@ -282,6 +283,16 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
   const isApparel = product.category === 'apparel';
   const sizeKeys: (keyof Stock)[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
+  useEffect(() => {
+    trackPixelEvent('ViewContent', {
+      content_ids: [product.id],
+      content_type: 'product',
+      value: product.price,
+      currency: 'USD',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.id]);
+
   const isSizeAvailable = (size: keyof Stock) => product.stock?.[size] > 0;
 
   // For apparel use fixed slots, for others use flexible array
@@ -304,6 +315,13 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
       image: isApparel ? (product.imageFront || '') : (product.images?.[0]?.url || ''),
       quantity: 1,
       size: selectedSize || undefined,
+    });
+    trackPixelEvent('AddToCart', {
+      content_ids: [product.id],
+      content_type: 'product',
+      value: product.price,
+      currency: 'USD',
+      contents: [{ id: product.id, quantity: 1 }],
     });
   };
 

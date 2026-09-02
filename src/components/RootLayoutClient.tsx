@@ -4,6 +4,7 @@ import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './Navbar';
 import Analytics from './Analytics';
+import MetaPixel from './MetaPixel';
 import { CartProvider } from '../context/CartContext';
 import React, { useState, useEffect } from 'react';
 
@@ -33,6 +34,7 @@ export default function RootLayoutClient({ children }: { children: React.ReactNo
   return (
     <>
       <Analytics />
+      <MetaPixel />
       <SessionProvider>
         <CartProvider>
           <Navbar />
