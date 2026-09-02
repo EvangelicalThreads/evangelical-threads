@@ -18,8 +18,7 @@ export default function NotFound() {
           This page has drifted off course.
         </p>
         <p className="text-[13px] leading-[1.8] text-[#14161a]/55 mb-12">
-          The page you're looking for doesn't exist, or has moved. Let's get you
-          back to open water.
+          {"The page you're looking for doesn't exist, or has moved. Let's get you back to open water."}
         </p>
         <div className="flex items-center justify-center gap-8">
           <Link
