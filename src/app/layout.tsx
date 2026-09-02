@@ -46,6 +46,13 @@ export const metadata: Metadata = {
   icons: {
     icon: '/brand/ryvol-emblem-navy.png',
   },
+  // Proves to Google you own the site — needed because the Analytics
+  // verification method doesn't work here (GA is deliberately gated
+  // behind cookie consent, so Google's checker never sees it in the raw
+  // page source). This tag is unconditional, so it works regardless.
+  verification: {
+    google: 'C3r4ZrU0K7iEtILvF31vbBiOcrByxJ2ri_q9EvilOOk',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
