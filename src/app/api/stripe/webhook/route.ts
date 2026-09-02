@@ -70,33 +70,40 @@ export async function POST(req: Request) {
     console.log(`Order updated for session ${session.id}`);
 
     // Best-effort "new sale" alert — same pattern as the review
-    // notification email. Read the order back rather than trusting the
-    // updateMany payload directly, since it already holds the item list
-    // written at checkout-session creation time. A flaky email send must
-    // never make this webhook look like it failed to Stripe (that would
-    // trigger retries) when the order itself was already saved correctly.
-    try {
-      const order = await prisma.orders.findFirst({
-        where: { stripe_session_id: session.id! },
-        orderBy: { created_at: 'desc' },
-      });
-      if (order) {
-        await sendNewSaleEmail({
-          name: order.name,
-          email: order.email,
-          address: order.address,
-          city: order.city,
-          state: order.state,
-          postal_code: order.postal_code,
-          country: order.country,
-          amountTotal: order.amount_total,
-          items: order.items as
-            | { name: string; size?: string; quantity: number; price: number }[]
-            | null,
+    // notification email. Gated on `!alreadyPaid`: Stripe's docs are
+    // explicit that a webhook event can be delivered more than once (retry
+    // after a slow response, network blip, etc.), and without this check
+    // every redelivery for an order already marked paid would re-send the
+    // same "new order" email again. Read the order back rather than
+    // trusting the updateMany payload directly, since it already holds the
+    // item list written at checkout-session creation time. A flaky email
+    // send must never make this webhook look like it failed to Stripe
+    // (that would trigger yet another retry) when the order itself was
+    // already saved correctly.
+    if (!alreadyPaid) {
+      try {
+        const order = await prisma.orders.findFirst({
+          where: { stripe_session_id: session.id! },
+          orderBy: { created_at: 'desc' },
         });
+        if (order) {
+          await sendNewSaleEmail({
+            name: order.name,
+            email: order.email,
+            address: order.address,
+            city: order.city,
+            state: order.state,
+            postal_code: order.postal_code,
+            country: order.country,
+            amountTotal: order.amount_total,
+            items: order.items as
+              | { name: string; size?: string; quantity: number; price: number }[]
+              | null,
+          });
+        }
+      } catch (notifyErr) {
+        console.error('New sale email failed:', notifyErr);
       }
-    } catch (notifyErr) {
-      console.error('New sale email failed:', notifyErr);
     }
 
     // Count the promo code's usage now that the order has genuinely gone
