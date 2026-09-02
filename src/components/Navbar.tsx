@@ -553,7 +553,7 @@ export default function Navbar() {
 
             <div className="flex gap-6 text-[#14161a]/60 text-lg">
               <a
-                href="https://www.instagram.com/shopryvol"
+                href="https://www.instagram.com/ryvol.shop"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -562,7 +562,7 @@ export default function Navbar() {
               </a>
 
               <a
-                href="https://www.tiktok.com/@shopryvol"
+                href="https://www.tiktok.com/@ryvol.shop"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="TikTok"

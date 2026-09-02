@@ -120,7 +120,7 @@ export default function LoginPage() {
               </h3>
               <div className="flex justify-center gap-8 text-[#14161a] text-2xl">
                 <a
-                  href="https://www.instagram.com/shopryvol" // TODO: confirm handle
+                  href="https://www.instagram.com/ryvol.shop"
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-[var(--rv-navy)] transition"
@@ -129,7 +129,7 @@ export default function LoginPage() {
                   <FaInstagram />
                 </a>
                 <a
-                  href="https://www.tiktok.com/@shopryvol" // TODO: confirm handle
+                  href="https://www.tiktok.com/@ryvol.shop"
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-[var(--rv-navy)] transition"

@@ -94,7 +94,7 @@ export default async function ShopPage() {
 
           <div className="flex justify-center gap-6 text-[#14161a]/60 text-xl">
             <a
-              href="https://www.instagram.com/shopryvol"
+              href="https://www.instagram.com/ryvol.shop"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -103,7 +103,7 @@ export default async function ShopPage() {
             </a>
 
             <a
-              href="https://www.tiktok.com/@shopryvol"
+              href="https://www.tiktok.com/@ryvol.shop"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="TikTok"

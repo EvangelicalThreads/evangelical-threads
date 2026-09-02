@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     await sendWelcomeEmail(email, '');
 
     // Best-effort — never blocks or fails the signup itself (see the
-    // function for why: no Audience configured yet just logs and no-ops).
+    // function for why: no Segment configured yet just logs and no-ops).
     await syncNewsletterContact(email);
 
     return NextResponse.json({ success: true });
