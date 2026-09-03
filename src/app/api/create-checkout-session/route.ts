@@ -164,14 +164,13 @@ export async function POST(req: Request) {
       mode: 'payment',
       line_items,
       ...(discounts ? { discounts } : {}),
-      // Native Stripe checkbox for "email me about promotions" — US
-      // merchants/customers only, so it silently won't show for the CA
-      // shipping option above. Read back in the webhook as
-      // session.consent.promotions ('opt_in' | 'opt_out' | null) and only
-      // synced to the Resend Segment when it's actually 'opt_in'.
-      consent_collection: {
-        promotions: 'auto',
-      },
+      // EMERGENCY REVERT (see prior commit "Add native Stripe checkbox for
+      // email marketing consent at checkout"): consent_collection.promotions
+      // started throwing on stripe.checkout.sessions.create and took
+      // checkout down entirely. Pulled out to restore checkout immediately.
+      // The webhook's read of session.consent?.promotions is left in place
+      // — harmless no-op now, ready to reinstate once the real cause here
+      // is confirmed from the Stripe error text.
       shipping_address_collection: {
         allowed_countries: ['US', 'CA'],
       },
