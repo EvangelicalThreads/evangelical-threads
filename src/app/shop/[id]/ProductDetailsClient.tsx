@@ -60,6 +60,21 @@ const apparelViews: { key: ApparelView; label: string }[] = [
   { key: 'flatLayBack', label: 'Flat Lay Back' },
 ];
 
+// Fit/fabric copy for Drop 01's three SKUs — sourced from the actual blank
+// manufacturers (Shaka Wear, LA Apparel, Liberty Bags), not invented. The
+// Ringer Tee has no published weight figure anywhere, manufacturer
+// included, so it's left out rather than guessed; update it once a sample
+// is in hand and can be weighed. Keyed by product id — a product without
+// an entry here (e.g. a future SKU) simply shows no Details section.
+const PRODUCT_DETAILS: Record<string, string> = {
+  'dolphin-tee':
+    '100% USA cotton, garment dyed — expect slight, natural shade variation piece to piece. 255–260 GSM heavyweight construction, cut for an oversized, boxy fit. True to size. Made in Honduras.',
+  'ringer-tee':
+    'A 50/50 poly-cotton blend with contrast binding at the sleeves and neckline. Relaxed, mid-length fit — size down for a cropped look. Made in Los Angeles.',
+  'current-tote':
+    '100% cotton canvas, 6 oz weight, with self-fabric handles and a fold-flat construction. One size, 14.5" x 15.5".',
+};
+
 interface Review {
   id: string;
   name: string;
@@ -403,6 +418,17 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
               <p className="text-[15px] leading-[1.9] text-[#14161a]/70 whitespace-pre-line mb-6 max-w-md">
                 {product.description}
               </p>
+            )}
+
+            {PRODUCT_DETAILS[product.id] && (
+              <div className="mb-6 max-w-md">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-[#14161a]/45 mb-2">
+                  Details
+                </p>
+                <p className="text-[13px] leading-[1.9] text-[#14161a]/60">
+                  {PRODUCT_DETAILS[product.id]}
+                </p>
+              </div>
             )}
 
             <p className="text-[10px] uppercase tracking-[0.22em] text-[#14161a]/35 mb-10">
