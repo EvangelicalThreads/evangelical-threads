@@ -340,9 +340,15 @@ export default function HomeClient({
       {/* Early newsletter — first thing after the hero, so it isn't missed
           at the bottom of the page. Uses the poster art rather than a
           form floating on cream, same restrained pairing as Campaign. */}
-      <section id="notify" className="w-full border-t border-[#14161a]/10">
+      <section id="notify" className="w-full scroll-mt-16 border-t border-[#14161a]/10">
         <div className="max-w-[1180px] mx-auto px-6 md:px-10 py-20 md:py-28 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-center">
-          <div className="md:col-span-6 rv-reveal">
+          {/* order-2/order-1 below: on mobile (single column) this puts the
+              actual signup form above the fold when someone lands on
+              #notify from a link — the tall 3:4 poster image used to be
+              first in the stack and pushed the email field off-screen
+              until they scrolled. Desktop keeps the original image-left,
+              text-right layout since md:order flips it back. */}
+          <div className="order-2 md:order-1 md:col-span-6 rv-reveal">
             <div className="relative aspect-[3/4] overflow-hidden bg-[#EDEAE3]">
               <img
                 src="/brand/newsletter-poster.png"
@@ -352,7 +358,7 @@ export default function HomeClient({
             </div>
           </div>
 
-          <div className="md:col-span-6 rv-reveal">
+          <div className="order-1 md:order-2 md:col-span-6 rv-reveal">
             <p className="rv-serif italic text-[22px] md:text-[26px] text-[#14161a] mb-3">
               Before it drops.
             </p>
