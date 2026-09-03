@@ -492,36 +492,36 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
 
             {showSizeChart && product.sizeChart?.length > 0 && (
               <div className="fixed inset-0 bg-[#14161a]/40 backdrop-blur-sm flex justify-center items-center z-50 px-6">
-                <div className="bg-[#F2F0EB] border border-[#14161a]/15 p-8 w-full max-w-lg relative">
+                <div className="bg-[#F2F0EB] border border-[#14161a]/10 p-9 w-full max-w-md relative shadow-[0_20px_60px_rgba(20,22,26,0.15)]">
                   <button
                     onClick={() => setShowSizeChart(false)}
-                    className="absolute top-4 right-4 text-[#14161a]/50 hover:text-[#14161a] text-xl leading-none"
+                    className="absolute top-5 right-5 text-[#14161a]/40 hover:text-[#14161a] text-lg leading-none transition"
                     aria-label="Close"
                   >
                     ×
                   </button>
-                  <p className="rv-serif italic text-[22px] text-center text-[#14161a] mb-6">
+                  <p className="rv-serif italic text-[24px] text-center text-[#14161a] mb-1">
                     Size Chart
                   </p>
-                  <table className="w-full border-collapse">
-                    <thead>
-                      <tr className="border-b border-[#14161a]/15">
-                        <th className="p-2 text-left text-[10px] uppercase tracking-[0.18em] text-[#14161a]/50 font-normal">Size</th>
-                        <th className="p-2 text-left text-[10px] uppercase tracking-[0.18em] text-[#14161a]/50 font-normal">Width (in)</th>
-                        <th className="p-2 text-left text-[10px] uppercase tracking-[0.18em] text-[#14161a]/50 font-normal">Length (in)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {product.sizeChart.map((row, i) => (
-                        <tr key={i} className="border-b border-[#14161a]/8 last:border-0">
-                          <td className="p-2 text-[13px] text-[#14161a]">{row.size}</td>
-                          <td className="p-2 text-[13px] text-[#14161a]/70">{row.width}</td>
-                          <td className="p-2 text-[13px] text-[#14161a]/70">{row.length}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <p className="text-[10px] uppercase tracking-[0.15em] text-[#14161a]/35 mt-5 text-center">
+                  <p className="text-[9px] uppercase tracking-[0.2em] text-[#14161a]/35 text-center mb-8">
+                    Measurements in inches
+                  </p>
+                  <div className="grid grid-cols-3 text-[9px] uppercase tracking-[0.18em] text-[#14161a]/40 pb-3 border-b border-[#14161a]/15">
+                    <span>Size</span>
+                    <span className="text-center">Width</span>
+                    <span className="text-center">Length</span>
+                  </div>
+                  {product.sizeChart.map((row, i) => (
+                    <div
+                      key={i}
+                      className="grid grid-cols-3 items-center py-3.5 border-b border-[#14161a]/8 last:border-0"
+                    >
+                      <span className="rv-serif italic text-[16px] text-[#14161a]">{row.size}</span>
+                      <span className="text-center text-[13px] text-[#14161a]/65">{row.width}</span>
+                      <span className="text-center text-[13px] text-[#14161a]/65">{row.length}</span>
+                    </div>
+                  ))}
+                  <p className="text-[9px] uppercase tracking-[0.18em] text-[#14161a]/35 mt-7 text-center">
                     Measurements can vary within 2.5cm
                   </p>
                 </div>
