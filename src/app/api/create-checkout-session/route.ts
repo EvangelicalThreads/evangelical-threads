@@ -164,6 +164,14 @@ export async function POST(req: Request) {
       mode: 'payment',
       line_items,
       ...(discounts ? { discounts } : {}),
+      // Native Stripe checkbox for "email me about promotions" — US
+      // merchants/customers only, so it silently won't show for the CA
+      // shipping option above. Read back in the webhook as
+      // session.consent.promotions ('opt_in' | 'opt_out' | null) and only
+      // synced to the Resend Segment when it's actually 'opt_in'.
+      consent_collection: {
+        promotions: 'auto',
+      },
       shipping_address_collection: {
         allowed_countries: ['US', 'CA'],
       },

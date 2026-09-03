@@ -2,7 +2,7 @@ import { stripe } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import Stripe from 'stripe';
-import { sendNewSaleEmail } from '@/lib/resend';
+import { sendNewSaleEmail, syncNewsletterContact } from '@/lib/resend';
 import { sendMetaPurchaseEvent } from '@/lib/metaCapi';
 
 export const config = { api: { bodyParser: false } };
@@ -104,6 +104,16 @@ export async function POST(req: Request) {
         }
       } catch (notifyErr) {
         console.error('New sale email failed:', notifyErr);
+      }
+
+      // Only add the buyer to the Resend Segment if they actually checked
+      // the promotional-communications box Stripe showed during checkout
+      // (consent_collection.promotions in create-checkout-session) — never
+      // opt someone into marketing email silently just because they
+      // bought something. syncNewsletterContact is best-effort internally
+      // and never throws, so it can't fail this webhook.
+      if (details?.email && session.consent?.promotions === 'opt_in') {
+        await syncNewsletterContact(details.email);
       }
 
       // Server-side half of purchase tracking (Meta Conversions API) —
