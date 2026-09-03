@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
-import { sendWelcomeEmail } from "@/lib/resend";
+import { sendWelcomeEmail, syncNewsletterContact } from "@/lib/resend";
 
 export async function POST(req: Request) {
   try {
@@ -35,6 +35,10 @@ export async function POST(req: Request) {
       } catch (error) {
         console.error("Failed to send welcome email:", error);
       }
+      // Was missing before — the checkbox says "email me" but this account
+      // never actually made it into the Resend Segment, so it would never
+      // receive the weekly newsletter, only this one welcome email.
+      await syncNewsletterContact(email);
     }
 
     return NextResponse.json({ user: { id: user.id, email: user.email, name: user.name } });
