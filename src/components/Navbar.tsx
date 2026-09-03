@@ -3,19 +3,105 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef, useEffect, useMemo } from "react";
-import { useCart } from "../context/CartContext";
+import { useCart, CartItem } from "../context/CartContext";
 import { ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FaInstagram, FaTiktok } from "react-icons/fa";
+import { FREE_SHIPPING_THRESHOLD } from "@/lib/shipping";
 
 // RYVOL palette:
 // Off-white: #F2F0EB
 // Ink: #14161a
 // Navy accent: var(--rv-navy)
 
-// Free shipping unlocks past this subtotal — adjust freely, it's the only
-// place this number lives.
-const FREE_SHIPPING_THRESHOLD = 50;
+// "Complete the Drop" cart recommendation — Drop 01 is only three SKUs, so
+// this is a fixed, hand-picked pairing rather than a recommendation engine.
+// Each key's cart presence suggests its value.
+const COMPLETE_THE_DROP_MAP: Record<string, string> = {
+  "dolphin-tee": "current-tote",
+  "ringer-tee": "current-tote",
+  "current-tote": "dolphin-tee",
+};
+
+type RecommendationProduct = {
+  id: string;
+  name: string;
+  price: number;
+  image?: string;
+  soldOut: boolean;
+  category: string;
+};
+
+// Pure lookup so callers can decide whether to render a divider around it —
+// keeps an empty recommendation from ever leaving a stray blank border in
+// the cart.
+function getRecommendedProduct(
+  cart: CartItem[],
+  products: Record<string, RecommendationProduct>
+): RecommendationProduct | null {
+  if (cart.length === 0) return null;
+
+  const recommendedId = COMPLETE_THE_DROP_MAP[cart[cart.length - 1].id];
+  if (!recommendedId) return null;
+
+  if (cart.some((item) => item.id === recommendedId)) return null;
+
+  const product = products[recommendedId];
+  if (!product || product.soldOut) return null;
+
+  return product;
+}
+
+function CompleteTheDropCard({
+  product,
+  onAdd,
+  onSelectSize,
+}: {
+  product: RecommendationProduct;
+  onAdd: (product: RecommendationProduct) => void;
+  onSelectSize: (id: string) => void;
+}) {
+  return (
+    <div className="mb-5">
+      <p className="mb-3 text-[10px] uppercase tracking-[0.2em] text-[#14161a]/50">
+        Complete the Drop
+      </p>
+      <div className="flex items-center gap-3">
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden bg-[#EDEAE3]">
+          {product.image && (
+            <Image src={product.image} alt={product.name} fill className="object-cover" />
+          )}
+        </div>
+
+        <div className="min-w-0 flex-grow">
+          <p className="truncate rv-serif italic text-[14px] text-[#14161a]">
+            {product.name}
+          </p>
+          <p className="text-[10px] uppercase tracking-[0.16em] text-[#14161a]/45">
+            ${product.price.toFixed(2)}
+          </p>
+        </div>
+
+        {product.category === "apparel" ? (
+          <button
+            onClick={() => onSelectSize(product.id)}
+            className="shrink-0 border-b border-[#14161a]/40 pb-0.5 text-[10px] uppercase tracking-[0.16em] text-[#14161a] transition hover:border-[#14161a]"
+          >
+            Select Size
+          </button>
+        ) : (
+          <button
+            onClick={() => onAdd(product)}
+            aria-label={`Add ${product.name} to cart`}
+            className="flex h-8 w-8 shrink-0 items-center justify-center border border-[#14161a]/25 text-[15px] leading-none text-[#14161a] transition hover:border-[#14161a] hover:bg-[#14161a] hover:text-[#F2F0EB]"
+          >
+            +
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
 
 function ShippingProgress({ total }: { total: number }) {
   const remaining = FREE_SHIPPING_THRESHOLD - total;
@@ -49,10 +135,57 @@ export default function Navbar() {
     removeFromCart,
     increaseQty,
     decreaseQty,
+    addToCart,
     total,
   } = useCart();
 
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Loaded lazily the first time the cart opens rather than on every page
+  // mount — it's only needed once someone actually looks at their cart.
+  const [recommendationProducts, setRecommendationProducts] =
+    useState<Record<string, RecommendationProduct> | null>(null);
+
+  useEffect(() => {
+    if (!isCartOpen || recommendationProducts) return;
+    let cancelled = false;
+    fetch("/api/cart-recommendations")
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled) return;
+        const map: Record<string, RecommendationProduct> = {};
+        (data.products || []).forEach((p: RecommendationProduct) => {
+          map[p.id] = p;
+        });
+        setRecommendationProducts(map);
+      })
+      .catch(() => {
+        // Best-effort — the cart works fine without a recommendation.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isCartOpen, recommendationProducts]);
+
+  const handleAddRecommendation = (product: RecommendationProduct) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image || "",
+      quantity: 1,
+    });
+  };
+
+  const handleSelectRecommendedSize = (id: string) => {
+    toggleCart();
+    router.push(`/shop/${id}`);
+  };
+
+  const recommendation = useMemo(
+    () => getRecommendedProduct(cart, recommendationProducts || {}),
+    [cart, recommendationProducts]
+  );
 
   const cartRefDesktop = useRef<HTMLDivElement>(null);
   const cartRefMobile = useRef<HTMLDivElement>(null);
@@ -305,6 +438,16 @@ export default function Navbar() {
                 ))}
               </ul>
 
+              {recommendation && (
+                <div className="mt-5 border-t border-[#14161a]/10 pt-4">
+                  <CompleteTheDropCard
+                    product={recommendation}
+                    onAdd={handleAddRecommendation}
+                    onSelectSize={handleSelectRecommendedSize}
+                  />
+                </div>
+              )}
+
               <div className="mt-5 pt-4 border-t border-[#14161a]/10">
                 <ShippingProgress total={total} />
                 <div className="flex items-baseline justify-between">
@@ -457,6 +600,13 @@ export default function Navbar() {
               </ul>
 
               <div className="mt-auto border-t border-[#14161a]/10 pt-4">
+                {recommendation && (
+                  <CompleteTheDropCard
+                    product={recommendation}
+                    onAdd={handleAddRecommendation}
+                    onSelectSize={handleSelectRecommendedSize}
+                  />
+                )}
                 <ShippingProgress total={total} />
                 <div className="mb-4 flex items-baseline justify-between">
                   <span className="text-[10px] uppercase tracking-[0.2em] text-[#14161a]/50">

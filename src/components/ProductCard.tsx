@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { trackPixelEvent } from '@/lib/metaPixel';
+import { getTotalStock, getLowStockLabel } from '@/lib/inventory';
 
 interface Stock {
   XS: number;
@@ -43,6 +44,9 @@ export default function ProductCard({ product }: { product: GridProduct }) {
   const isApparel = product.category === 'apparel';
   const isSizeAvailable = (size: keyof Stock) => (product.stock?.[size] ?? 0) > 0;
   const hasAnySize = sizeKeys.some((s) => isSizeAvailable(s));
+  const lowStockLabel = !product.soldOut
+    ? getLowStockLabel(getTotalStock(product.stock, product.category))
+    : null;
 
   const confirmAdded = () => {
     setJustAdded(true);
@@ -196,6 +200,11 @@ export default function ProductCard({ product }: { product: GridProduct }) {
       <p className="mt-1 text-[9px] sm:text-[9px] md:text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] text-[#14161a]/45">
         ${product.price}
       </p>
+      {lowStockLabel && (
+        <p className="mt-0.5 text-[9px] sm:text-[9px] md:text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] text-[var(--rv-navy)]">
+          {lowStockLabel}
+        </p>
+      )}
     </div>
   );
 }

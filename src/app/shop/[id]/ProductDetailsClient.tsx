@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { useCart } from '../../../context/CartContext';
 import Link from 'next/link';
 import { trackPixelEvent } from '@/lib/metaPixel';
+import { getTotalStock, getLowStockLabel } from '@/lib/inventory';
+import { FREE_SHIPPING_THRESHOLD } from '@/lib/shipping';
 
 interface SizeChartRow {
   size: string;
@@ -279,9 +281,13 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [showSizeChart, setShowSizeChart] = useState(false);
+  const [showShipping, setShowShipping] = useState(false);
 
   const isApparel = product.category === 'apparel';
   const sizeKeys: (keyof Stock)[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  const lowStockLabel = !product.soldOut
+    ? getLowStockLabel(getTotalStock(product.stock, product.category))
+    : null;
 
   useEffect(() => {
     trackPixelEvent('ViewContent', {
@@ -384,9 +390,14 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
             <p className="rv-serif italic text-[30px] md:text-[36px] leading-[1.1] text-[#14161a] mb-2">
               {product.name}
             </p>
-            <p className="text-[11px] uppercase tracking-[0.22em] text-[#14161a]/45 mb-8">
+            <p className={`text-[11px] uppercase tracking-[0.22em] text-[#14161a]/45 ${lowStockLabel ? 'mb-1' : 'mb-8'}`}>
               ${product.price}
             </p>
+            {lowStockLabel && (
+              <p className="text-[11px] uppercase tracking-[0.22em] text-[var(--rv-navy)] mb-8">
+                {lowStockLabel}
+              </p>
+            )}
 
             {product.description && (
               <p className="text-[15px] leading-[1.9] text-[#14161a]/70 whitespace-pre-line mb-6 max-w-md">
@@ -428,14 +439,23 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
               </div>
             )}
 
-            {product.sizeChart?.length > 0 && (
+            <div className="flex flex-wrap gap-x-6 gap-y-2 mb-10">
+              {product.sizeChart?.length > 0 && (
+                <button
+                  onClick={() => setShowSizeChart(true)}
+                  className="text-[11px] uppercase tracking-[0.2em] text-[#14161a]/55 border-b border-[#14161a]/25 pb-0.5 hover:text-[#14161a] hover:border-[#14161a] transition"
+                >
+                  View Size Chart
+                </button>
+              )}
+
               <button
-                onClick={() => setShowSizeChart(true)}
-                className="text-[11px] uppercase tracking-[0.2em] text-[#14161a]/55 border-b border-[#14161a]/25 pb-0.5 hover:text-[#14161a] hover:border-[#14161a] transition mb-10 block"
+                onClick={() => setShowShipping(true)}
+                className="text-[11px] uppercase tracking-[0.2em] text-[#14161a]/55 border-b border-[#14161a]/25 pb-0.5 hover:text-[#14161a] hover:border-[#14161a] transition"
               >
-                View Size Chart
+                Shipping &amp; Returns
               </button>
-            )}
+            </div>
 
             {showSizeChart && product.sizeChart?.length > 0 && (
               <div className="fixed inset-0 bg-[#14161a]/40 backdrop-blur-sm flex justify-center items-center z-50 px-6">
@@ -486,6 +506,56 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
             >
               {product.soldOut ? 'Sold Out' : 'Add to Cart'}
             </button>
+          </div>
+        </div>
+
+        {showShipping && (
+          <div
+            className="fixed inset-0 z-50 bg-[#14161a]/30 backdrop-blur-sm"
+            onClick={() => setShowShipping(false)}
+          />
+        )}
+        <div
+          className={`fixed right-0 top-0 z-50 h-full w-full max-w-sm transform border-l border-[#14161a]/12 bg-[#F2F0EB] transition-transform duration-300 ease-in-out ${
+            showShipping ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          <div className="flex h-full flex-col overflow-y-auto p-8">
+            <div className="mb-10 flex items-center justify-between">
+              <p className="rv-serif italic text-[22px] text-[#14161a]">Shipping &amp; Returns</p>
+              <button
+                onClick={() => setShowShipping(false)}
+                className="text-xl leading-none text-[#14161a]/50 hover:text-[#14161a]"
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="mb-10">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[#14161a]/45 mb-3">
+                Shipping
+              </p>
+              <p className="text-[13px] leading-[1.9] text-[#14161a]/70">
+                Orders are processed within 1–2 business days and typically arrive in 3–7
+                business days. Free shipping on orders over ${FREE_SHIPPING_THRESHOLD}. We
+                currently only ship within the United States.
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[#14161a]/45 mb-3">
+                Returns
+              </p>
+              <p className="text-[13px] leading-[1.9] text-[#14161a]/70">
+                All sales are final — we&apos;re not currently accepting returns or exchanges.
+                If your order arrives damaged or incorrect, email{' '}
+                <a href="mailto:ryvol.shop@gmail.com" className="underline hover:text-[#14161a]">
+                  ryvol.shop@gmail.com
+                </a>{' '}
+                and we&apos;ll make it right.
+              </p>
+            </div>
           </div>
         </div>
 
