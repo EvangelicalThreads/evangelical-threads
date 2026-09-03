@@ -116,7 +116,7 @@ export default function LoginPage() {
 
             <div className="mt-10">
               <h3 className="text-[11px] uppercase tracking-[0.3em] text-[#14161a]/60 mb-4">
-                Follow the Pursuit
+                Follow the Current
               </h3>
               <div className="flex justify-center gap-8 text-[#14161a] text-2xl">
                 <a

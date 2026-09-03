@@ -41,7 +41,7 @@ export default function Newsletter({
       {showHeading && (
         <>
           <h2 className="rv-serif italic text-[26px] md:text-[30px] mb-3 text-[#14161a]">
-            The List
+            The Current
           </h2>
           <p className="text-[#14161a]/50 mb-8 text-[12px] uppercase tracking-[0.18em]">
             Occasional word. Nothing more.

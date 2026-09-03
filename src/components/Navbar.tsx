@@ -220,7 +220,7 @@ export default function Navbar() {
           {cart.length === 0 ? (
             <div className="mt-6 text-center">
               <p className="mb-5 text-sm text-[#14161a]/50">
-                Your pursuit starts here.
+                The current starts here.
               </p>
 
               <button
@@ -368,7 +368,7 @@ export default function Navbar() {
           {cart.length === 0 ? (
             <div className="mt-10 text-center">
               <p className="text-sm text-[#14161a]/50">
-                Your pursuit starts here.
+                The current starts here.
               </p>
 
               <button
