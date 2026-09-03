@@ -451,6 +451,17 @@ export default function HomeClient({
             </div>
           </div>
         ))}
+
+        {/* Small-print offer — ties the editorial imagery back to the
+            newsletter signup (#notify, below) without cluttering it. */}
+        <div className="text-center pb-16 md:pb-20 -mt-4 md:-mt-8">
+          <Link
+            href="#notify"
+            className="text-[9px] uppercase tracking-[0.2em] text-[#14161a]/35 hover:text-[#14161a]/60 transition"
+          >
+            Sign up for 10% off your first order
+          </Link>
+        </div>
       </section>
 
       <ReviewsHomeSection />

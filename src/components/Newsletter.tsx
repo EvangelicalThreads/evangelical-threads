@@ -44,7 +44,7 @@ export default function Newsletter({
             The Current
           </h2>
           <p className="text-[#14161a]/50 mb-8 text-[12px] uppercase tracking-[0.18em]">
-            Occasional word. Nothing more.
+            Sign up for 10% off your first order. Occasional word after that — nothing more.
           </p>
         </>
       )}
@@ -72,7 +72,7 @@ export default function Newsletter({
 
       {status === 'success' && (
         <p className="mt-4 text-[#14161a] text-[11px] uppercase tracking-[0.18em]">
-          You&rsquo;re on the list.
+          You&rsquo;re on the list. Check your email for your code.
         </p>
       )}
       {status === 'error' && (

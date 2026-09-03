@@ -19,6 +19,12 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ryvol.shop';
 // this inbox ever changes.
 const ADMIN_EMAIL = 'ryvol.shop@gmail.com';
 
+// The code shown in the welcome email. This only controls what the email
+// displays — the code itself has to actually exist and be active in
+// /admin/promo-codes (type: % off, value: 10) for it to work at checkout.
+// Override via env if the code ever needs to change without a redeploy.
+const WELCOME_DISCOUNT_CODE = process.env.NEXT_PUBLIC_WELCOME_DISCOUNT_CODE || 'CURRENT10';
+
 // Resend renamed Audiences to Segments (contacts are now global, just
 // tagged with a segment) — this is that Segment's ID. Set it in the
 // environment once it exists. Until then, contact syncing and broadcasts
@@ -79,8 +85,15 @@ export async function sendWelcomeEmail(email: string, name: string) {
               </td>
             </tr>
             <tr>
-              <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-size:14px; line-height:1.9; color:#55575c; padding-bottom:40px;">
-                You'll be first to know when the next drop lands.
+              <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-size:14px; line-height:1.9; color:#55575c; padding-bottom:22px;">
+                You'll be first to know when the next drop lands. Here's 10% off to start.
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-bottom:40px;">
+                <span style="display:inline-block; font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-size:14px; letter-spacing:3px; color:#14161a; background-color:#EDEAE3; padding:14px 28px; border-radius:2px;">
+                  ${WELCOME_DISCOUNT_CODE}
+                </span>
               </td>
             </tr>
             <tr>
