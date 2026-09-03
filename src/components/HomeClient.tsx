@@ -340,7 +340,7 @@ export default function HomeClient({
       {/* Early newsletter — first thing after the hero, so it isn't missed
           at the bottom of the page. Uses the poster art rather than a
           form floating on cream, same restrained pairing as Campaign. */}
-      <section className="w-full border-t border-[#14161a]/10">
+      <section id="notify" className="w-full border-t border-[#14161a]/10">
         <div className="max-w-[1180px] mx-auto px-6 md:px-10 py-20 md:py-28 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-center">
           <div className="md:col-span-6 rv-reveal">
             <div className="relative aspect-[3/4] overflow-hidden bg-[#EDEAE3]">
@@ -357,7 +357,7 @@ export default function HomeClient({
               Before it drops.
             </p>
             <p className="text-[#14161a]/50 mb-8 text-[12px] uppercase tracking-[0.18em]">
-              First access, restock notices, nothing else.
+              Sign up for 10% off your first order. Occasional word after that.
             </p>
             <Newsletter showHeading={false} align="left" compact />
           </div>
@@ -453,7 +453,8 @@ export default function HomeClient({
         ))}
 
         {/* Small-print offer — ties the editorial imagery back to the
-            newsletter signup (#notify, below) without cluttering it. */}
+            "Before it drops" newsletter signup (#notify, up near the top)
+            without cluttering it. */}
         <div className="text-center pb-16 md:pb-20 -mt-4 md:-mt-8">
           <Link
             href="#notify"
@@ -486,7 +487,7 @@ export default function HomeClient({
         </div>
       </section>
 
-      <div id="notify" className="border-t border-[#14161a]/10">
+      <div className="border-t border-[#14161a]/10">
         <Newsletter />
       </div>
 

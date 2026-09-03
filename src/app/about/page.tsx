@@ -34,8 +34,9 @@ export default function AboutPage() {
             The Name
           </p>
           <p className="text-[16px] md:text-[18px] leading-[1.9] text-[#14161a]/75">
-            RYVOL takes its shape from rival, and revolve. Not a rivalry with
-            anyone else, only with who you were before.
+            RYVOL traces back to the Anglo-Norman rivulet, meaning &ldquo;little
+            river.&rdquo; The reference 1376 marks that origin. A name rooted in
+            water, movement, and finding your own course.
           </p>
         </section>
 
@@ -45,9 +46,9 @@ export default function AboutPage() {
             The Coast
           </p>
           <p className="text-[16px] md:text-[18px] leading-[1.9] text-[#14161a]/75">
-            Made along the Southern California coast, where mornings are slow
-            and nothing is rushed. RYVOL is built for those hours: worn in,
-            not worn out.
+            Born along the Southern California coast, where life moves with
+            the water. RYVOL is made for long days, salt air, and whatever
+            comes next.
           </p>
         </section>
 
@@ -57,8 +58,9 @@ export default function AboutPage() {
             The Product
           </p>
           <p className="text-[16px] md:text-[18px] leading-[1.9] text-[#14161a]/75">
-            Heavyweight cotton and canvas, cut clean, kept for years. No loud
-            logos, no explaining. The mark is small on purpose.
+            Heavyweight cotton and canvas, made to be worn often and kept for
+            years. Clean silhouettes. Considered details. Nothing louder than
+            it needs to be.
           </p>
         </section>
 

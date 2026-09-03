@@ -44,7 +44,7 @@ export default function Newsletter({
             The Current
           </h2>
           <p className="text-[#14161a]/50 mb-8 text-[12px] uppercase tracking-[0.18em]">
-            Sign up for 10% off your first order. Occasional word after that — nothing more.
+            Sign up for 10% off your first order. Occasional word after that.
           </p>
         </>
       )}
