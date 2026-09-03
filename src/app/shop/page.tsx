@@ -32,6 +32,7 @@ type Product = {
   imageBack?: string;
   images?: { url: string }[];
   stock?: Stock;
+  sizesOffered?: string[];
 };
 
 export default async function ShopPage() {
@@ -46,6 +47,7 @@ export default async function ShopPage() {
       "imageBack": imageBack.asset->url,
       "images": images[]{ "url": image.asset->url },
       stock,
+      sizesOffered,
     }
   `);
 

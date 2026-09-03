@@ -13,6 +13,7 @@ const PRODUCT_QUERY = `
     details,
     soldOut,
     stock,
+    sizesOffered,
     category,
     "imageFront": imageFront.asset->url,
     "imageBack": imageBack.asset->url,
@@ -55,6 +56,7 @@ interface SanityProduct {
   details?: string;
   soldOut: boolean;
   stock: Stock;
+  sizesOffered?: string[];
   category: string;
   imageFront?: string;
   imageBack?: string;

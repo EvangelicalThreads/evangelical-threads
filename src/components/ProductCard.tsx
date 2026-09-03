@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { trackPixelEvent } from '@/lib/metaPixel';
-import { getTotalStock, getLowStockLabel } from '@/lib/inventory';
+import { getTotalStock, getLowStockLabel, getSizesToShow } from '@/lib/inventory';
 
 interface Stock {
   XS: number;
@@ -26,9 +26,8 @@ export type GridProduct = {
   front?: string;
   back?: string;
   stock?: Stock;
+  sizesOffered?: string[];
 };
-
-const sizeKeys: (keyof Stock)[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 /** Shop-grid product tile. Handles its own front/back image preview and a
  *  quick-add-to-cart flow (with an inline size picker for apparel), so
@@ -43,6 +42,7 @@ export default function ProductCard({ product }: { product: GridProduct }) {
 
   const isApparel = product.category === 'apparel';
   const isSizeAvailable = (size: keyof Stock) => (product.stock?.[size] ?? 0) > 0;
+  const sizeKeys = getSizesToShow(product.sizesOffered);
   const hasAnySize = sizeKeys.some((s) => isSizeAvailable(s));
   const lowStockLabel = !product.soldOut
     ? getLowStockLabel(getTotalStock(product.stock, product.category))

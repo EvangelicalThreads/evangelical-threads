@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useCart } from '../../../context/CartContext';
 import Link from 'next/link';
 import { trackPixelEvent } from '@/lib/metaPixel';
-import { getTotalStock, getLowStockLabel } from '@/lib/inventory';
+import { getTotalStock, getLowStockLabel, getSizesToShow } from '@/lib/inventory';
 import { FREE_SHIPPING_THRESHOLD } from '@/lib/shipping';
 
 interface SizeChartRow {
@@ -37,6 +37,7 @@ interface Product {
   details?: string;
   soldOut: boolean;
   stock: Stock;
+  sizesOffered?: string[];
   category: string;
   // Apparel fixed slots
   imageFront?: string;
@@ -302,7 +303,7 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
   const [showShipping, setShowShipping] = useState(false);
 
   const isApparel = product.category === 'apparel';
-  const sizeKeys: (keyof Stock)[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  const sizeKeys = getSizesToShow(product.sizesOffered);
   const lowStockLabel = !product.soldOut
     ? getLowStockLabel(getTotalStock(product.stock, product.category))
     : null;

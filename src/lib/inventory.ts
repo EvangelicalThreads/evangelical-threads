@@ -12,7 +12,10 @@ export interface StockRecord {
   oneSize?: number;
 }
 
-const APPAREL_SIZE_KEYS: (keyof StockRecord)[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+// The full standard size run — not every product is actually made in all
+// six. Exported so ProductCard and ProductDetailsClient both order their
+// size buttons the same way rather than each keeping their own copy.
+export const APPAREL_SIZE_KEYS: (keyof StockRecord)[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 /** Total units left across every size (apparel) or the single variant
  *  (everything else, e.g. the tote). */
@@ -35,4 +38,15 @@ const LOW_STOCK_THRESHOLD = 5;
 export function getLowStockLabel(totalStock: number): string | null {
   if (totalStock <= 0 || totalStock > LOW_STOCK_THRESHOLD) return null;
   return `Only ${totalStock} left`;
+}
+
+/** Which size buttons a product should actually show, in standard order.
+ *  A product's `sizesOffered` (set in Studio) is the true size range for
+ *  that specific blank — e.g. the Ringer Tee never comes in 2XL, no
+ *  matter how much stock gets entered. Until a product has that field
+ *  filled in, this falls back to the full standard run (today's
+ *  behavior) so nothing disappears from existing products. */
+export function getSizesToShow(sizesOffered: string[] | undefined): (keyof StockRecord)[] {
+  if (!sizesOffered || sizesOffered.length === 0) return APPAREL_SIZE_KEYS;
+  return APPAREL_SIZE_KEYS.filter((key) => sizesOffered.includes(key));
 }

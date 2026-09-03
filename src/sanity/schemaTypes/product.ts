@@ -58,6 +58,25 @@ const product = {
       initialValue: false,
     },
     {
+      name: 'sizesOffered',
+      title: 'Sizes This Product Is Actually Made In',
+      description:
+        "The real size range for this specific blank — not every product runs XS–2XL. Leave empty and the site falls back to showing all sizes gated by stock. Set this so a size the manufacturer never makes (e.g. no 2XL on some women's cuts) doesn't show up crossed out like it sold out.",
+      type: 'array',
+      hidden: ({ document }: { document: { category?: string } }) => document?.category !== 'apparel',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          { title: 'XS', value: 'XS' },
+          { title: 'S', value: 'S' },
+          { title: 'M', value: 'M' },
+          { title: 'L', value: 'L' },
+          { title: 'XL', value: 'XL' },
+          { title: '2XL', value: 'XXL' },
+        ],
+      },
+    },
+    {
       name: 'stock',
       title: 'Stock',
       type: 'object',
