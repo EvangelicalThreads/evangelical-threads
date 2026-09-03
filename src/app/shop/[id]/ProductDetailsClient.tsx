@@ -34,6 +34,7 @@ interface Product {
   name: string;
   price: number;
   description: string;
+  details?: string;
   soldOut: boolean;
   stock: Stock;
   category: string;
@@ -60,12 +61,14 @@ const apparelViews: { key: ApparelView; label: string }[] = [
   { key: 'flatLayBack', label: 'Flat Lay Back' },
 ];
 
-// Fit/fabric copy for Drop 01's three SKUs — sourced from the actual blank
-// manufacturers (Shaka Wear, LA Apparel, Liberty Bags), not invented. The
-// Ringer Tee has no published weight figure anywhere, manufacturer
-// included, so it's left out rather than guessed; update it once a sample
-// is in hand and can be weighed. Keyed by product id — a product without
-// an entry here (e.g. a future SKU) simply shows no Details section.
+// Fallback fit/fabric copy for Drop 01's three SKUs — sourced from the
+// actual blank manufacturers (Shaka Wear, LA Apparel, Liberty Bags), not
+// invented. The Ringer Tee has no published weight figure anywhere,
+// manufacturer included, so it's left out rather than guessed.
+//
+// This only renders when Sanity's own `details` field is empty for a
+// product — edit that field in Studio to override this copy without a
+// code change. A product with neither shows no Details section at all.
 const PRODUCT_DETAILS: Record<string, string> = {
   'dolphin-tee':
     '100% USA cotton, garment dyed — expect slight, natural shade variation piece to piece. 255–260 GSM heavyweight construction, cut for an oversized, boxy fit. True to size. Made in Honduras.',
@@ -303,6 +306,9 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
   const lowStockLabel = !product.soldOut
     ? getLowStockLabel(getTotalStock(product.stock, product.category))
     : null;
+  // Sanity's own `details` field wins when it's set in Studio; otherwise
+  // fall back to the built-in copy below.
+  const detailsCopy = product.details?.trim() || PRODUCT_DETAILS[product.id];
 
   useEffect(() => {
     trackPixelEvent('ViewContent', {
@@ -420,13 +426,13 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
               </p>
             )}
 
-            {PRODUCT_DETAILS[product.id] && (
+            {detailsCopy && (
               <div className="mb-6 max-w-md">
                 <p className="text-[10px] uppercase tracking-[0.24em] text-[#14161a]/45 mb-2">
                   Details
                 </p>
                 <p className="text-[13px] leading-[1.9] text-[#14161a]/60">
-                  {PRODUCT_DETAILS[product.id]}
+                  {detailsCopy}
                 </p>
               </div>
             )}

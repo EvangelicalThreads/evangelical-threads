@@ -10,6 +10,7 @@ const PRODUCT_QUERY = `
     name,
     price,
     description,
+    details,
     soldOut,
     stock,
     category,
@@ -51,6 +52,7 @@ interface SanityProduct {
   name: string;
   price: number;
   description: string;
+  details?: string;
   soldOut: boolean;
   stock: Stock;
   category: string;

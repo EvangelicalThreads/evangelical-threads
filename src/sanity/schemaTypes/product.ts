@@ -39,6 +39,13 @@ const product = {
       type: 'text',
     },
     {
+      name: 'details',
+      title: 'Fit & Fabric Details (shown on the product page)',
+      description:
+        'One short paragraph: material composition, weight, fit, and any construction notes. Leave empty to fall back to the built-in default copy for this product.',
+      type: 'text',
+    },
+    {
       name: 'available',
       title: 'Available for purchase?',
       type: 'boolean',
